@@ -1,0 +1,109 @@
+@page
+@model SoftetroBarber.Pages.Admin.BarbersModel
+@{
+    ViewData["Title"] = "Berber Yönetimi";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-1"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-lg-4 mb-4 mb-lg-0">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white pt-4 pb-3">
+                <h5 class="card-title fw-bold text-dark mb-0"><i class="bi bi-person-plus-fill me-2 text-primary"></i>Yeni Berber Ekle</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="AddBarber">
+                    <div class="mb-3">
+                        <label asp-for="NewBarberName" class="form-label fw-bold">Berber Adı <span class="text-danger">*</span></label>
+                        <input asp-for="NewBarberName" class="form-control" placeholder="Örn: Ahmet" required />
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="NewBarberBio" class="form-label fw-bold">Kısa Özgeçmiş/Unvan</label>
+                        <textarea asp-for="NewBarberBio" class="form-control" rows="3" placeholder="Örn: Usta Makas / Renk Uzmanı"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-plus-lg me-1"></i> Sisteme Ekle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white pt-4 pb-3">
+                <h5 class="card-title fw-bold text-dark mb-0"><i class="bi bi-scissors me-2 text-primary"></i>Mevcut Berberler</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Berber</th>
+                                <th>Unvan (Bio)</th>
+                                <th>Durum</th>
+                                <th class="text-end pe-4">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(Model.Barbers.Any())
+                            {
+                                @foreach (var item in Model.Barbers)
+                                {
+                                    <tr class="@(!item.IsActive ? "table-secondary text-muted" : "")">
+                                        <td class="ps-4 fw-bold">
+                                            <i class="bi bi-person-circle fs-5 me-2 @(item.IsActive ? "text-primary" : "")"></i> @item.Name
+                                        </td>
+                                        <td>@(string.IsNullOrEmpty(item.Bio) ? "-" : item.Bio)</td>
+                                        <td>
+                                            @if(item.IsActive)
+                                            {
+                                                <span class="badge bg-success rounded-pill px-3 py-2">Aktif</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary rounded-pill px-3 py-2">Pasif (Soft Delete)</span>
+                                            }
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <form method="post" asp-page-handler="ToggleActive" class="d-inline">
+                                                <input type="hidden" name="barberId" value="@item.Id" />
+                                                @if(item.IsActive)
+                                                {
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('@item.Name isimli berberi pasif konuma (sistemden gizle) getirmek istediğinize emin misiniz?');">Pasife Al</button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="submit" class="btn btn-sm btn-outline-success">Aktifleştir</button>
+                                                }
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">Sistemde henüz berber bulunmuyor.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

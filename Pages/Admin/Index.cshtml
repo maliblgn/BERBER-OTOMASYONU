@@ -1,0 +1,123 @@
+@page
+@model SoftetroBarber.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row g-4 mb-4">
+    <!-- Stat Cards -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase fw-bold text-white-50 mb-2">Bugünkü Randevular</h6>
+                        <h3 class="mb-0">@Model.TodayAppointmentsCount</h3>
+                    </div>
+                    <i class="bi bi-calendar-day stat-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-sm-6 col-xl-3">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase fw-bold text-white-50 mb-2">Bugünkü Gelir</h6>
+                        <h3 class="mb-0">@Model.TodayRevenue.ToString("C")</h3>
+                    </div>
+                    <i class="bi bi-cash-stack stat-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase fw-bold text-white-50 mb-2">Aktif Berberler</h6>
+                        <h3 class="mb-0">@Model.TotalBarbersCount</h3>
+                    </div>
+                    <i class="bi bi-scissors stat-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card bg-warning text-dark h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase fw-bold text-black-50 mb-2">Toplam Müşteri</h6>
+                        <h3 class="mb-0">@Model.TotalCustomersCount</h3>
+                    </div>
+                    <i class="bi bi-people stat-icon text-dark"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white pt-3 pb-2 d-flex justify-content-between align-items-center">
+                <h5 class="card-title fw-bold text-secondary mb-0">Yaklaşan Kayıtlı Randevular</h5>
+                <a asp-page="/Admin/Appointments" class="btn btn-sm btn-outline-primary">Tümünü Gör</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Müşteri</th>
+                                <th>Berber</th>
+                                <th>Tarih & Saat</th>
+                                <th>Tutar</th>
+                                <th class="pe-4">Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(Model.UpcomingAppointments.Any())
+                            {
+                                @foreach (var item in Model.UpcomingAppointments)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-dark">@item.Customer.FullName</td>
+                                        <td>@item.Barber.Name</td>
+                                        <td>@item.StartTime.ToString("dd MMM yyyy HH:mm")</td>
+                                        <td>@item.TotalPrice.ToString("C")</td>
+                                        <td class="pe-4">
+                                            <span class="badge bg-primary">Onaylandı</span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">Bekleyen yakın tarihli randevu bulunmuyor.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 mt-4 mt-lg-0">
+        <div class="card shadow-sm h-100 bg-dark text-white text-center p-4 d-flex flex-column justify-content-center">
+            <div class="mb-3">
+                <i class="bi bi-shield-lock text-success" style="font-size: 3rem;"></i>
+            </div>
+            <h4>Güvenli Admin Paneli</h4>
+            <p class="text-muted small">Bu alan sadece yetkili personellerin kullanımına açıktır.</p>
+        </div>
+    </div>
+</div>

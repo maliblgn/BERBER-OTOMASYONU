@@ -1,0 +1,78 @@
+@page
+@model SoftetroBarber.Pages.Admin.LoginModel
+@{
+    Layout = null; // Don't use the AdminLayout for login
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Softetro Barber - Yetkili Girişi</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card card p-4 bg-white">
+        <div class="text-center mb-4 mt-2">
+            <i class="bi bi-shield-lock text-primary" style="font-size: 3rem;"></i>
+            <h4 class="fw-bold mt-2">Yetkili Girişi</h4>
+            <p class="text-muted small">Lütfen yönetici bilgilerinizi giriniz.</p>
+        </div>
+
+        @if (!ModelState.IsValid)
+        {
+            <div class="alert alert-danger px-3 py-2 small rounded">
+                <div asp-validation-summary="All" class="text-danger mb-0"></div>
+            </div>
+        }
+
+        <form method="post">
+            <div class="mb-3">
+                <label class="form-label text-muted small fw-bold">Kullanıcı Adı</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-person"></i></span>
+                    <input asp-for="Username" type="text" class="form-control bg-light border-start-0" placeholder="admin" required autofocus />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label text-muted small fw-bold">Şifre</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-key"></i></span>
+                    <input asp-for="Password" type="password" class="form-control bg-light border-start-0" placeholder="••••••" required />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mb-3 shadow-sm">
+                Sisteme Giriş Yap
+            </button>
+            <div class="text-center">
+                <a href="/" class="text-decoration-none small text-muted"><i class="bi bi-arrow-left"></i> Randevu Ekranına Dön</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

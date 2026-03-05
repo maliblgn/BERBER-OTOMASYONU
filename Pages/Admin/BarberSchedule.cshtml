@@ -1,0 +1,122 @@
+@page
+@model SoftetroBarber.Pages.Admin.BarberScheduleModel
+@{
+    ViewData["Title"] = "Çalışma ve Mola Planı";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row g-4">
+    <!-- Ekleme Formu -->
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white pt-4 pb-0 border-0">
+                <h5 class="fw-bold text-primary"><i class="bi bi-clock-history me-2"></i>Yeni Mola / İzin Ekle</h5>
+                <p class="text-muted small">Bu form ile eklenen saat aralıkları, randevu sihirbazında (müşteri tarafı) kapatılacaktır.</p>
+            </div>
+            <div class="card-body p-4">
+                
+                @if (!ModelState.IsValid)
+                {
+                    <div class="alert alert-danger p-2 small">
+                        <div asp-validation-summary="All" class="text-danger mb-0"></div>
+                    </div>
+                }
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Berber Seçin</label>
+                        <select asp-for="SelectedBarberId" class="form-select text-dark" required>
+                            <option value="">-- Berber Seçiniz --</option>
+                            @foreach (var barber in Model.Barbers)
+                            {
+                                <option value="@barber.Id">@barber.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Tarih</label>
+                        <input type="date" asp-for="MolaDate" class="form-control" required min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-secondary">Başlangıç Saati</label>
+                            <input type="time" asp-for="StartTime" class="form-control" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-secondary">Bitiş Saati</label>
+                            <input type="time" asp-for="EndTime" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-secondary">Sebep / Açıklama</label>
+                        <input type="text" asp-for="Reason" class="form-control" placeholder="Örn: Öğle Yemeği, Özel İzin" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold">
+                        <i class="bi bi-calendar-plus me-1"></i> İzin/Mola Tanımla
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Son İzinler Listesi -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white pt-4 pb-3 border-0">
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-list-stars me-2 text-warning"></i>Kayıtlı İzinler & Molalar</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Berber</th>
+                                <th>Tarih</th>
+                                <th>Saat Aralığı</th>
+                                <th>Sebep</th>
+                                <th class="pe-4 text-end">İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(Model.RecentTimeOffs.Any())
+                            {
+                                @foreach (var timeOff in Model.RecentTimeOffs)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-bold">@timeOff.Barber.Name</td>
+                                        <td>@timeOff.StartDateTime.ToString("dd MMM yyyy")</td>
+                                        <td><span class="badge bg-light text-dark border"><i class="bi bi-clock me-1"></i> @timeOff.StartDateTime.ToString("HH:mm") - @timeOff.EndDateTime.ToString("HH:mm")</span></td>
+                                        <td class="text-muted small">@(string.IsNullOrEmpty(timeOff.Reason) ? "-" : timeOff.Reason)</td>
+                                        <td class="pe-4 text-end">
+                                            <form method="post" asp-page-handler="Delete" class="d-inline" onsubmit="return confirm('Bu izni silmek istediğinize emin misiniz? Müşteriler artık bu saatte randevu alabilir.');">
+                                                <input type="hidden" name="timeOffId" value="@timeOff.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Sil"><i class="bi bi-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">Sistemde tanımlı bir mola kaydı bulunmuyor.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

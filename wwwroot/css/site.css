@@ -1,0 +1,61 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+:root {
+  --bg-black: #1a1a1a;
+  --bg-black-transparent: rgba(26, 26, 26, 0.85);
+  --theme-red: #e74c3c;
+  --theme-red-hover: #c0392b;
+  --text-white: #ffffff;
+  --text-muted-dark: #b0b0b0;
+  --dark-card-solid: #222222;
+  --accent: #e74c3c;
+}
+
+body {
+  margin-bottom: 60px;
+  background-color: var(--bg-black);
+  color: var(--text-white);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Custom Red Button */
+.custom-btn-red {
+    background-color: var(--theme-red);
+    color: var(--text-white);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.custom-btn-red:hover {
+    background-color: var(--theme-red-hover);
+    color: var(--text-white);
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}

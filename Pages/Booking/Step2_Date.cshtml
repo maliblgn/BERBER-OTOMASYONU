@@ -1,0 +1,78 @@
+@page
+@model SoftetroBarber.Pages.Booking.Step2_DateModel
+@{
+    ViewData["Title"] = "Adım 2: Tarih Seçimi";
+}
+
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4"><i class="bi bi-calendar-event" style="color: var(--accent);"></i> Tarih Seçimi</h2>
+        
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step-item completed">
+                <div class="step-circle"><i class="bi bi-check"></i></div>
+                <div class="step-title">Hizmetler</div>
+            </div>
+            <div class="step-item active">
+                <div class="step-circle">2</div>
+                <div class="step-title">Tarih</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">3</div>
+                <div class="step-title">Saat</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">4</div>
+                <div class="step-title">Berber</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">5</div>
+                <div class="step-title">Onay</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        
+        <div class="card border-0 rounded-4 shadow-sm mb-4">
+            <div class="card-body p-4 p-md-5 text-center">
+                
+                <h4 class="mb-4" style="color: var(--accent);">Hangi gün gelmek istersiniz?</h4>
+
+                @if (!ModelState.IsValid)
+                {
+                    <div class="alert alert-danger mx-auto">
+                        <div asp-validation-summary="All" class="mb-0"></div>
+                    </div>
+                }
+
+                <form method="post">
+                    <div class="mb-5 d-flex flex-column align-items-center">
+                        <div class="input-group" style="max-width: 320px;">
+                            <span class="input-group-text"><i class="bi bi-calendar-date" style="color: var(--accent);"></i></span>
+                            <input asp-for="SelectedDate" type="date" 
+                                   class="form-control form-control-lg text-center fw-bold" 
+                                   min="@DateTime.Today.ToString("yyyy-MM-dd")" 
+                                   max="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")" 
+                                   required />
+                        </div>
+                        <small class="text-muted mt-3">En fazla 14 gün sonrası için randevu alabilirsiniz.</small>
+                    </div>
+
+                    <div class="d-flex justify-content-between pt-4" style="border-top: 1px solid rgba(255,255,255,0.08);">
+                        <a asp-page="Step1_Services" class="btn btn-outline-secondary btn-lg px-4">
+                            <i class="bi bi-arrow-left me-2"></i> Geri
+                        </a>
+                        <button type="submit" class="btn btn-lg px-5 fw-bold" style="background: var(--accent); color: #fff; border: none; border-radius: 8px;">
+                            İleri <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

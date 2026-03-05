@@ -1,0 +1,91 @@
+@page
+@model SoftetroBarber.Pages.Booking.Step3_TimeModel
+@{
+    ViewData["Title"] = "Adım 3: Saat Seçimi";
+}
+
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4"><i class="bi bi-clock" style="color: var(--accent);"></i> Saat Seçimi</h2>
+        
+        <div class="step-indicator">
+            <div class="step-item completed"><div class="step-circle"><i class="bi bi-check"></i></div><div class="step-title">Hizmetler</div></div>
+            <div class="step-item completed"><div class="step-circle"><i class="bi bi-check"></i></div><div class="step-title">Tarih</div></div>
+            <div class="step-item active"><div class="step-circle">3</div><div class="step-title">Saat</div></div>
+            <div class="step-item"><div class="step-circle">4</div><div class="step-title">Berber</div></div>
+            <div class="step-item"><div class="step-circle">5</div><div class="step-title">Onay</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+
+        @if (!ModelState.IsValid)
+        {
+            <div class="alert alert-danger mx-auto">
+                <div asp-validation-summary="All" class="mb-0"></div>
+            </div>
+        }
+
+        <div class="card border-0 rounded-4 mb-4">
+            <div class="card-header pt-4 pb-2 border-0 text-center">
+                <h5 class="card-title fw-bold" style="color: var(--accent);">
+                    @Model.SelectedDate.ToString("dd MMMM yyyy, dddd")
+                </h5>
+                <p class="text-muted small">Müsait olan saat dilimlerinden birini seçiniz.</p>
+            </div>
+            <div class="card-body p-4">
+                
+                @if (Model.TimeSlots.Any())
+                {
+                    <div class="row g-3 justify-content-center">
+                        @foreach (var slot in Model.TimeSlots)
+                        {
+                            <div class="col-auto">
+                                @if (slot.IsBooked)
+                                {
+                                    <button type="button" class="btn btn-lg rounded-pill px-4" style="width: 120px; background: rgba(255,255,255,0.05); color: var(--text-muted-dark); border: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; cursor: not-allowed;" title="Dolu" disabled>
+                                        <i class="bi bi-dash me-1"></i> @slot.Time.ToString(@"hh\:mm")
+                                    </button>
+                                }
+                                else
+                                {
+                                    <form method="post">
+                                        <input type="hidden" name="selectedTime" value="@slot.Time" />
+                                        <button type="submit" class="btn btn-lg rounded-pill px-4 fw-bold" style="width: 120px; border: 1px solid var(--accent); color: var(--accent); transition: 0.2s; font-size: 0.95rem;"
+                                                onmouseover="this.style.backgroundColor='var(--accent)'; this.style.color='#fff';"
+                                                onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--accent)';">
+                                            @slot.Time.ToString(@"hh\:mm")
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="mt-4 text-center">
+                         <div class="d-inline-flex gap-3 small" style="color: var(--text-muted-dark);">
+                             <div><span class="d-inline-block rounded-circle me-1" style="width:10px; height:10px; border: 1px solid var(--accent);"></span> Müsait</div>
+                             <div><span class="d-inline-block rounded-circle me-1" style="width:10px; height:10px; background: rgba(255,255,255,0.1);"></span> Dolu</div>
+                         </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-clock-x display-1 mb-3 d-block" style="color: var(--text-muted-dark); opacity: 0.5;"></i>
+                        <h4 class="fw-bold" style="color: var(--text-muted-dark);">Uygun Saat Bulunamadı</h4>
+                        <p style="color: var(--text-muted-dark);">Seçtiğiniz tarihte veya seçtiğiniz toplam hizmet süresine uygun boşluğumuz bulunmamaktadır.</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.08);">
+            <a asp-page="Step2_Date" class="btn btn-outline-secondary btn-lg px-4">
+                <i class="bi bi-arrow-left me-2"></i> Geri
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+@page
+@model SoftetroBarber.Pages.Admin.CustomersModel
+@{
+    ViewData["Title"] = "Müşteri Yönetimi";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white pt-4 pb-3">
+                <h5 class="card-title fw-bold text-dark mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>Kayıtlı Tüm Müşteriler</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Müşteri Adı</th>
+                                <th>Telefon Numarası</th>
+                                <th>Durum</th>
+                                <th class="text-end pe-4">Kara Liste İşlemi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(Model.Customers.Any())
+                            {
+                                @foreach (var item in Model.Customers)
+                                {
+                                    <tr>
+                                        <td class="ps-4 fw-bold">
+                                            <i class="bi bi-person-circle fs-5 me-2 text-secondary"></i> @item.FullName
+                                        </td>
+                                        <td>@item.PhoneNumber</td>
+                                        <td>
+                                            @if(item.IsBlacklisted)
+                                            {
+                                                <span class="badge bg-danger rounded-pill px-3 py-2"><i class="bi bi-slash-circle me-1"></i> Kara Listede</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success rounded-pill px-3 py-2"><i class="bi bi-shield-check me-1"></i> Temiz</span>
+                                            }
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            <form method="post" asp-page-handler="ToggleBlacklist" class="d-inline">
+                                                <input type="hidden" name="customerId" value="@item.Id" />
+                                                @if(item.IsBlacklisted)
+                                                {
+                                                    <button type="submit" class="btn btn-sm btn-outline-success">Kara Listeden Çıkar</button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bu müşteriyi kara listeye almak istediğinize emin misiniz? Randevu alımı engellenecektir.');">Kara Listeye Al</button>
+                                                }
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">Sistemde henüz müşteri bulunmuyor.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

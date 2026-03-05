@@ -1,0 +1,102 @@
+@page
+@model SoftetroBarber.Pages.Booking.Step1_ServicesModel
+@{
+    ViewData["Title"] = "Adım 1: Hizmet Seçimi";
+}
+
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4"><i class="bi bi-scissors" style="color: var(--accent);"></i> Randevu Al</h2>
+        
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step-item active">
+                <div class="step-circle">1</div>
+                <div class="step-title">Hizmetler</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">2</div>
+                <div class="step-title">Tarih</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">3</div>
+                <div class="step-title">Saat</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">4</div>
+                <div class="step-title">Berber</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">5</div>
+                <div class="step-title">Onay</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-0 rounded-4">
+            <div class="card-header border-0 pt-4 pb-0 text-center">
+                <h4 class="card-title" style="color: var(--accent);"><i class="bi bi-list-check"></i> Hangi hizmetleri almak istersiniz?</h4>
+                <p style="color: var(--text-muted-dark);">Birden fazla hizmet seçebilirsiniz.</p>
+            </div>
+            <div class="card-body p-4">
+                
+                @if (!ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        <div asp-validation-summary="All" class="mb-0"></div>
+                    </div>
+                }
+
+                <form method="post">
+                    <div class="row g-3 mb-4">
+                        @foreach (var service in Model.Services)
+                        {
+                            var isChecked = Model.SelectedServiceIds.Contains(service.Id);
+                            <div class="col-md-6">
+                                <label class="card booking-card h-100 p-3 @(isChecked ? "selected" : "")" style="cursor: pointer;">
+                                    <div class="d-flex align-items-center">
+                                        <div class="form-check fs-5 me-3">
+                                            <input class="form-check-input service-checkbox" type="checkbox" name="SelectedServiceIds" value="@service.Id" @(isChecked ? "checked" : "") onchange="toggleCard(this)">
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1 fw-bold text-white">@service.Name</h6>
+                                            <div style="color: var(--text-muted-dark); font-size: 0.85rem;">
+                                                <i class="bi bi-clock me-1"></i> @service.DurationInMinutes dk
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge rounded-pill fs-6 py-2 px-3" style="background: var(--accent);">@service.Price.ToString("C")</span>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4 pt-3" style="border-top: 1px solid rgba(255,255,255,0.08);">
+                        <button type="submit" class="btn btn-lg px-5 shadow-sm fw-bold" style="background: var(--accent); color: #fff; border: none; border-radius: 8px;">
+                            İleri <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleCard(checkbox) {
+            const card = checkbox.closest('.booking-card');
+            if (checkbox.checked) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+        }
+    </script>
+}

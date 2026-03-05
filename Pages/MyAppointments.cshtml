@@ -1,0 +1,144 @@
+@page
+@using SoftetroBarber.Enums
+@model SoftetroBarber.Pages.MyAppointmentsModel
+@{
+    ViewData["Title"] = "Randevularım";
+}
+
+<!-- Hero Background Section -->
+<div class="position-relative rounded-4 overflow-hidden mb-0" style="margin: -1.5rem -0.75rem 0 -0.75rem;">
+    <div style="background: url('/images/barber-bg.png') center/cover no-repeat; min-height: 520px; position: relative;">
+        <!-- Dark Overlay -->
+        <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,10,20,0.6) 0%, rgba(26,26,46,0.92) 100%);"></div>
+
+        <div class="position-relative" style="z-index: 2; padding: 40px 20px;">
+            
+            <!-- Tab Navigation -->
+            <div class="d-flex justify-content-center mb-5">
+                <div class="d-inline-flex rounded-3 overflow-hidden" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);">
+                    <a asp-page="/Index" class="px-4 py-3 text-decoration-none fw-bold text-uppercase d-flex align-items-center gap-2" 
+                       style="color: rgba(255,255,255,0.6); letter-spacing: 1px; font-size: 0.9rem; border-right: 1px solid rgba(255,255,255,0.08); transition: 0.2s;"
+                       onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+                        <i class="bi bi-calendar-plus"></i> Randevu Oluştur
+                    </a>
+                    <a href="/MyAppointments" class="px-4 py-3 text-decoration-none fw-bold text-uppercase d-flex align-items-center gap-2" 
+                       style="background: rgba(255,255,255,0.1); color: #fff; letter-spacing: 1px; font-size: 0.9rem;">
+                        <i class="bi bi-calendar-check"></i> Randevularım
+                    </a>
+                </div>
+            </div>
+
+            <!-- Search Card -->
+            <div class="d-flex flex-column align-items-center justify-content-center">
+                <div class="text-center" style="max-width: 500px; width: 100%;">
+                    <div class="rounded-4 p-4 p-md-5" style="background: rgba(30, 30, 50, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08);">
+                        
+                        <h4 class="fw-bold mb-2 text-white"><i class="bi bi-search me-2" style="color: var(--accent);"></i>Randevularımı Sorgula</h4>
+                        <p class="mb-4" style="color: var(--text-muted-dark); font-size: 0.9rem;">Randevu aldığınız telefon numarasını giriniz.</p>
+
+                        <form method="get">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); color: var(--text-muted-dark);">+90</span>
+                                <input type="tel" name="PhoneNumber" class="form-control form-control-lg" placeholder="5551234567" value="@Model.PhoneNumber" required style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); color: #fff;" />
+                            </div>
+                            <button type="submit" class="btn btn-lg w-100 py-3 fw-bold text-uppercase rounded-3"
+                                    style="background: var(--accent); color: #fff; letter-spacing: 1px; border: none;">
+                                <i class="bi bi-search me-2"></i> Sorgula
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mt-4 rounded-3" role="alert" style="background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.3); color: #f8d7da;">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Results Section -->
+@if (Model.HasSearched)
+{
+    <div class="mt-4">
+        @if (Model.Appointments.Any())
+        {
+            <div class="card border-0 rounded-4" style="background: var(--dark-card); border: 1px solid rgba(255,255,255,0.08) !important;">
+                <div class="card-header border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-list-check me-2" style="color: var(--accent);"></i> Randevularınız (@Model.Appointments.Count)</h5>
+                </div>
+                <div class="card-body p-0 px-2 pb-2">
+                    @foreach (var appt in Model.Appointments)
+                    {
+                        <div class="rounded-3 p-3 m-2" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);">
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                                <div>
+                                    <div class="fw-bold text-white mb-1">
+                                        <i class="bi bi-calendar-date me-1" style="color: var(--accent);"></i>
+                                        @appt.StartTime.ToString("dd MMMM yyyy, dddd")
+                                    </div>
+                                    <div class="mb-1" style="color: var(--text-muted-dark);">
+                                        <i class="bi bi-clock me-1"></i> @appt.StartTime.ToString("HH:mm") - @appt.EndTime.ToString("HH:mm")
+                                    </div>
+                                    <div style="color: var(--text-muted-dark);">
+                                        <i class="bi bi-person me-1"></i> @appt.Barber.Name
+                                    </div>
+                                    <div class="mt-1">
+                                        @foreach (var svc in appt.AppointmentServices)
+                                        {
+                                            <span class="badge rounded-pill px-2 py-1 me-1" style="background: rgba(231,76,60,0.15); color: var(--accent); font-size: 0.75rem;">@svc.Service.Name</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold mb-1" style="color: var(--accent); font-size: 1.1rem;">@appt.TotalPrice.ToString("C")</div>
+                                    @switch (appt.Status)
+                                    {
+                                        case AppointmentStatus.Confirmed:
+                                            <span class="badge bg-primary rounded-pill px-3 py-1 mb-2 d-inline-block">Onaylı</span>
+                                            @if ((appt.StartTime - DateTime.Now).TotalHours >= 1)
+                                            {
+                                                <form method="post" asp-page-handler="Cancel" class="d-block mt-1">
+                                                    <input type="hidden" name="appointmentId" value="@appt.Id" />
+                                                    <input type="hidden" name="phoneNumber" value="@Model.PhoneNumber" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" onclick="return confirm('Randevunuzu iptal etmek istediğinize emin misiniz?');">
+                                                        <i class="bi bi-x-circle me-1"></i> İptal Et
+                                                    </button>
+                                                </form>
+                                            }
+                                            break;
+                                        case AppointmentStatus.Completed:
+                                            <span class="badge rounded-pill px-3 py-1" style="background: rgba(39,174,96,0.2); color: #27ae60;">Tamamlandı</span>
+                                            break;
+                                        case AppointmentStatus.Cancelled:
+                                            <span class="badge rounded-pill px-3 py-1" style="background: rgba(231,76,60,0.2); color: #e74c3c;">İptal</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary rounded-pill px-3 py-1">@appt.Status</span>
+                                            break;
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5" style="color: var(--text-muted-dark);">
+                <i class="bi bi-calendar-x display-1 d-block mb-3 opacity-50"></i>
+                <h5 class="fw-bold text-white">Randevu Bulunamadı</h5>
+                <p>Bu telefon numarasına ait herhangi bir randevu kaydı bulunmuyor.</p>
+                <a asp-page="/Booking/Step1_Services" class="btn mt-2 px-4 py-2 fw-bold" style="background: var(--accent); color: #fff; border: none; border-radius: 8px;">
+                    <i class="bi bi-plus-circle me-1"></i> Yeni Randevu Oluştur
+                </a>
+            </div>
+        }
+    </div>
+}

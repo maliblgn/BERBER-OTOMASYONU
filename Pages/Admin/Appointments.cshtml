@@ -1,0 +1,101 @@
+@page
+@using SoftetroBarber.Enums
+@model SoftetroBarber.Pages.Admin.AppointmentsModel
+@{
+    ViewData["Title"] = "Randevu Yönetimi";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white pt-4 pb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title fw-bold text-dark mb-0"><i class="bi bi-list-task me-2 text-primary"></i>Tüm Randevular</h5>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="ps-4">Tarih & Saat</th>
+                                <th>Müşteri</th>
+                                <th>Berber</th>
+                                <th>Tutar</th>
+                                <th>Durum</th>
+                                <th class="text-end pe-4">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(Model.Appointments.Any())
+                            {
+                                @foreach (var item in Model.Appointments)
+                                {
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="fw-bold">@item.StartTime.ToString("dd MMM yyyy")</div>
+                                            <div class="text-muted small"><i class="bi bi-clock"></i> @item.StartTime.ToString("HH:mm") - @item.EndTime.ToString("HH:mm")</div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold">@item.Customer.FullName</div>
+                                            <div class="text-muted small">@item.Customer.PhoneNumber</div>
+                                        </td>
+                                        <td>@item.Barber.Name</td>
+                                        <td class="fw-bold text-success">@item.TotalPrice.ToString("C")</td>
+                                        <td>
+                                            @switch (item.Status)
+                                            {
+                                                case AppointmentStatus.Confirmed:
+                                                    <span class="badge bg-primary rounded-pill px-3 py-2"><i class="bi bi-check-circle me-1"></i> Onaylı</span>
+                                                    break;
+                                                case AppointmentStatus.Completed:
+                                                    <span class="badge bg-success rounded-pill px-3 py-2"><i class="bi bi-check-all me-1"></i> Tamamlandı</span>
+                                                    break;
+                                                case AppointmentStatus.Cancelled:
+                                                    <span class="badge bg-danger rounded-pill px-3 py-2"><i class="bi bi-x-circle me-1"></i> İptal</span>
+                                                    break;
+                                                case AppointmentStatus.NoShow:
+                                                    <span class="badge bg-warning text-dark rounded-pill px-3 py-2"><i class="bi bi-person-x me-1"></i> Gelmedi</span>
+                                                    break;
+                                                default:
+                                                    <span class="badge bg-secondary rounded-pill px-3 py-2">@item.Status</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td class="text-end pe-4">
+                                            @if (item.Status == AppointmentStatus.Confirmed)
+                                            {
+                                                <form method="post" asp-page-handler="UpdateStatus" class="d-inline">
+                                                    <input type="hidden" name="appointmentId" value="@item.Id" />
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            Durum Değiştir
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                                            <li><button type="submit" name="newStatus" value="@AppointmentStatus.Completed" class="dropdown-item text-success"><i class="bi bi-check-all me-2"></i>Tamamlandı</button></li>
+                                                            <li><button type="submit" name="newStatus" value="@AppointmentStatus.Cancelled" class="dropdown-item text-danger"><i class="bi bi-x-circle me-2"></i>İptal Et</button></li>
+                                                            <li><button type="submit" name="newStatus" value="@AppointmentStatus.NoShow" class="dropdown-item text-warning"><i class="bi bi-person-x me-2"></i>Gelmedi (No Show)</button></li>
+                                                        </ul>
+                                                    </div>
+                                                </form>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center py-5 text-muted">
+                                        <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
+                                        Sistemde henüz bir randevu bulunmuyor.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

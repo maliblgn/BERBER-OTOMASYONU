@@ -1,0 +1,39 @@
+@page
+@model SoftetroBarber.Pages.Booking.Step7_SuccessModel
+@{
+    ViewData["Title"] = "Randevunuz Alındı";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 col-lg-6">
+        
+        <div class="card border-0 rounded-4 shadow-lg text-center" style="background: rgba(39,174,96,0.1); border: 1px solid rgba(39,174,96,0.3) !important;">
+            <div class="card-body p-5">
+                
+                <div class="mb-4">
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px; background: rgba(39,174,96,0.2); color: #27ae60; font-size: 3.5rem;">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+                </div>
+
+                <h2 class="fw-bold mb-3" style="color: #27ae60;">Harika! Randevunuz Onaylandı.</h2>
+                <p class="mb-4" style="color: var(--text-white); font-size: 1.1rem;">
+                    Bizi tercih ettiğiniz için teşekkür ederiz. Randevu saatinizden 10 dakika önce salonda olmanızı rica ederiz.
+                </p>
+
+                <div class="alert mt-4 mb-4 text-start" style="background: var(--dark-card-solid); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted-dark);">
+                    <i class="bi bi-info-circle-fill me-2" style="color: var(--accent);"></i>
+                    Randevunuzun durumunu ve detaylarını ana sayfadaki <strong>Randevularım</strong> sekmesinden telefon numaranızla dilediğiniz zaman görüntüleyebilirsiniz.
+                </div>
+
+                <div class="d-flex flex-column gap-3 mt-5">
+                    <a asp-page="/Index" class="btn btn-lg w-100 fw-bold shadow-sm" style="background: var(--accent); color: #fff; border: none; border-radius: 8px;">
+                        <i class="bi bi-house-door me-2"></i> Ana Sayfaya Dön
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,70 @@
+@page
+@model SoftetroBarber.Pages.Admin.ServicesModel
+@{
+    ViewData["Title"] = "Hizmet ve Fiyat Yönetimi";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-1"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white pt-4 pb-3">
+        <h5 class="card-title fw-bold text-dark mb-0"><i class="bi bi-tags me-2 text-primary"></i>Hizmetler Fiyat Listesi</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Hizmet Adı</th>
+                        <th>Süresi (Dk)</th>
+                        <th>Mevcut Fiyat</th>
+                        <th class="text-end pe-4" style="width: 250px;">Fiyat Güncelle</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(Model.ServicesList.Any())
+                    {
+                        @foreach (var item in Model.ServicesList)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold text-dark">@item.Name</td>
+                                <td><i class="bi bi-clock me-1 text-muted"></i> @item.DurationInMinutes dk</td>
+                                <td><span class="badge bg-primary rounded-pill px-3 py-2 fs-6">@item.Price.ToString("C")</span></td>
+                                <td class="text-end pe-4">
+                                    <form method="post" asp-page-handler="UpdatePrice" class="d-flex align-items-center justify-content-end gap-2">
+                                        <input type="hidden" name="serviceId" value="@item.Id" />
+                                        <div class="input-group input-group-sm w-auto">
+                                            <span class="input-group-text">₺</span>
+                                            <input type="number" name="newPrice" class="form-control" value="@item.Price.ToString("0.00")" step="0.01" min="0" required style="width: 100px;">
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-check2-circle"></i> Kaydet</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">Sistemde kayıtlı hizmet bulunmamaktadır. Seeder'ı kontrol edin.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
