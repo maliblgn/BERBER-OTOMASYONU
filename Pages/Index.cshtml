@@ -14,13 +14,13 @@
         overflow: hidden;
         backdrop-filter: blur(8px);
         margin-top: 3rem;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     }
 
     .custom-tabs {
         display: flex;
         /* Matches the structure of the tabs in mockup */
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .custom-tab {
@@ -34,7 +34,7 @@
         text-decoration: none;
         transition: all 0.3s;
         border-bottom: 3px solid transparent;
-        background-color: rgba(0,0,0,0.2);
+        background-color: rgba(0, 0, 0, 0.2);
     }
 
     .custom-tab.active {
@@ -42,17 +42,18 @@
         border-bottom: 3px solid var(--text-white);
         background-color: transparent;
     }
-    
+
     .custom-tab:hover:not(.active) {
         color: var(--text-white);
-        background-color: rgba(255,255,255,0.02);
+        background-color: rgba(255, 255, 255, 0.02);
     }
 
     .btn-hero {
         background-color: var(--theme-red);
         color: var(--text-white);
         border: none;
-        border-radius: 50px; /* Fully rounded like a pill */
+        border-radius: 50px;
+        /* Fully rounded like a pill */
         padding: 16px 40px;
         font-weight: 600;
         font-size: 1.3rem;
@@ -79,9 +80,9 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-10 col-xl-9">
-        
+
         <div class="home-card">
-            
+
             <!-- Tabs Menu -->
             <div class="custom-tabs">
                 <a href="#" class="custom-tab active">
@@ -94,7 +95,7 @@
 
             <!-- Content Area -->
             <div class="p-5 d-flex flex-column justify-content-center" style="min-height: 400px;">
-                
+
                 <div class="text-center my-auto">
                     <!-- Red Button 1 (Link logic added) -->
                     <a asp-page="/Booking/Step1_Services" class="btn btn-hero shadow-lg">
@@ -109,7 +110,7 @@
 
                 <!-- Inner Card Footer -->
                 <div class="text-center mt-auto pt-5">
-                    <span class="home-footer-text text-uppercase">ELİT MAKAS STUDİO RANDEVU SİSTEMİ</span>
+                    <span class="home-footer-text text-uppercase">SOFTETRO STUDİO RANDEVU SİSTEMİ</span>
                 </div>
 
             </div>

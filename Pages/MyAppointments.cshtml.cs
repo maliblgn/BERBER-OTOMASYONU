@@ -48,17 +48,17 @@ public class MyAppointmentsModel : PageModel
             .Include(a => a.Barber)
             .Include(a => a.Customer)
             .FirstOrDefaultAsync(a => a.Id == appointmentId);
-            
+
         if (appt != null && appt.Status == AppointmentStatus.Confirmed)
         {
             if ((appt.StartTime - DateTime.Now).TotalHours >= 1)
             {
                 appt.Status = AppointmentStatus.Cancelled;
                 await _context.SaveChangesAsync();
-                
+
                 // Barber Notification (Log)
                 Console.WriteLine($"[TEST-WhatsApp-Barber] Berber {appt.Barber.Name}'e Bildirim: {appt.Customer.FullName} isimli müşterinizin {appt.StartTime:dd MMMM yyyy HH:mm} tarihli randevusu İPTAL EDİLMİŞTİR.");
-                
+
                 TempData["SuccessMessage"] = "Randevunuz başarıyla iptal edildi.";
             }
             else
@@ -66,7 +66,7 @@ public class MyAppointmentsModel : PageModel
                 TempData["ErrorMessage"] = "Randevunuza 1 saatten az kaldığı için web üzerinden iptal işlemi gerçekleştirilemez. Lütfen salonu arayınız.";
             }
         }
-        
+
         return RedirectToPage(new { PhoneNumber = phoneNumber });
     }
 }

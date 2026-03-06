@@ -1,61 +1,139 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
+/* --- TEMA RENKLERİ VE TEMELLER --- */
 :root {
-  --bg-black: #1a1a1a;
-  --bg-black-transparent: rgba(26, 26, 26, 0.85);
+  --bg-black: #080808;
+  --card-gray: #121212;
   --theme-red: #e74c3c;
-  --theme-red-hover: #c0392b;
-  --text-white: #ffffff;
-  --text-muted-dark: #b0b0b0;
-  --dark-card-solid: #222222;
-  --accent: #e74c3c;
+  --border-soft: rgba(255, 255, 255, 0.08);
 }
 
 body {
-  margin-bottom: 60px;
   background-color: var(--bg-black);
-  color: var(--text-white);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
 }
 
-/* Custom Red Button */
-.custom-btn-red {
-    background-color: var(--theme-red);
-    color: var(--text-white);
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: bold;
-    transition: background-color 0.3s;
+/* --- HERO WRAPPER --- */
+.appointment-hero-wrapper {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)), url('/images/barber-bg.png') center/cover;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 20px;
 }
 
-.custom-btn-red:hover {
-    background-color: var(--theme-red-hover);
-    color: var(--text-white);
+/* --- NAVİGASYON SEÇİMİ (KÜÇÜLMEYEN) --- */
+.nav-selection-box {
+  display: flex;
+  background: #000;
+  border: 1px solid var(--border-soft);
+  padding: 4px;
+  border-radius: 4px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.nav-item-link {
+  background: transparent;
+  border: none;
+  color: #555;
+  padding: 10px 25px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  transition: 0.3s;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.nav-item-link.active {
+  background: var(--theme-red);
+  color: #fff;
+}
+
+/* --- ANA SABİT KARE KART --- */
+.main-square-card {
+  background: var(--card-gray);
+  border: 1px solid var(--border-soft);
+  padding: 3rem 2rem;
+  position: relative;
+  min-height: 480px;
+  /* İçerik değişse de kutu boyutu oynamasın */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+}
+
+.icon-box i {
+  font-size: 3.5rem;
+  color: var(--theme-red);
+}
+
+.card-title-text {
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #ffffff !important;
+}
+
+.card-sub-text {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+}
+
+/* --- INPUT VE TELEFON ALANI --- */
+.phone-input-wrapper {
+  display: flex;
+  background: #000;
+  border: 1px solid #222;
+  padding: 12px;
+  margin-bottom: 15px;
+}
+
+.phone-input-wrapper .prefix {
+  color: #666;
+  font-weight: bold;
+  border-right: 1px solid #222;
+  padding-right: 10px;
+  margin-right: 10px;
+}
+
+.phone-field {
+  background: transparent;
+  border: none;
+  color: #fff;
+  outline: none;
+  width: 100%;
+  font-weight: bold;
+}
+
+/* --- BUTONLAR --- */
+.btn-action-red {
+  background: var(--theme-red);
+  color: #fff;
+  border: none;
+  width: 100%;
+  padding: 16px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  transition: 0.3s;
+  text-transform: uppercase;
+}
+
+.btn-action-red:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+/* --- SONUÇ LİSTESİ (KARENİN İÇİNDE) --- */
+.scroll-area {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 15px;
+}
+
+.result-card-mini {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid #222;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-left: 3px solid var(--theme-red);
 }

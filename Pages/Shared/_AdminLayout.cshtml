@@ -3,216 +3,90 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Softetro Barber Admin</title>
-    
-    <!-- Bootstrap 5 CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <!-- Bootstrap Icons -->
+    <title>@ViewData["Title"] - Admin Paneli</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    
+
     <style>
-        body { 
-            background-color: var(--bg-black); 
-            color: var(--text-white);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            overflow-x: hidden;
-        }
-        
-        #sidebar { 
-            min-width: 250px; 
-            max-width: 250px; 
-            min-height: 100vh; 
-            background-color: var(--dark-card-solid); 
-            border-right: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s;
-        }
-        
-        #sidebar .nav-link { 
-            color: var(--text-muted-dark); 
-            font-size: 1.05rem; 
-            padding: 12px 20px; 
-            border-radius: 4px; 
-            margin: 4px 10px; 
-            transition: 0.2s;
-        }
-        
-        #sidebar .nav-link:hover { 
-            background-color: rgba(255,255,255,0.05); 
-            color: var(--text-white); 
-        }
+                #sidebar {
+                    min-width: 250px;
+                    max-width: 250px;
+                    min-height: 100vh;
+                    background-color: var(--dark-card-solid);
+                    border-right: 1px solid rgba(255, 255, 255, 0.05);
+                }
 
-        #sidebar .nav-link.active {
-            background-color: var(--theme-red);
-            color: #fff;
-            box-shadow: 0 4px 10px rgba(231,76,60,0.3);
-        }
-        
-        .content-wrapper { 
-            flex: 1; 
-            padding: 20px; 
-            width: 100%;
-        }
-        
-        /* Overriding base bootstrap elements to fit dark theme */
-        .card { 
-            background-color: var(--dark-card-solid);
-            border: 1px solid rgba(255,255,255,0.05); 
-            border-radius: 10px; 
-            color: var(--text-white);
-        }
+                #sidebar .nav-link {
+                    color: var(--text-muted-dark);
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    margin: 4px 10px;
+                    transition: 0.3s;
+                }
+                #sidebar .nav-link:hover {
+                    background: rgba(255, 255, 255, 0.05);
+                    color: #fff;
+                }
 
-        .card-header, .navbar {
-            background-color: var(--dark-card-solid) !important;
-            border-bottom: 1px solid rgba(255,255,255,0.05) !important;
-            color: var(--text-white) !important;
-        }
+                #sidebar .nav-link.active {
+                    background: var(--theme-red);
+                    color: #fff;
+                    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+                }
 
-        .table {
-            color: var(--text-white);
-        }
-        
-        .table-light {
-            --bs-table-bg: rgba(255,255,255,0.05);
-            --bs-table-color: var(--text-white);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
+                .content-wrapper {
+                    flex: 1;
+                    padding: 25px;
+                    background: var(--bg-black);
+                }
 
-        .table-hover > tbody > tr:hover > * {
-            color: var(--text-white);
-            background-color: rgba(255,255,255,0.02);
-        }
-        
-        td {
-            border-bottom-color: rgba(255,255,255,0.05);
-        }
-
-        .btn-outline-primary {
-            color: var(--theme-red);
-            border-color: var(--theme-red);
-        }
-        .btn-outline-primary:hover {
-            background-color: var(--theme-red);
-            border-color: var(--theme-red);
-            color: #fff;
-        }
-
-        .text-primary {
-            color: var(--theme-red) !important;
-        }
-
-        .bg-primary {
-            background-color: var(--theme-red) !important;
-        }
-
-        .text-dark {
-            color: var(--text-white) !important;
-        }
-        
-        .bg-white {
-            background-color: var(--dark-card-solid) !important;
-        }
-        
-        .form-control, .input-group-text {
-            background-color: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.1);
-            color: var(--text-white);
-        }
-        .form-control:focus {
-            background-color: rgba(255,255,255,0.1);
-            border-color: var(--theme-red);
-            color: var(--text-white);
-            box-shadow: 0 0 0 0.25rem rgba(231,76,60,0.25);
-        }
-
-        .stat-icon {
-            font-size: 2.5rem;
-            opacity: 0.8;
-            color: var(--theme-red) !important;
-        }
+                .admin-nav {
+                    background: var(--dark-card-solid);
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                    padding: 15px;
+                }
     </style>
 </head>
+
 <body>
     <div class="d-flex">
-        
-        <!-- Sidebar -->
         <nav id="sidebar" class="d-none d-md-block">
-            <div class="p-4 text-center border-bottom mb-3" style="border-color: rgba(255,255,255,0.05) !important;">
-                <i class="bi bi-scissors fs-1" style="color: var(--theme-red);"></i>
-                <h5 class="mt-2 fw-bold text-white tracking-wide">Makas Admin</h5>
+            <div class="p-4 text-center border-bottom border-secondary mb-3">
+                <i class="bi bi-scissors fs-1 text-danger"></i>
+                <h5 class="mt-2 fw-bold text-white">Makas Admin</h5>
             </div>
-            
             <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Index" ? "active" : "")" asp-page="/Admin/Index">
-                        <i class="bi bi-speedometer2 me-2"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Appointments" ? "active" : "")" asp-page="/Admin/Appointments">
-                        <i class="bi bi-calendar-check me-2"></i> Randevular
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/BarberSchedule" ? "active" : "")" asp-page="/Admin/BarberSchedule">
-                        <i class="bi bi-clock-history me-2"></i> Çalışma Planı
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Barbers" ? "active" : "")" asp-page="/Admin/Barbers">
-                        <i class="bi bi-person-badge me-2"></i> Berberler
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Services" ? "active" : "")" asp-page="/Admin/Services">
-                        <i class="bi bi-tags me-2"></i> Hizmetler
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Customers" ? "active" : "")" asp-page="/Admin/Customers">
-                        <i class="bi bi-people me-2"></i> Müşteriler
-                    </a>
-                </li>
-            </ul>
-        </nav>
+                <li class="nav-item"><a
+                    class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Index" ? "active" : "")"
+                    asp-page="/Admin/Index"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                    <li class="nav-item"><a
+                        class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Appointments" ? "active" : "")"
+                        asp-page="/Admin/Appointments"><i class="bi bi-calendar-check me-2"></i> Randevular</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-page="/Admin/Barbers"><i
+                            class="bi bi-person-badge me-2"></i> Berberler</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-page="/Admin/Services"><i class="bi bi-tags me-2"></i>
+                                Hizmetler</a></li>
+                            </ul>
+                        </nav>
 
-        <!-- Main Content -->
-        <div class="content-wrapper">
-            
-            <!-- Admin Top Navbar -->
-            <nav class="navbar navbar-expand-lg rounded shadow-sm mb-4 px-3">
-                <button class="btn btn-outline-primary d-md-none me-3" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar">
-                    <i class="bi bi-list"></i> Menü
-                </button>
-                
-                <span class="navbar-text fw-bold fs-5 text-white">
-                    @ViewData["Title"]
-                </span>
-                
-                <div class="ms-auto d-flex align-items-center">
-                    <span class="navbar-text fw-bold d-none d-sm-inline text-white">
-                        <i class="bi bi-person-circle me-1" style="color: var(--theme-red);"></i> @User.Identity?.Name
-                    </span>
-                    <a asp-page="/Index" class="btn btn-sm ms-4 text-decoration-none text-white border" style="background-color: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
-                        Siteye Dön <i class="bi bi-box-arrow-up-right ms-1"></i>
-                    </a>
-                </div>
-            </nav>
+                        <div class="content-wrapper">
+                            <nav class="admin-nav rounded d-flex justify-content-between align-items-center mb-4">
+                                <span class="fw-bold text-white fs-5">@ViewData["Title"]</span>
+                                <div>
+                                    <span class="text-white me-3"><i class="bi bi-person-circle text-danger me-1"></i>
+                                        @User.Identity?.Name</span>
+                                        <a asp-page="/Index" class="btn btn-sm btn-outline-light">Siteye Dön</a>
+                                    </div>
+                                </nav>
+                                <main>@RenderBody()</main>
+                            </div>
+                        </div>
 
-            <main role="main">
-                @RenderBody()
-            </main>
-            
-            <footer class="mt-5 text-center small" style="color: var(--text-muted-dark);">
-                &copy; @DateTime.Now.Year - Elit Makas Berber Yönetim Sistemi
-            </footer>
-        </div>
-    </div>
+                        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+                        @await RenderSectionAsync("Scripts", required: false)
+                    </body>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
+                </html>
