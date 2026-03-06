@@ -1,7 +1,7 @@
 @page
 @model SoftetroBarber.Pages.Admin.LoginModel
 @{
-    Layout = null; // Don't use the AdminLayout for login
+    Layout = null; // AdminLayout'u burada kullanmıyoruz, sayfa kendi stilini taşır.
     ViewData["Title"] = "Giriş Yap";
 }
 
@@ -11,68 +11,205 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Softetro Barber - Yetkili Girişi</title>
-    <!-- Bootstrap 5 CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        body {
-            background-color: #f8f9fa;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
-            width: 100%;
-            max-width: 400px;
-        }
+            :root {
+                --theme-red: #e34c38;
+                --theme-red-glow: rgba(227, 76, 56, 0.4);
+            }
+
+            body {
+                background-color: #000;
+                background-image:
+                    radial-gradient(circle at 20% 30%, rgba(227, 76, 56, 0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 70%, rgba(227, 76, 56, 0.05) 0%, transparent 50%);
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0;
+                font-family: 'Inter', sans-serif;
+            }
+
+            .login-card {
+                background: #1a1a1a;
+                border: 1px solid #222;
+                border-radius: 8px;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+                width: 100%;
+                max-width: 420px;
+                padding: 45px;
+                position: relative;
+            }
+
+            .brand-icon-container {
+                width: 80px;
+                height: 80px;
+                background: #000;
+                border: 1px solid #222;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 30px auto;
+                color: var(--theme-red);
+                font-size: 2.5rem;
+                filter: drop-shadow(0 0 10px var(--theme-red-glow));
+            }
+
+            .login-title {
+                color: #fff;
+                font-weight: 900;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                font-size: 1.4rem;
+                margin-bottom: 10px;
+            }
+
+            .login-subtitle {
+                color: #555;
+                font-size: 0.8rem;
+                font-weight: 700;
+                letter-spacing: 1px;
+                margin-bottom: 35px;
+            }
+
+            /* Input Stilleri */
+            .dark-label {
+                color: #777;
+                font-weight: 800;
+                font-size: 0.7rem;
+                letter-spacing: 1px;
+                margin-bottom: 8px;
+                display: block;
+            }
+
+            .dark-input-group {
+                display: flex;
+                align-items: center;
+                background: #000;
+                border: 1px solid #222;
+                border-radius: 4px;
+                padding: 0 15px;
+                margin-bottom: 25px;
+                height: 55px;
+                transition: 0.3s;
+            }
+
+            .dark-input-group:focus-within {
+                border-color: var(--theme-red);
+                box-shadow: 0 0 15px var(--theme-red-glow);
+            }
+
+            .dark-input-group i {
+                color: #444;
+                font-size: 1.2rem;
+            }
+
+            .dark-input {
+                background: transparent;
+                border: none;
+                color: #fff;
+                padding-left: 15px;
+                width: 100%;
+                outline: none;
+                font-weight: 700;
+                font-size: 1rem;
+            }
+
+            .dark-input::placeholder {
+                color: #333;
+            }
+
+            /* Butonlar */
+            .btn-sharp-red {
+                background: var(--theme-red);
+                color: #fff;
+                border: none;
+                width: 100%;
+                height: 55px;
+                font-weight: 800;
+                letter-spacing: 1.5px;
+                border-radius: 4px;
+                transition: 0.3s;
+                cursor: pointer;
+                text-transform: uppercase;
+                margin-bottom: 20px;
+            }
+
+            .btn-sharp-red:hover {
+                box-shadow: 0 5px 20px var(--theme-red-glow);
+                filter: brightness(1.1);
+            }
+
+            .back-link {
+                color: #444;
+                text-decoration: none;
+                font-size: 0.8rem;
+                font-weight: 800;
+                letter-spacing: 1px;
+                transition: 0.3s;
+            }
+
+            .back-link:hover {
+                color: #888;
+            }
+
+            /* Chrome Autofill Çözümü */
+            input:-webkit-autofill {
+                -webkit-box-shadow: 0 0 0 30px #000 inset !important;
+                -webkit-text-fill-color: white !important;
+            }
     </style>
 </head>
 <body>
 
-    <div class="login-card card p-4 bg-white">
-        <div class="text-center mb-4 mt-2">
-            <i class="bi bi-shield-lock text-primary" style="font-size: 3rem;"></i>
-            <h4 class="fw-bold mt-2">Yetkili Girişi</h4>
-            <p class="text-muted small">Lütfen yönetici bilgilerinizi giriniz.</p>
+    <div class="login-card text-center">
+        <div class="brand-icon-container">
+            <i class="bi bi-shield-lock"></i>
         </div>
+
+        <h4 class="login-title">Yönetici Paneli</h4>
+        <p class="login-subtitle">Softetro Güvenli Erişim Sistemi</p>
 
         @if (!ModelState.IsValid)
         {
-            <div class="alert alert-danger px-3 py-2 small rounded">
-                <div asp-validation-summary="All" class="text-danger mb-0"></div>
+            <div class="alert mb-4 text-start"
+                 style="background: rgba(227, 76, 56, 0.1); border: 1px solid var(--theme-red); color: var(--theme-red); font-size: 0.8rem; font-weight: 700;">
+                <div asp-validation-summary="All" class="mb-0"></div>
             </div>
         }
 
         <form method="post">
-            <div class="mb-3">
-                <label class="form-label text-muted small fw-bold">Kullanıcı Adı</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-person"></i></span>
-                    <input asp-for="Username" type="text" class="form-control bg-light border-start-0" placeholder="admin" required autofocus />
+            <div class="text-start">
+                <label class="dark-label">KULLANICI ADI</label>
+                <div class="dark-input-group">
+                    <i class="bi bi-person"></i>
+                    <input asp-for="Username" type="text" class="dark-input" placeholder="admin" required autofocus />
                 </div>
             </div>
 
-            <div class="mb-4">
-                <label class="form-label text-muted small fw-bold">Şifre</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-key"></i></span>
-                    <input asp-for="Password" type="password" class="form-control bg-light border-start-0" placeholder="••••••" required />
+            <div class="text-start">
+                <label class="dark-label">ŞİFRE</label>
+                <div class="dark-input-group">
+                    <i class="bi bi-key"></i>
+                    <input asp-for="Password" type="password" class="dark-input" placeholder="••••••" required />
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mb-3 shadow-sm">
-                Sisteme Giriş Yap
+            <button type="submit" class="btn-sharp-red shadow-lg">
+                SİSTEME GİRİŞ YAP
             </button>
-            <div class="text-center">
-                <a href="/" class="text-decoration-none small text-muted"><i class="bi bi-arrow-left"></i> Randevu Ekranına Dön</a>
+
+            <div class="mt-3">
+                <a href="/" class="back-link">
+                    <i class="bi bi-arrow-left me-1"></i> RANDEVU EKRANINA DÖN
+                </a>
             </div>
         </form>
     </div>
 
 </body>
+
 </html>

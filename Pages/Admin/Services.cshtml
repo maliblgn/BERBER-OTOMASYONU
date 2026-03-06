@@ -4,54 +4,175 @@
     ViewData["Title"] = "Hizmet ve Fiyat Yönetimi";
 }
 
+<style>
+    /* Admin Paneli Genel Karanlık Tema Stilleri */
+    .admin-card {
+        background-color: #1a1a1a;
+        border: 1px solid #222;
+        border-radius: 6px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .admin-card-header {
+        background-color: #111;
+        border-bottom: 1px solid #222;
+        border-radius: 6px 6px 0 0;
+        padding: 20px 25px;
+    }
+
+    /* Karanlık Tablo Yapısı */
+    .dark-table {
+        color: #ccc;
+        margin-bottom: 0;
+    }
+
+    .dark-table thead th {
+        background-color: #0a0a0a;
+        color: #888;
+        border-bottom: 2px solid #222;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        padding: 15px 20px;
+    }
+
+    .dark-table tbody td {
+        border-bottom: 1px solid #222;
+        padding: 18px 20px;
+        vertical-align: middle;
+    }
+
+    /* Fiyat ve Süre Rozetleri */
+    .price-badge {
+        background: rgba(46, 204, 113, 0.1);
+        color: #2ecc71;
+        border: 1px solid rgba(46, 204, 113, 0.2);
+        font-weight: 800;
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 1rem;
+    }
+
+    .duration-text {
+        color: #666;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    /* Fiyat Güncelleme Girişi */
+    .dark-input-group {
+        background: #000;
+        border: 1px solid #222;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+        transition: 0.3s;
+    }
+
+    .dark-input-group:focus-within {
+        border-color: var(--theme-red, #e34c38);
+    }
+
+    .dark-input-group .currency-symbol {
+        color: #444;
+        font-weight: 800;
+        margin-right: 5px;
+    }
+
+    .dark-input {
+        background: transparent;
+        border: none;
+        color: #fff;
+        padding: 8px 5px;
+        width: 80px;
+        outline: none;
+        font-weight: 700;
+    }
+
+    /* Kaydet Butonu */
+    .btn-save-outline {
+        background: transparent;
+        border: 1px solid #333;
+        color: #888;
+        padding: 8px 15px;
+        border-radius: 4px;
+        font-weight: 800;
+        font-size: 0.8rem;
+        transition: 0.3s;
+    }
+
+    .btn-save-outline:hover {
+        border-color: #2ecc71;
+        color: #fff;
+        background: rgba(46, 204, 113, 0.1);
+    }
+
+    /* Bildirim Mesajları */
+    .admin-alert {
+        border-radius: 4px;
+        font-weight: 700;
+        border: none;
+        font-size: 0.9rem;
+    }
+</style>
+
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="alert admin-alert alert-success alert-dismissible fade show mb-4" role="alert"
+         style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2);">
+        <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle me-1"></i> @TempData["ErrorMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-<div class="card shadow-sm border-0">
-    <div class="card-header bg-white pt-4 pb-3">
-        <h5 class="card-title fw-bold text-dark mb-0"><i class="bi bi-tags me-2 text-primary"></i>Hizmetler Fiyat Listesi</h5>
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">
+            <i class="bi bi-tags me-2" style="color: var(--theme-red, #e34c38);"></i>Hizmet & Fiyat Listesi
+        </h5>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+            <table class="table dark-table align-middle">
+                <thead>
                     <tr>
                         <th class="ps-4">Hizmet Adı</th>
-                        <th>Süresi (Dk)</th>
+                        <th>Süresi</th>
                         <th>Mevcut Fiyat</th>
-                        <th class="text-end pe-4" style="width: 250px;">Fiyat Güncelle</th>
+                        <th class="text-end pe-4">Fiyat Güncelle</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if(Model.ServicesList.Any())
+                    @if (Model.ServicesList.Any())
                     {
                         @foreach (var item in Model.ServicesList)
                         {
                             <tr>
-                                <td class="ps-4 fw-bold text-dark">@item.Name</td>
-                                <td><i class="bi bi-clock me-1 text-muted"></i> @item.DurationInMinutes dk</td>
-                                <td><span class="badge bg-primary rounded-pill px-3 py-2 fs-6">@item.Price.ToString("C")</span></td>
+                                <td class="ps-4 fw-bold text-white">@item.Name</td>
+                                <td>
+                                    <span class="duration-text">
+                                        <i class="bi bi-clock me-1"></i> @item.DurationInMinutes dk
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="price-badge">@item.Price.ToString("C0")</span>
+                                </td>
                                 <td class="text-end pe-4">
-                                    <form method="post" asp-page-handler="UpdatePrice" class="d-flex align-items-center justify-content-end gap-2">
+                                    <form method="post" asp-page-handler="UpdatePrice"
+                                          class="d-flex align-items-center justify-content-end gap-3">
                                         <input type="hidden" name="serviceId" value="@item.Id" />
-                                        <div class="input-group input-group-sm w-auto">
-                                            <span class="input-group-text">₺</span>
-                                            <input type="number" name="newPrice" class="form-control" value="@item.Price.ToString("0.00")" step="0.01" min="0" required style="width: 100px;">
+
+                                        <div class="dark-input-group">
+                                            <span class="currency-symbol">₺</span>
+                                            <input type="number" name="newPrice" class="dark-input"
+                                                   value="@item.Price.ToString("0.00")" step="0.01" min="0" required>
                                         </div>
-                                        <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-check2-circle"></i> Kaydet</button>
+
+                                        <button type="submit" class="btn-save-outline">
+                                            <i class="bi bi-check2-circle me-1"></i> KAYDET
+                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -60,11 +181,14 @@
                     else
                     {
                         <tr>
-                            <td colspan="4" class="text-center py-5 text-muted">Sistemde kayıtlı hizmet bulunmamaktadır. Seeder'ı kontrol edin.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                            <td colspan="4" class="text-center py-5">
+                                <span style="color: #444; font-weight: 800; text-transform: uppercase;">Sistemde kayıtlı
+                                    hizmet bulunamadı.</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>

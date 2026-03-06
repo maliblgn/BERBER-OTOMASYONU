@@ -4,99 +4,312 @@
     ViewData["Title"] = "Adım 5: Randevu Onayı";
 }
 
-<div class="row mb-5">
-    <div class="col-12">
-        <h2 class="text-center mb-4"><i class="bi bi-file-earmark-check" style="color: var(--accent);"></i> Randevu Özeti ve Onay</h2>
-        
-        <div class="step-indicator">
-            <div class="step-item completed"><div class="step-circle"><i class="bi bi-check"></i></div><div class="step-title">Hizmetler</div></div>
-            <div class="step-item completed"><div class="step-circle"><i class="bi bi-check"></i></div><div class="step-title">Tarih</div></div>
-            <div class="step-item completed"><div class="step-circle"><i class="bi bi-check"></i></div><div class="step-title">Saat</div></div>
-            <div class="step-item completed"><div class="step-circle"><i class="bi bi-check"></i></div><div class="step-title">Berber</div></div>
-            <div class="step-item active"><div class="step-circle">5</div><div class="step-title">Onay</div></div>
-        </div>
-    </div>
-</div>
+<style>
+    /* Yatay Adım Göstergesi (Step Indicator) */
+    .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin: 2rem auto 4rem auto;
+        position: relative;
+        max-width: 600px;
+    }
+
+    .step-indicator::before {
+        content: '';
+        position: absolute;
+        top: 15px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: #222;
+        z-index: 1;
+    }
+
+    .step-item {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        background: #000;
+        padding: 0 10px;
+    }
+
+    .step-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #111;
+        color: #555;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        margin: 0 auto 8px auto;
+        border: 2px solid #222;
+        transition: 0.3s;
+    }
+
+    .step-title {
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Aktif Adım */
+    .step-item.active .step-circle {
+        background: var(--theme-red, #e34c38);
+        color: #fff;
+        border-color: var(--theme-red, #e34c38);
+        box-shadow: 0 0 15px rgba(227, 76, 56, 0.4);
+    }
+
+    .step-item.active .step-title {
+        color: #fff;
+    }
+
+    /* Tamamlanmış Adım */
+    .step-item.completed .step-circle {
+        background: rgba(227, 76, 56, 0.1);
+        color: var(--theme-red, #e34c38);
+        border-color: var(--theme-red, #e34c38);
+    }
+
+    .step-item.completed .step-title {
+        color: var(--theme-red, #e34c38);
+    }
+
+    /* Karanlık Ana Kartlar */
+    .dark-panel {
+        background-color: #1a1a1a;
+        border: 1px solid #222;
+        border-radius: 6px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Input Alanları (Simsiyah Kutu) */
+    .dark-input-group {
+        display: flex;
+        align-items: center;
+        background: #000;
+        border: 1px solid #222;
+        padding: 0 15px;
+        height: 55px;
+        border-radius: 4px;
+        transition: 0.3s;
+    }
+
+    .dark-input-group:focus-within {
+        border-color: var(--theme-red, #e34c38);
+        box-shadow: 0 0 10px rgba(227, 76, 56, 0.2);
+    }
+
+    .dark-input-group .prefix {
+        color: #777;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .dark-input-group .divider {
+        width: 1px;
+        height: 25px;
+        background: #222;
+        margin: 0 15px;
+    }
+
+    .dark-input {
+        background: transparent;
+        border: none;
+        color: #fff;
+        outline: none;
+        width: 100%;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .dark-input::placeholder {
+        color: #333;
+    }
+
+    /* Butonlar */
+    .btn-dark-outline {
+        background: transparent;
+        border: 1px solid #333;
+        color: #888;
+        padding: 0 30px;
+        height: 55px;
+        font-weight: 800;
+        border-radius: 4px;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    .btn-dark-outline:hover {
+        border-color: var(--theme-red, #e34c38);
+        color: #fff;
+    }
+
+    .btn-sharp-red {
+        background: var(--theme-red, #e34c38);
+        color: #fff;
+        border: none;
+        padding: 0 40px;
+        height: 55px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        border-radius: 4px;
+        transition: 0.3s;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-sharp-red:hover {
+        box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4);
+        filter: brightness(1.1);
+    }
+
+    /* Chrome Beyaz Input Sorunu Çözümü */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px #000 inset !important;
+        -webkit-text-fill-color: white !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+</style>
 
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card border-0 rounded-4 mb-4">
-            <div class="card-header pt-4 pb-2 border-0">
-                <h5 class="card-title fw-bold mb-0" style="color: var(--accent);">Randevu Detayları</h5>
+    <div class="col-12 text-center">
+        <div class="step-indicator">
+            <div class="step-item completed">
+                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                <div class="step-title">Hizmet</div>
             </div>
-            <div class="card-body p-4">
-                <div class="row mb-3 pb-3" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
-                    <div class="col-sm-4" style="color: var(--text-muted-dark);"><i class="bi bi-person-fill"></i> Berber</div>
-                    <div class="col-sm-8 fw-bold text-white">@Model.BarberName</div>
-                </div>
-                <div class="row mb-3 pb-3" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
-                    <div class="col-sm-4" style="color: var(--text-muted-dark);"><i class="bi bi-calendar-check"></i> Tarih</div>
-                    <div class="col-sm-8 fw-bold text-white">@Model.SessionData.SelectedDate.ToString("dd MMMM yyyy, dddd")</div>
-                </div>
-                <div class="row mb-3 pb-3" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
-                    <div class="col-sm-4" style="color: var(--text-muted-dark);"><i class="bi bi-clock"></i> Saat</div>
-                    <div class="col-sm-8 fw-bold text-white">@Model.SessionData.SelectedTime.ToString(@"hh\:mm")</div>
-                </div>
-                
-                <div class="mt-4">
-                    <h6 class="mb-3" style="color: var(--text-muted-dark);"><i class="bi bi-list-check"></i> Seçilen Hizmetler</h6>
-                    @foreach(var service in Model.SelectedServices)
-                    {
-                        <div class="d-flex justify-content-between align-items-center py-2" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
-                            <div>
-                                <span class="fw-bold text-white d-block">@service.Name</span>
-                                <small style="color: var(--text-muted-dark);">@service.DurationInMinutes dk</small>
-                            </div>
-                            <span class="badge rounded-pill px-3 py-2" style="background: rgba(255,255,255,0.08); color: #fff;">@service.Price.ToString("C")</span>
-                        </div>
-                    }
-                </div>
+            <div class="step-item completed">
+                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                <div class="step-title">Tarih</div>
             </div>
-            <div class="card-footer p-4 border-0 rounded-bottom">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="fs-5" style="color: var(--text-muted-dark);">Toplam</span>
-                    <h3 class="fw-bold mb-0" style="color: var(--accent);">@Model.TotalPrice.ToString("C") <small style="color: var(--text-muted-dark); font-size: 0.7em;">(@Model.TotalDuration dk)</small></h3>
-                </div>
+            <div class="step-item completed">
+                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                <div class="step-title">Saat</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                <div class="step-title">Berber</div>
+            </div>
+            <div class="step-item active">
+                <div class="step-circle">5</div>
+                <div class="step-title">Onay</div>
             </div>
         </div>
-
-        @if (!ModelState.IsValid)
-        {
-            <div class="alert alert-danger mx-auto">
-                <div asp-validation-summary="All" class="mb-0"></div>
-            </div>
-        }
-
-        <div class="card border-0 rounded-4">
-            <div class="card-body p-4">
-                <h5 class="card-title fw-bold mb-4" style="color: var(--accent);">Kişisel Bilgileriniz</h5>
-                <p class="small mb-4" style="color: var(--text-muted-dark);"><i class="bi bi-whatsapp text-success me-1"></i> Telefon numaranıza WhatsApp üzerinden bir doğrulama kodu (OTP) gönderilecektir.</p>
-                
-                <form method="post">
-                    <div class="mb-4">
-                        <label asp-for="CustomerName" class="form-label fw-bold" style="color: var(--text-muted-dark);">Ad Soyad</label>
-                        <input asp-for="CustomerName" type="text" class="form-control form-control-lg" placeholder="Örn: Ahmet Yılmaz" required />
-                    </div>
-                    
-                    <div class="mb-5">
-                        <label asp-for="CustomerPhone" class="form-label fw-bold" style="color: var(--text-muted-dark);">Telefon Numarası</label>
-                        <div class="input-group">
-                            <span class="input-group-text">+90</span>
-                            <input asp-for="CustomerPhone" type="tel" class="form-control form-control-lg" placeholder="5551234567" required pattern="[0-9]*" maxlength="11" />
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <a asp-page="Step4_Barber" class="btn btn-outline-secondary btn-lg px-4">
-                            <i class="bi bi-arrow-left me-2"></i> Geri
-                        </a>
-                        <button type="submit" class="btn btn-lg px-5 shadow-sm fw-bold" style="background: var(--accent); color: #fff; border: none; border-radius: 8px;">
-                            Onayla ve Kod Gönder <i class="bi bi-shield-lock ms-2"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
     </div>
 </div>
+
+<div class="row justify-content-center pb-5">
+    <div class="col-md-10 col-lg-8">
+
+        <div class="dark-panel mb-4">
+            <div class="p-4 p-md-5" style="border-bottom: 1px solid #222;">
+                <h5 class="fw-bold text-white mb-4"><i class="bi bi-file-earmark-check me-2"
+                                                           style="color: var(--theme-red, #e34c38);"></i> Randevu Özeti</h5>
+
+                    <div class="row mb-3 pb-3" style="border-bottom: 1px solid #222;">
+                        <div class="col-sm-4" style="color: #777;"><i class="bi bi-person-fill me-2"></i> Berber</div>
+                        <div class="col-sm-8 fw-bold text-white">@Model.BarberName</div>
+                    </div>
+                    <div class="row mb-3 pb-3" style="border-bottom: 1px solid #222;">
+                        <div class="col-sm-4" style="color: #777;"><i class="bi bi-calendar-check me-2"></i> Tarih</div>
+                        <div class="col-sm-8 fw-bold text-white">@Model.SessionData.SelectedDate.ToString("dd MMMM yyyy, dddd")</div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-sm-4" style="color: #777;"><i class="bi bi-clock me-2"></i> Saat</div>
+                        <div class="col-sm-8 fw-bold text-white">@Model.SessionData.SelectedTime.ToString(@"hh\:mm")</div>
+                    </div>
+
+                    <h6 class="mb-3 mt-4 text-white fw-bold"><i class="bi bi-list-check me-2"
+                                                                    style="color: var(--theme-red, #e34c38);"></i> Seçilen Hizmetler</h6>
+                        <div class="p-3" style="background: #000; border: 1px solid #222; border-radius: 4px;">
+                            @foreach (var service in Model.SelectedServices)
+                            {
+                                <div class="d-flex justify-content-between align-items-center py-2"
+                                     style="border-bottom: 1px solid #111;">
+                                    <div>
+                                        <span class="fw-bold text-white d-block">@service.Name</span>
+                                        <small style="color: #666;">@service.DurationInMinutes dk</small>
+                                    </div>
+                                    <span
+                                    style="color: var(--theme-red, #e34c38); font-weight: 800;">@service.Price.ToString("C0")</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="p-4 d-flex justify-content-between align-items-center" style="background: rgba(0,0,0,0.3);">
+                        <span class="fs-6"
+                              style="color: #888; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">Toplam</span>
+                        <h3 class="fw-bold mb-0 text-white">
+                            @Model.TotalPrice.ToString("C0")
+                            <small
+                                style="color: #666; font-size: 0.5em; display: block; text-align: right;">(@Model.TotalDuration
+                                dk)</small>
+                            </h3>
+                        </div>
+                    </div>
+
+                    @if (!ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger mb-4"
+                             style="background: rgba(227, 76, 56, 0.1); border: 1px solid #e34c38; color: #e34c38;">
+                            <div asp-validation-summary="All" class="mb-0"></div>
+                        </div>
+                    }
+
+                    <div class="dark-panel p-4 p-md-5">
+                        <h5 class="fw-bold text-white mb-2">Kişisel Bilgileriniz</h5>
+                        <p class="mb-4" style="color: #888; font-size: 0.85rem;">
+                            <i class="bi bi-whatsapp me-1" style="color: #25D366; font-size: 1rem;"></i>
+                            Telefon numaranıza WhatsApp üzerinden bir <strong class="text-white">doğrulama kodu (OTP)</strong>
+                            gönderilecektir.
+                        </p>
+
+                        <form method="post">
+                            <div class="mb-4">
+                                <label asp-for="CustomerName" class="form-label text-white fw-bold mb-2"
+                                       style="font-size: 0.9rem; letter-spacing: 0.5px;">AD SOYAD</label>
+                                <div class="dark-input-group">
+                                    <input asp-for="CustomerName" type="text" class="dark-input" placeholder="Örn: Ahmet Yılmaz"
+                                           required autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div class="mb-5">
+                                <label asp-for="CustomerPhone" class="form-label text-white fw-bold mb-2"
+                                       style="font-size: 0.9rem; letter-spacing: 0.5px;">TELEFON NUMARASI</label>
+                                <div class="dark-input-group">
+                                    <span class="prefix">+90</span>
+                                    <div class="divider"></div>
+                                    <input asp-for="CustomerPhone" type="tel" class="dark-input" placeholder="5XX XXX XX XX"
+                                           required pattern="[0-9]*" maxlength="11" autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-4 mt-2"
+                                 style="border-top: 1px solid #222; gap: 15px;">
+                                <a asp-page="Step4_Barber" class="btn-dark-outline w-100 w-md-auto">
+                                    <i class="bi bi-arrow-left me-2"></i> GERİ
+                                </a>
+                                <button type="submit" class="btn-sharp-red w-100 w-md-auto">
+                                    ONAYLA VE KOD GÖNDER <i class="bi bi-shield-lock ms-2"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>

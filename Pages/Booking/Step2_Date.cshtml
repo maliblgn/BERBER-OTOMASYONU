@@ -4,15 +4,161 @@
     ViewData["Title"] = "Adım 2: Tarih Seçimi";
 }
 
-<div class="row mb-5">
-    <div class="col-12">
-        <h2 class="text-center mb-4"><i class="bi bi-calendar-event" style="color: var(--accent);"></i> Tarih Seçimi</h2>
-        
-        <!-- Step Indicator -->
+<style>
+    /* Yatay Adım Göstergesi (Step Indicator) */
+    .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin: 2rem auto 4rem auto;
+        position: relative;
+        max-width: 600px;
+    }
+
+    .step-indicator::before {
+        content: '';
+        position: absolute;
+        top: 15px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: #222;
+        z-index: 1;
+    }
+
+    .step-item {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        background: #000;
+        padding: 0 10px;
+    }
+
+    .step-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #111;
+        color: #555;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        margin: 0 auto 8px auto;
+        border: 2px solid #222;
+        transition: 0.3s;
+    }
+
+    .step-title {
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Aktif Adım (Şu anki) */
+    .step-item.active .step-circle {
+        background: var(--theme-red, #e34c38);
+        color: #fff;
+        border-color: var(--theme-red, #e34c38);
+        box-shadow: 0 0 15px rgba(227, 76, 56, 0.4);
+    }
+
+    .step-item.active .step-title {
+        color: #fff;
+    }
+
+    /* Tamamlanmış Adım (Önceki) */
+    .step-item.completed .step-circle {
+        background: rgba(227, 76, 56, 0.1);
+        color: var(--theme-red, #e34c38);
+        border-color: var(--theme-red, #e34c38);
+    }
+
+    .step-item.completed .step-title {
+        color: var(--theme-red, #e34c38);
+    }
+
+    /* Karanlık Ana Kart */
+    .dark-panel {
+        background-color: #1a1a1a;
+        border: 1px solid #222;
+        border-radius: 6px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Simsiyah Tarih Seçici */
+    .dark-date-input {
+        background: #000;
+        border: 1px solid #222;
+        color: #fff;
+        padding: 15px 20px;
+        border-radius: 4px;
+        width: 100%;
+        max-width: 320px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        text-align: center;
+        outline: none;
+        color-scheme: dark;
+        /* Takvimin siyah açılmasını sağlar! */
+        transition: 0.3s;
+    }
+
+    .dark-date-input:focus {
+        border-color: var(--theme-red, #e34c38);
+        box-shadow: 0 0 15px rgba(227, 76, 56, 0.2);
+    }
+
+    /* Geri ve İleri Butonları */
+    .btn-dark-outline {
+        background: transparent;
+        border: 1px solid #333;
+        color: #888;
+        padding: 0 30px;
+        height: 55px;
+        font-weight: 800;
+        border-radius: 4px;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    .btn-dark-outline:hover {
+        border-color: var(--theme-red, #e34c38);
+        color: #fff;
+    }
+
+    .btn-sharp-red {
+        background: var(--theme-red, #e34c38);
+        color: #fff;
+        border: none;
+        padding: 0 40px;
+        height: 55px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        border-radius: 4px;
+        transition: 0.3s;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-sharp-red:hover {
+        box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4);
+        filter: brightness(1.1);
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-12 text-center">
         <div class="step-indicator">
             <div class="step-item completed">
-                <div class="step-circle"><i class="bi bi-check"></i></div>
-                <div class="step-title">Hizmetler</div>
+                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                <div class="step-title">Hizmet</div>
             </div>
             <div class="step-item active">
                 <div class="step-circle">2</div>
@@ -34,40 +180,38 @@
     </div>
 </div>
 
-<div class="row justify-content-center">
+<div class="row justify-content-center pb-5">
     <div class="col-md-8 col-lg-6">
-        
-        <div class="card border-0 rounded-4 shadow-sm mb-4">
-            <div class="card-body p-4 p-md-5 text-center">
-                
-                <h4 class="mb-4" style="color: var(--accent);">Hangi gün gelmek istersiniz?</h4>
+        <div class="dark-panel p-4 p-md-5 text-center">
 
-                @if (!ModelState.IsValid)
-                {
-                    <div class="alert alert-danger mx-auto">
-                        <div asp-validation-summary="All" class="mb-0"></div>
-                    </div>
-                }
+            <h4 class="mb-3 text-white fw-bold">Hangi gün gelmek istersiniz?</h4>
+            <p style="color: #777; font-size: 0.9rem;" class="mb-4">Randevunuzu planlamak için uygun bir tarih seçin.
+            </p>
 
-                <form method="post">
-                    <div class="mb-5 d-flex flex-column align-items-center">
-                        <div class="input-group" style="max-width: 320px;">
-                            <span class="input-group-text"><i class="bi bi-calendar-date" style="color: var(--accent);"></i></span>
-                            <input asp-for="SelectedDate" type="date" 
-                                   class="form-control form-control-lg text-center fw-bold" 
-                                   min="@DateTime.Today.ToString("yyyy-MM-dd")" 
-                                   max="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")" 
-                                   required />
-                        </div>
-                        <small class="text-muted mt-3">En fazla 14 gün sonrası için randevu alabilirsiniz.</small>
+            @if (!ModelState.IsValid)
+            {
+                <div class="alert alert-danger"
+                     style="background: rgba(227, 76, 56, 0.1); border: 1px solid #e34c38; color: #e34c38;">
+                    <div asp-validation-summary="All" class="mb-0"></div>
+                </div>
+            }
+
+            <form method="post">
+                <div class="mb-5 d-flex flex-column align-items-center mt-3">
+                    <input asp-for="SelectedDate" type="date"                     class="dark-date-input"
+                           min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                           max="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")"       required />
+
+                    <small style="color: #555; margin-top: 15px; font-weight: 600;">En fazla 14 gün sonrası için randevu
+                        alabilirsiniz.</small>
                     </div>
 
-                    <div class="d-flex justify-content-between pt-4" style="border-top: 1px solid rgba(255,255,255,0.08);">
-                        <a asp-page="Step1_Services" class="btn btn-outline-secondary btn-lg px-4">
-                            <i class="bi bi-arrow-left me-2"></i> Geri
+                    <div class="d-flex justify-content-between pt-4" style="border-top: 1px solid #222;">
+                        <a asp-page="Step1_Services" class="btn-dark-outline">
+                            <i class="bi bi-arrow-left me-2"></i> GERİ
                         </a>
-                        <button type="submit" class="btn btn-lg px-5 fw-bold" style="background: var(--accent); color: #fff; border: none; border-radius: 8px;">
-                            İleri <i class="bi bi-arrow-right ms-2"></i>
+                        <button type="submit" class="btn-sharp-red">
+                            İLERİ <i class="bi bi-arrow-right ms-2"></i>
                         </button>
                     </div>
                 </form>
@@ -75,4 +219,3 @@
             </div>
         </div>
     </div>
-</div>

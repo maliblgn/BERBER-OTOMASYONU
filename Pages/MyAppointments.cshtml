@@ -1,97 +1,46 @@
 @page
-@using SoftetroBarber.Enums
 @model SoftetroBarber.Pages.MyAppointmentsModel
 @{
     ViewData["Title"] = "Randevularım";
+    Layout = "_Layout"; // O soldaki garip menünün çıkmaması için ana layoutu zorluyoruz
 }
 
-<div class="appointment-hero-wrapper">
-    <div class="container">
-        
-        <div class="d-flex justify-content-center mb-4">
-            <div class="nav-selection-box">
-                <a asp-page="/Index" class="nav-item-link">RANDEVU AL</a>
-                <a href="#" class="nav-item-link active">RANDEVULARIM</a>
-            </div>
+<div class="dark-hero-wrapper">
+    <div class="d-flex flex-column align-items-center">
+
+        <div class="top-toggle-container">
+            <a asp-page="/Index" class="toggle-btn">RANDEVU AL</a>
+            <a asp-page="/MyAppointments" class="toggle-btn active">RANDEVULARIM</a>
         </div>
 
-        <div class="row justify-content-center">
-            <div class="col-12" style="max-width: 500px;">
-                <div class="main-square-card" id="mainCard">
-                    
-                    <div id="searchSection" class="@(Model.HasSearched ? "d-none" : "")">
-                        <div class="card-inner-content text-center">
-                            <div class="icon-box mb-4">
-                                <i class="bi bi-shield-lock"></i>
-                            </div>
-                            <h2 class="card-title-text text-white">RANDEVU SORGULA</h2>
-                            <p class="card-sub-text">Numaranızı girerek kayıtlarınıza ulaşın.</p>
+        <div class="appointment-card-dark">
 
-                            <form method="get" class="mt-4">
-                                <div class="phone-input-wrapper">
-                                    <span class="prefix">+90</span>
-                                    <input type="tel" name="PhoneNumber" class="phone-field" placeholder="5XX XXX XX XX" value="@Model.PhoneNumber" required />
-                                </div>
-                                <button type="submit" class="btn-action-red w-100">SORGULAMAYI BAŞLAT</button>
-                            </form>
-                        </div>
+            @if (!Model.HasSearched)
+            {
+                <div class="glow-icon-container">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+
+                <h2 class="form-title">RANDEVU SORGULA</h2>
+                <p class="form-subtitle">Numaranızı girerek kayıtlarınıza ulaşın.</p>
+
+                <form method="get" class="mt-4">
+                    <div class="dark-input-group">
+                        <span class="prefix">+90</span>
+                        <div class="divider"></div>
+                        <input type="tel" name="PhoneNumber" class="dark-input" placeholder="5XX XXX XX XX"
+                               value="@Model.PhoneNumber" required />
                     </div>
 
-                    @if (Model.HasSearched)
-                    {
-                        <div id="resultsSection">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="text-white fw-bold mb-0">SONUÇLAR</h5>
-                                <a href="/MyAppointments" class="btn btn-sm btn-outline-secondary text-white-50 border-0">Geri Dön</a>
-                            </div>
-
-                            <div class="appointment-list-scroll">
-                                @if (Model.Appointments.Any())
-                                {
-                                    @foreach (var appt in Model.Appointments)
-                                    {
-                                        <div class="result-item-card p-3 mb-2">
-                                            <div class="d-flex justify-content-between align-items-start">
-                                                <div>
-                                                    <div class="fw-bold text-white small">@appt.StartTime.ToString("dd MMMM yyyy")</div>
-                                                    <div class="text-danger fw-black h5 mb-1">@appt.StartTime.ToString("HH:mm")</div>
-                                                    <div class="small text-white-50">@appt.Barber.Name</div>
-                                                </div>
-                                                <div class="text-end">
-                                                    @switch (appt.Status)
-                                                    {
-                                                        case AppointmentStatus.Confirmed:
-                                                            <span class="badge bg-success small mb-2 d-block">ONAYLI</span>
-                                                            <form method="post" asp-page-handler="Cancel">
-                                                                <input type="hidden" name="appointmentId" value="@appt.Id" />
-                                                                <input type="hidden" name="phoneNumber" value="@Model.PhoneNumber" />
-                                                                <button type="submit" class="btn-cancel-link" onclick="return confirm('İptal edilsin mi?');">İptal Et</button>
-                                                            </form>
-                                                            break;
-                                                        case AppointmentStatus.Cancelled:
-                                                            <span class="badge bg-danger small d-block">İPTAL</span>
-                                                            break;
-                                                        default:
-                                                            <span class="badge bg-secondary small d-block">TAMAM</span>
-                                                            break;
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                                else
-                                {
-                                    <div class="text-center py-4">
-                                        <p class="text-white-50">Kayıt bulunamadı.</p>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    }
-
+                    <button type="submit" class="btn-sharp-red">SORGULAMAYI BAŞLAT</button>
+                </form>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <h5 class="text-white">Sonuçlar Yükleniyor...</h5>
                 </div>
-            </div>
+            }
         </div>
 
     </div>

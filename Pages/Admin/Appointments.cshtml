@@ -5,25 +5,93 @@
     ViewData["Title"] = "Randevu Yönetimi";
 }
 
+<style>
+    /* Admin Özel Premium Dark Tema Stilleri */
+    .admin-card {
+        background-color: #1a1a1a;
+        border: 1px solid #222;
+        border-radius: 6px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .admin-card-header {
+        background-color: #111;
+        border-bottom: 1px solid #222;
+        border-radius: 6px 6px 0 0;
+        padding: 20px 25px;
+    }
+    
+    /* Karanlık Tablo Stilleri */
+    .dark-table { color: #ccc; margin-bottom: 0; }
+    .dark-table thead th {
+        background-color: #0a0a0a;
+        color: #888;
+        border-bottom: 2px solid #222;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        padding: 15px 20px;
+    }
+    .dark-table tbody td {
+        border-bottom: 1px solid #222;
+        padding: 18px 20px;
+        vertical-align: middle;
+        background-color: transparent;
+        transition: 0.3s;
+    }
+    .dark-table tbody tr:hover td {
+        background-color: rgba(227, 76, 56, 0.05); /* Hover'da hafif kırmızı parlama */
+    }
+    
+    /* Neon Rozetler (Badges) */
+    .badge-glow-primary { background: rgba(52, 152, 219, 0.1); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.2); }
+    .badge-glow-success { background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
+    .badge-glow-danger { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
+    .badge-glow-warning { background: rgba(241, 196, 15, 0.1); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.2); }
+    
+    /* İşlem Butonu ve Karanlık Açılır Menü */
+    .btn-action-outline {
+        background: transparent; border: 1px solid #333; color: #888;
+        border-radius: 4px; padding: 6px 15px; font-size: 0.85rem; font-weight: 700; transition: 0.3s;
+    }
+    .btn-action-outline:hover {
+        border-color: var(--theme-red, #e34c38); color: #fff; background: rgba(227, 76, 56, 0.1);
+    }
+    
+    .dropdown-menu-dark-custom {
+        background-color: #111; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+    .dropdown-menu-dark-custom .dropdown-item {
+        color: #aaa; font-size: 0.85rem; font-weight: 600; transition: 0.2s; padding: 10px 20px;
+    }
+    .dropdown-menu-dark-custom .dropdown-item:hover { background-color: #222; }
+    .dropdown-menu-dark-custom .dropdown-item.text-success:hover { color: #2ecc71 !important; }
+    .dropdown-menu-dark-custom .dropdown-item.text-danger:hover { color: #e74c3c !important; }
+    .dropdown-menu-dark-custom .dropdown-item.text-warning:hover { color: #f1c40f !important; }
+</style>
+
 <div class="row">
     <div class="col-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white pt-4 pb-3">
+        <div class="admin-card">
+            <div class="admin-card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title fw-bold text-dark mb-0"><i class="bi bi-list-task me-2 text-primary"></i>Tüm Randevular</h5>
+                    <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">
+                        <i class="bi bi-list-task me-2" style="color: var(--theme-red, #e34c38);"></i>Tüm Randevular
+                    </h5>
                 </div>
             </div>
+            
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle mb-0">
-                        <thead class="table-dark">
+                    <table class="table dark-table align-middle">
+                        <thead>
                             <tr>
-                                <th class="ps-4">Tarih & Saat</th>
+                                <th>Tarih & Saat</th>
                                 <th>Müşteri</th>
                                 <th>Berber</th>
                                 <th>Tutar</th>
                                 <th>Durum</th>
-                                <th class="text-end pe-4">İşlemler</th>
+                                <th class="text-end">İşlemler</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,46 +100,48 @@
                                 @foreach (var item in Model.Appointments)
                                 {
                                     <tr>
-                                        <td class="ps-4">
-                                            <div class="fw-bold">@item.StartTime.ToString("dd MMM yyyy")</div>
-                                            <div class="text-muted small"><i class="bi bi-clock"></i> @item.StartTime.ToString("HH:mm") - @item.EndTime.ToString("HH:mm")</div>
+                                        <td>
+                                            <div class="fw-bold text-white mb-1" style="font-size: 0.95rem;">@item.StartTime.ToString("dd MMM yyyy")</div>
+                                            <div style="color: #777; font-size: 0.85rem;"><i class="bi bi-clock me-1"></i> @item.StartTime.ToString("HH:mm") - @item.EndTime.ToString("HH:mm")</div>
                                         </td>
                                         <td>
-                                            <div class="fw-semibold">@item.Customer.FullName</div>
-                                            <div class="text-muted small">@item.Customer.PhoneNumber</div>
+                                            <div class="fw-bold text-white mb-1" style="font-size: 0.95rem;">@item.Customer.FullName</div>
+                                            <div style="color: #777; font-size: 0.85rem;">@item.Customer.PhoneNumber</div>
                                         </td>
-                                        <td>@item.Barber.Name</td>
-                                        <td class="fw-bold text-success">@item.TotalPrice.ToString("C")</td>
+                                        <td class="text-light">@item.Barber.Name</td>
+                                        <td>
+                                            <span style="color: #2ecc71; font-weight: 800; font-size: 1rem;">@item.TotalPrice.ToString("C0")</span>
+                                        </td>
                                         <td>
                                             @switch (item.Status)
                                             {
                                                 case AppointmentStatus.Confirmed:
-                                                    <span class="badge bg-primary rounded-pill px-3 py-2"><i class="bi bi-check-circle me-1"></i> Onaylı</span>
+                                                    <span class="badge badge-glow-primary rounded-pill px-3 py-2"><i class="bi bi-check-circle me-1"></i> Onaylı</span>
                                                     break;
                                                 case AppointmentStatus.Completed:
-                                                    <span class="badge bg-success rounded-pill px-3 py-2"><i class="bi bi-check-all me-1"></i> Tamamlandı</span>
+                                                    <span class="badge badge-glow-success rounded-pill px-3 py-2"><i class="bi bi-check-all me-1"></i> Tamamlandı</span>
                                                     break;
                                                 case AppointmentStatus.Cancelled:
-                                                    <span class="badge bg-danger rounded-pill px-3 py-2"><i class="bi bi-x-circle me-1"></i> İptal</span>
+                                                    <span class="badge badge-glow-danger rounded-pill px-3 py-2"><i class="bi bi-x-circle me-1"></i> İptal</span>
                                                     break;
                                                 case AppointmentStatus.NoShow:
-                                                    <span class="badge bg-warning text-dark rounded-pill px-3 py-2"><i class="bi bi-person-x me-1"></i> Gelmedi</span>
+                                                    <span class="badge badge-glow-warning rounded-pill px-3 py-2"><i class="bi bi-person-x me-1"></i> Gelmedi</span>
                                                     break;
                                                 default:
                                                     <span class="badge bg-secondary rounded-pill px-3 py-2">@item.Status</span>
                                                     break;
                                             }
                                         </td>
-                                        <td class="text-end pe-4">
+                                        <td class="text-end">
                                             @if (item.Status == AppointmentStatus.Confirmed)
                                             {
                                                 <form method="post" asp-page-handler="UpdateStatus" class="d-inline">
                                                     <input type="hidden" name="appointmentId" value="@item.Id" />
                                                     <div class="dropdown">
-                                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <button class="btn-action-outline dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                             Durum Değiştir
                                                         </button>
-                                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark-custom">
                                                             <li><button type="submit" name="newStatus" value="@AppointmentStatus.Completed" class="dropdown-item text-success"><i class="bi bi-check-all me-2"></i>Tamamlandı</button></li>
                                                             <li><button type="submit" name="newStatus" value="@AppointmentStatus.Cancelled" class="dropdown-item text-danger"><i class="bi bi-x-circle me-2"></i>İptal Et</button></li>
                                                             <li><button type="submit" name="newStatus" value="@AppointmentStatus.NoShow" class="dropdown-item text-warning"><i class="bi bi-person-x me-2"></i>Gelmedi (No Show)</button></li>
@@ -86,9 +156,9 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="6" class="text-center py-5 text-muted">
-                                        <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
-                                        Sistemde henüz bir randevu bulunmuyor.
+                                    <td colspan="6" class="text-center py-5">
+                                        <i class="bi bi-inbox mb-3 d-block" style="font-size: 3rem; color: #333;"></i>
+                                        <span style="color: #666;">Sistemde henüz bir randevu bulunmuyor.</span>
                                     </td>
                                 </tr>
                             }

@@ -4,53 +4,106 @@
     ViewData["Title"] = "Berber Yönetimi";
 }
 
+<style>
+    /* Admin Paneli Ortak Karanlık Tema */
+    .admin-card {
+        background-color: #1a1a1a;
+        border: 1px solid #222;
+        border-radius: 6px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .admin-card-header {
+        background-color: #111;
+        border-bottom: 1px solid #222;
+        border-radius: 6px 6px 0 0;
+        padding: 20px 25px;
+    }
+
+    /* Form Elemanları */
+    .dark-label { color: #888; font-weight: 800; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 8px; }
+    .dark-input, .dark-textarea {
+        background-color: #000; border: 1px solid #222; color: #fff;
+        border-radius: 4px; padding: 12px 15px; width: 100%; outline: none; transition: 0.3s;
+    }
+    .dark-input:focus, .dark-textarea:focus { border-color: var(--theme-red, #e34c38); box-shadow: 0 0 10px rgba(227, 76, 56, 0.1); }
+
+    /* Butonlar */
+    .btn-sharp-red {
+        background: var(--theme-red, #e34c38); color: #fff; border: none;
+        width: 100%; height: 50px; font-weight: 800; letter-spacing: 1px;
+        border-radius: 4px; transition: 0.3s; cursor: pointer; text-transform: uppercase;
+    }
+    .btn-sharp-red:hover { box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4); filter: brightness(1.1); }
+
+    /* Tablo Stilleri */
+    .dark-table { color: #ccc; margin-bottom: 0; }
+    .dark-table thead th {
+        background-color: #0a0a0a; color: #888; border-bottom: 2px solid #222;
+        font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; padding: 15px 20px;
+    }
+    .dark-table tbody td { border-bottom: 1px solid #222; padding: 18px 20px; vertical-align: middle; }
+    
+    /* Rozetler */
+    .badge-glow-success { background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
+    .badge-glow-secondary { background: rgba(255, 255, 255, 0.05); color: #666; border: 1px solid #222; }
+
+    /* İşlem Butonları */
+    .btn-outline-action {
+        background: transparent; border: 1px solid #333; color: #888;
+        padding: 5px 12px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: 0.3s; text-decoration: none;
+    }
+    .btn-outline-action.danger:hover { border-color: #e74c3c; color: #e74c3c; background: rgba(231, 76, 60, 0.05); }
+    .btn-outline-action.success:hover { border-color: #2ecc71; color: #2ecc71; background: rgba(46, 204, 113, 0.05); }
+
+    /* Mesajlar */
+    .admin-alert { border-radius: 4px; font-weight: 700; border: none; font-size: 0.9rem; }
+</style>
+
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="alert admin-alert alert-success alert-dismissible fade show" role="alert" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2);">
+        <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle me-1"></i> @TempData["ErrorMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-<div class="row">
-    <div class="col-lg-4 mb-4 mb-lg-0">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-white pt-4 pb-3">
-                <h5 class="card-title fw-bold text-dark mb-0"><i class="bi bi-person-plus-fill me-2 text-primary"></i>Yeni Berber Ekle</h5>
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="admin-card h-100">
+            <div class="admin-card-header">
+                <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">
+                    <i class="bi bi-person-plus-fill me-2" style="color: var(--theme-red, #e34c38);"></i>Yeni Berber Ekle
+                </h5>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4">
                 <form method="post" asp-page-handler="AddBarber">
-                    <div class="mb-3">
-                        <label asp-for="NewBarberName" class="form-label fw-bold">Berber Adı <span class="text-danger">*</span></label>
-                        <input asp-for="NewBarberName" class="form-control" placeholder="Örn: Ahmet" required />
+                    <div class="mb-4">
+                        <label asp-for="NewBarberName" class="dark-label">BERBER ADI <span class="text-danger">*</span></label>
+                        <input asp-for="NewBarberName" class="dark-input" placeholder="Örn: Ahmet" required />
                     </div>
                     <div class="mb-4">
-                        <label asp-for="NewBarberBio" class="form-label fw-bold">Kısa Özgeçmiş/Unvan</label>
-                        <textarea asp-for="NewBarberBio" class="form-control" rows="3" placeholder="Örn: Usta Makas / Renk Uzmanı"></textarea>
+                        <label asp-for="NewBarberBio" class="dark-label">KISA ÖZGEÇMİŞ / UNVAN</label>
+                        <textarea asp-for="NewBarberBio" class="dark-textarea" rows="4" placeholder="Örn: Usta Makas / Renk Uzmanı"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-plus-lg me-1"></i> Sisteme Ekle</button>
+                    <button type="submit" class="btn-sharp-red">
+                        <i class="bi bi-plus-lg me-1"></i> SİSTEME EKLE
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
     <div class="col-lg-8">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-white pt-4 pb-3">
-                <h5 class="card-title fw-bold text-dark mb-0"><i class="bi bi-scissors me-2 text-primary"></i>Mevcut Berberler</h5>
+        <div class="admin-card h-100">
+            <div class="admin-card-header">
+                <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">
+                    <i class="bi bi-scissors me-2" style="color: var(--theme-red, #e34c38);"></i>Mevcut Berberler
+                </h5>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                    <table class="table dark-table align-middle">
+                        <thead>
                             <tr>
                                 <th class="ps-4">Berber</th>
                                 <th>Unvan (Bio)</th>
@@ -63,19 +116,22 @@
                             {
                                 @foreach (var item in Model.Barbers)
                                 {
-                                    <tr class="@(!item.IsActive ? "table-secondary text-muted" : "")">
-                                        <td class="ps-4 fw-bold">
-                                            <i class="bi bi-person-circle fs-5 me-2 @(item.IsActive ? "text-primary" : "")"></i> @item.Name
+                                    <tr class="@(!item.IsActive ? "opacity-50" : "")">
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-person-circle fs-4 me-3" style="color: @(item.IsActive ? "var(--theme-red, #e34c38)" : "#444");"></i>
+                                                <span class="fw-bold text-white">@item.Name</span>
+                                            </div>
                                         </td>
-                                        <td>@(string.IsNullOrEmpty(item.Bio) ? "-" : item.Bio)</td>
+                                        <td style="color: #888; font-size: 0.85rem;">@(string.IsNullOrEmpty(item.Bio) ? "-" : item.Bio)</td>
                                         <td>
                                             @if(item.IsActive)
                                             {
-                                                <span class="badge bg-success rounded-pill px-3 py-2">Aktif</span>
+                                                <span class="badge badge-glow-success rounded-pill px-3 py-2">AKTİF</span>
                                             }
                                             else
                                             {
-                                                <span class="badge bg-secondary rounded-pill px-3 py-2">Pasif (Soft Delete)</span>
+                                                <span class="badge badge-glow-secondary rounded-pill px-3 py-2 text-uppercase">Pasif</span>
                                             }
                                         </td>
                                         <td class="text-end pe-4">
@@ -83,11 +139,15 @@
                                                 <input type="hidden" name="barberId" value="@item.Id" />
                                                 @if(item.IsActive)
                                                 {
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('@item.Name isimli berberi pasif konuma (sistemden gizle) getirmek istediğinize emin misiniz?');">Pasife Al</button>
+                                                    <button type="submit" class="btn-outline-action danger" onclick="return confirm('@item.Name isimli berberi pasife almak istediğinize emin misiniz?');">
+                                                        PASİFE AL
+                                                    </button>
                                                 }
                                                 else
                                                 {
-                                                    <button type="submit" class="btn btn-sm btn-outline-success">Aktifleştir</button>
+                                                    <button type="submit" class="btn-outline-action success">
+                                                        AKTİFLEŞTİR
+                                                    </button>
                                                 }
                                             </form>
                                         </td>
@@ -97,7 +157,9 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="4" class="text-center py-5 text-muted">Sistemde henüz berber bulunmuyor.</td>
+                                    <td colspan="4" class="text-center py-5">
+                                        <span style="color: #444; font-weight: 700;">Sistemde henüz berber bulunmuyor.</span>
+                                    </td>
                                 </tr>
                             }
                         </tbody>

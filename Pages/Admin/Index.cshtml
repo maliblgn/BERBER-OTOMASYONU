@@ -4,76 +4,161 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="row g-4 mb-4">
-    <!-- Stat Cards -->
+<style>
+    /* Dashboard Özel Stat Kartları */
+    .stat-card {
+        border: 1px solid #222;
+        border-radius: 6px;
+        padding: 25px;
+        position: relative;
+        overflow: hidden;
+        transition: 0.3s;
+        background: #1a1a1a;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .stat-icon {
+        position: absolute;
+        right: 20px;
+        bottom: 10px;
+        font-size: 3.5rem;
+        opacity: 0.15;
+        color: #fff;
+    }
+
+    /* Kart Renk Varyasyonları (Neon Borderlar) */
+    .stat-primary {
+        border-left: 4px solid #3498db;
+    }
+
+    .stat-success {
+        border-left: 4px solid #2ecc71;
+    }
+
+    .stat-info {
+        border-left: 4px solid #e34c38;
+    }
+
+    .stat-warning {
+        border-left: 4px solid #f1c40f;
+    }
+
+    .stat-label {
+        color: #888;
+        font-weight: 800;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+    }
+
+    .stat-value {
+        color: #fff;
+        font-weight: 900;
+        font-size: 1.8rem;
+    }
+
+    /* Admin Tablo Yapısı */
+    .admin-card {
+        background-color: #1a1a1a;
+        border: 1px solid #222;
+        border-radius: 6px;
+    }
+
+    .admin-card-header {
+        background-color: #111;
+        border-bottom: 1px solid #222;
+        padding: 20px 25px;
+        border-radius: 6px 6px 0 0;
+    }
+
+    .dark-table {
+        color: #ccc;
+        margin-bottom: 0;
+    }
+
+    .dark-table thead th {
+        background-color: #0a0a0a;
+        color: #888;
+        border-bottom: 2px solid #222;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        padding: 15px 20px;
+    }
+
+    .dark-table tbody td {
+        border-bottom: 1px solid #222;
+        padding: 15px 20px;
+    }
+
+    .btn-outline-red {
+        border: 1px solid #333;
+        color: #888;
+        font-weight: 700;
+        font-size: 0.8rem;
+        padding: 6px 15px;
+        border-radius: 4px;
+        transition: 0.3s;
+        text-decoration: none;
+    }
+
+    .btn-outline-red:hover {
+        border-color: var(--theme-red, #e34c38);
+        color: #fff;
+        background: rgba(227, 76, 56, 0.1);
+    }
+</style>
+
+<div class="row g-4 mb-5">
     <div class="col-sm-6 col-xl-3">
-        <div class="card bg-primary text-white h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-uppercase fw-bold text-white-50 mb-2">Bugünkü Randevular</h6>
-                        <h3 class="mb-0">@Model.TodayAppointmentsCount</h3>
-                    </div>
-                    <i class="bi bi-calendar-day stat-icon"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-sm-6 col-xl-3">
-        <div class="card bg-success text-white h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-uppercase fw-bold text-white-50 mb-2">Bugünkü Gelir</h6>
-                        <h3 class="mb-0">@Model.TodayRevenue.ToString("C")</h3>
-                    </div>
-                    <i class="bi bi-cash-stack stat-icon"></i>
-                </div>
-            </div>
+        <div class="stat-card stat-primary">
+            <div class="stat-label">Bugünkü Randevular</div>
+            <div class="stat-value">@Model.TodayAppointmentsCount</div>
+            <i class="bi bi-calendar-day stat-icon"></i>
         </div>
     </div>
 
     <div class="col-sm-6 col-xl-3">
-        <div class="card bg-info text-white h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-uppercase fw-bold text-white-50 mb-2">Aktif Berberler</h6>
-                        <h3 class="mb-0">@Model.TotalBarbersCount</h3>
-                    </div>
-                    <i class="bi bi-scissors stat-icon"></i>
-                </div>
-            </div>
+        <div class="stat-card stat-success">
+            <div class="stat-label">Bugünkü Gelir</div>
+            <div class="stat-value">@Model.TodayRevenue.ToString("C0")</div>
+            <i class="bi bi-cash-stack stat-icon"></i>
         </div>
     </div>
 
     <div class="col-sm-6 col-xl-3">
-        <div class="card bg-warning text-dark h-100">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-uppercase fw-bold text-black-50 mb-2">Toplam Müşteri</h6>
-                        <h3 class="mb-0">@Model.TotalCustomersCount</h3>
-                    </div>
-                    <i class="bi bi-people stat-icon text-dark"></i>
-                </div>
-            </div>
+        <div class="stat-card stat-info">
+            <div class="stat-label">Aktif Berberler</div>
+            <div class="stat-value">@Model.TotalBarbersCount</div>
+            <i class="bi bi-scissors stat-icon"></i>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card stat-warning">
+            <div class="stat-label">Toplam Müşteri</div>
+            <div class="stat-value">@Model.TotalCustomersCount</div>
+            <i class="bi bi-people stat-icon"></i>
         </div>
     </div>
 </div>
 
-<div class="row">
+<div class="row g-4">
     <div class="col-lg-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white pt-3 pb-2 d-flex justify-content-between align-items-center">
-                <h5 class="card-title fw-bold text-secondary mb-0">Yaklaşan Kayıtlı Randevular</h5>
-                <a asp-page="/Admin/Appointments" class="btn btn-sm btn-outline-primary">Tümünü Gör</a>
+        <div class="admin-card">
+            <div class="admin-card-header d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">YAKLAŞAN RANDEVULAR</h5>
+                <a asp-page="/Admin/Appointments" class="btn-outline-red">TÜMÜNÜ GÖR</a>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                    <table class="table dark-table align-middle">
+                        <thead>
                             <tr>
                                 <th class="ps-4">Müşteri</th>
                                 <th>Berber</th>
@@ -83,17 +168,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if(Model.UpcomingAppointments.Any())
+                            @if (Model.UpcomingAppointments.Any())
                             {
                                 @foreach (var item in Model.UpcomingAppointments)
                                 {
                                     <tr>
-                                        <td class="ps-4 fw-bold text-dark">@item.Customer.FullName</td>
-                                        <td>@item.Barber.Name</td>
-                                        <td>@item.StartTime.ToString("dd MMM yyyy HH:mm")</td>
-                                        <td>@item.TotalPrice.ToString("C")</td>
+                                        <td class="ps-4 fw-bold text-white">@item.Customer.FullName</td>
+                                        <td class="text-light">@item.Barber.Name</td>
+                                        <td style="color: #888;">@item.StartTime.ToString("dd MMM HH:mm")</td>
+                                        <td style="color: #2ecc71; font-weight: 800;">@item.TotalPrice.ToString("C0")</td>
                                         <td class="pe-4">
-                                            <span class="badge bg-primary">Onaylandı</span>
+                                            <span class="badge bg-dark border border-primary text-primary rounded-pill px-3">Onaylı</span>
                                         </td>
                                     </tr>
                                 }
@@ -101,23 +186,34 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">Bekleyen yakın tarihli randevu bulunmuyor.</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                    <td colspan="5" class="text-center py-5">
+                                        <span style="color: #444; font-weight: 700;">Bekleyen yakın tarihli randevu
+                                            bulunmuyor.</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="admin-card h-100 d-flex flex-column justify-content-center align-items-center p-5 text-center"
+                 style="background: linear-gradient(145deg, #111, #1a1a1a);">
+                <div class="mb-4">
+                    <i class="bi bi-shield-lock-fill"
+                       style="font-size: 4rem; color: #2ecc71; filter: drop-shadow(0 0 15px rgba(46, 204, 113, 0.3));"></i>
+                </div>
+                <h4 class="text-white fw-900 mb-3" style="letter-spacing: 1px;">GÜVENLİ PANEL</h4>
+                <p style="color: #666; font-size: 0.85rem; line-height: 1.6;">
+                    Bu alan sadece <strong class="text-white">@Model.TotalBarbersCount</strong> yetkili personel tarafından
+                    erişilebilir durumdadır.
+                </p>
+                <div class="mt-4 pt-4 border-top border-secondary w-100">
+                    <small style="color: #444; font-weight: 800; letter-spacing: 1px;">SOFTETRO BARBER v2.0</small>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="col-lg-4 mt-4 mt-lg-0">
-        <div class="card shadow-sm h-100 bg-dark text-white text-center p-4 d-flex flex-column justify-content-center">
-            <div class="mb-3">
-                <i class="bi bi-shield-lock text-success" style="font-size: 3rem;"></i>
-            </div>
-            <h4>Güvenli Admin Paneli</h4>
-            <p class="text-muted small">Bu alan sadece yetkili personellerin kullanımına açıktır.</p>
-        </div>
-    </div>
-</div>

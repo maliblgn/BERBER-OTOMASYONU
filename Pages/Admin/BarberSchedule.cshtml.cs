@@ -18,7 +18,7 @@ public class BarberScheduleModel : PageModel
     }
 
     public List<Barber> Barbers { get; set; } = new();
-    
+
     public List<TimeOffs> RecentTimeOffs { get; set; } = new();
 
     [BindProperty]
@@ -39,7 +39,7 @@ public class BarberScheduleModel : PageModel
     public async Task<IActionResult> OnGetAsync()
     {
         Barbers = await _context.Barbers.Where(b => b.IsActive).ToListAsync();
-        
+
         RecentTimeOffs = await _context.TimeOffs
             .Include(t => t.Barber)
             .Where(t => t.StartDateTime >= DateTime.Today.AddDays(-7))

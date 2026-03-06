@@ -4,24 +4,113 @@
     ViewData["Title"] = "Müşteri Yönetimi";
 }
 
+<style>
+    /* Admin Paneli Ortak Karanlık Tema */
+    .admin-card {
+        background-color: #1a1a1a;
+        border: 1px solid #222;
+        border-radius: 6px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .admin-card-header {
+        background-color: #111;
+        border-bottom: 1px solid #222;
+        border-radius: 6px 6px 0 0;
+        padding: 20px 25px;
+    }
+
+    /* Tablo Stilleri */
+    .dark-table {
+        color: #ccc;
+        margin-bottom: 0;
+    }
+
+    .dark-table thead th {
+        background-color: #0a0a0a;
+        color: #888;
+        border-bottom: 2px solid #222;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        padding: 15px 20px;
+    }
+
+    .dark-table tbody td {
+        border-bottom: 1px solid #222;
+        padding: 18px 20px;
+        vertical-align: middle;
+    }
+
+    /* Neon Rozetler */
+    .badge-glow-success {
+        background: rgba(46, 204, 113, 0.1);
+        color: #2ecc71;
+        border: 1px solid rgba(46, 204, 113, 0.2);
+    }
+
+    .badge-glow-danger {
+        background: rgba(231, 76, 60, 0.1);
+        color: #e74c3c;
+        border: 1px solid rgba(231, 76, 60, 0.2);
+    }
+
+    /* İşlem Butonları */
+    .btn-outline-action {
+        background: transparent;
+        border: 1px solid #333;
+        color: #888;
+        padding: 6px 15px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        border-radius: 4px;
+        transition: 0.3s;
+        text-decoration: none;
+    }
+
+    .btn-outline-action.danger:hover {
+        border-color: #e74c3c;
+        color: #fff;
+        background: #e74c3c;
+    }
+
+    .btn-outline-action.success:hover {
+        border-color: #2ecc71;
+        color: #fff;
+        background: #2ecc71;
+    }
+
+    .admin-alert {
+        border-radius: 4px;
+        font-weight: 700;
+        border: none;
+        font-size: 0.9rem;
+    }
+</style>
+
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-1"></i> @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="alert admin-alert alert-success alert-dismissible fade show" role="alert"
+         style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2);">
+        <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
 <div class="row">
     <div class="col-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white pt-4 pb-3">
-                <h5 class="card-title fw-bold text-dark mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>Kayıtlı Tüm Müşteriler</h5>
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">
+                    <i class="bi bi-people-fill me-2" style="color: var(--theme-red, #e34c38);"></i>Kayıtlı Tüm
+                    Müşteriler
+                </h5>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                    <table class="table dark-table align-middle">
+                        <thead>
                             <tr>
                                 <th class="ps-4">Müşteri Adı</th>
                                 <th>Telefon Numarası</th>
@@ -30,51 +119,61 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if(Model.Customers.Any())
+                            @if (Model.Customers.Any())
                             {
                                 @foreach (var item in Model.Customers)
                                 {
                                     <tr>
-                                        <td class="ps-4 fw-bold">
-                                            <i class="bi bi-person-circle fs-5 me-2 text-secondary"></i> @item.FullName
+                                        <td class="ps-4 fw-bold text-white">
+                                            <i class="bi bi-person-circle fs-5 me-2" style="color: #444;"></i> @item.FullName
                                         </td>
-                                        <td>@item.PhoneNumber</td>
+                                        <td class="text-light">@item.PhoneNumber</td>
                                         <td>
-                                            @if(item.IsBlacklisted)
+                                            @if (item.IsBlacklisted)
                                             {
-                                                <span class="badge bg-danger rounded-pill px-3 py-2"><i class="bi bi-slash-circle me-1"></i> Kara Listede</span>
-                                            }
+                                                <span class="badge badge-glow-danger rounded-pill px-3 py-2"><i
+                                                    class="bi bi-slash-circle me-1"></i> Kara Listede</span>
+                                                }
                                             else
-                                            {
-                                                <span class="badge bg-success rounded-pill px-3 py-2"><i class="bi bi-shield-check me-1"></i> Temiz</span>
-                                            }
-                                        </td>
-                                        <td class="text-end pe-4">
-                                            <form method="post" asp-page-handler="ToggleBlacklist" class="d-inline">
-                                                <input type="hidden" name="customerId" value="@item.Id" />
-                                                @if(item.IsBlacklisted)
                                                 {
-                                                    <button type="submit" class="btn btn-sm btn-outline-success">Kara Listeden Çıkar</button>
-                                                }
-                                                else
-                                                {
-                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bu müşteriyi kara listeye almak istediğinize emin misiniz? Randevu alımı engellenecektir.');">Kara Listeye Al</button>
-                                                }
-                                            </form>
-                                        </td>
-                                    </tr>
-                                }
-                            }
+                                                    <span class="badge badge-glow-success rounded-pill px-3 py-2"><i
+                                                        class="bi bi-shield-check me-1"></i> Temiz</span>
+                                                    }
+                                                </td>
+                                                <td class="text-end pe-4">
+                                                    <form method="post" asp-page-handler="ToggleBlacklist" class="d-inline">
+                                                        <input type="hidden" name="customerId" value="@item.Id" />
+                                                        @if (item.IsBlacklisted)
+                                                        {
+                                                            <button type="submit" class="btn-outline-action success">
+                                                                KARA LİSTEDEN ÇIKAR
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button type="submit" class="btn-outline-action danger"
+                                                                    onclick="return confirm('Bu müşteriyi kara listeye almak istediğinize emin misiniz?');">
+                                                                KARA LİSTEYE AL
+                                                            </button>
+                                                        }
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
                             else
-                            {
-                                <tr>
-                                    <td colspan="4" class="text-center py-5 text-muted">Sistemde henüz müşteri bulunmuyor.</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                    {
+                                        <tr>
+                                            <td colspan="4" class="text-center py-5">
+                                                <span style="color: #444; font-weight: 700;">Sistemde henüz kayıtlı müşteri
+                                                    bulunmuyor.</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>

@@ -4,88 +4,242 @@
     ViewData["Title"] = "Adım 3: Saat Seçimi";
 }
 
-<div class="row mb-5">
-    <div class="col-12">
-        <h2 class="text-center mb-4"><i class="bi bi-clock" style="color: var(--accent);"></i> Saat Seçimi</h2>
-        
+<style>
+    /* Yatay Adım Göstergesi (Step Indicator) */
+    .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin: 2rem auto 4rem auto;
+        position: relative;
+        max-width: 600px;
+    }
+
+    .step-indicator::before {
+        content: '';
+        position: absolute;
+        top: 15px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: #222;
+        z-index: 1;
+    }
+
+    .step-item {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        background: #000;
+        padding: 0 10px;
+    }
+
+    .step-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #111;
+        color: #555;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        margin: 0 auto 8px auto;
+        border: 2px solid #222;
+        transition: 0.3s;
+    }
+
+    .step-title {
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Aktif Adım (Şu anki) */
+    .step-item.active .step-circle {
+        background: var(--theme-red, #e34c38);
+        color: #fff;
+        border-color: var(--theme-red, #e34c38);
+        box-shadow: 0 0 15px rgba(227, 76, 56, 0.4);
+    }
+
+    .step-item.active .step-title {
+        color: #fff;
+    }
+
+    /* Tamamlanmış Adım (Önceki) */
+    .step-item.completed .step-circle {
+        background: rgba(227, 76, 56, 0.1);
+        color: var(--theme-red, #e34c38);
+        border-color: var(--theme-red, #e34c38);
+    }
+
+    .step-item.completed .step-title {
+        color: var(--theme-red, #e34c38);
+    }
+
+    /* Karanlık Ana Kart */
+    .dark-panel {
+        background-color: #1a1a1a;
+        border: 1px solid #222;
+        border-radius: 6px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    }
+
+    /* --- SAAT KUTUCUKLARI --- */
+    .time-slot-btn {
+        width: 110px;
+        height: 50px;
+        border-radius: 4px;
+        font-weight: 800;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    /* Müsait Saatler */
+    .time-slot-btn.available {
+        background: #000;
+        border: 1px solid #333;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .time-slot-btn.available:hover {
+        border-color: var(--theme-red, #e34c38);
+        background: rgba(227, 76, 56, 0.1);
+        color: var(--theme-red, #e34c38);
+        box-shadow: 0 0 15px rgba(227, 76, 56, 0.3);
+        transform: translateY(-2px);
+    }
+
+    /* Dolu Saatler */
+    .time-slot-btn.booked {
+        background: #0a0a0a;
+        border: 1px solid #111;
+        color: #333;
+        cursor: not-allowed;
+    }
+
+    /* Geri Butonu */
+    .btn-dark-outline {
+        background: transparent;
+        border: 1px solid #333;
+        color: #888;
+        padding: 0 30px;
+        height: 55px;
+        font-weight: 800;
+        border-radius: 4px;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    .btn-dark-outline:hover {
+        border-color: var(--theme-red, #e34c38);
+        color: #fff;
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-12 text-center">
         <div class="step-indicator">
-            <div class="step-item completed"><div class="step-circle"><i class="bi bi-check"></i></div><div class="step-title">Hizmetler</div></div>
-            <div class="step-item completed"><div class="step-circle"><i class="bi bi-check"></i></div><div class="step-title">Tarih</div></div>
-            <div class="step-item active"><div class="step-circle">3</div><div class="step-title">Saat</div></div>
-            <div class="step-item"><div class="step-circle">4</div><div class="step-title">Berber</div></div>
-            <div class="step-item"><div class="step-circle">5</div><div class="step-title">Onay</div></div>
+            <div class="step-item completed">
+                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                <div class="step-title">Hizmet</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                <div class="step-title">Tarih</div>
+            </div>
+            <div class="step-item active">
+                <div class="step-circle">3</div>
+                <div class="step-title">Saat</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">4</div>
+                <div class="step-title">Berber</div>
+            </div>
+            <div class="step-item">
+                <div class="step-circle">5</div>
+                <div class="step-title">Onay</div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="row justify-content-center">
+<div class="row justify-content-center pb-5">
     <div class="col-md-10 col-lg-8">
 
         @if (!ModelState.IsValid)
         {
-            <div class="alert alert-danger mx-auto">
+            <div class="alert alert-danger mb-4"
+                 style="background: rgba(227, 76, 56, 0.1); border: 1px solid #e34c38; color: #e34c38;">
                 <div asp-validation-summary="All" class="mb-0"></div>
             </div>
         }
 
-        <div class="card border-0 rounded-4 mb-4">
-            <div class="card-header pt-4 pb-2 border-0 text-center">
-                <h5 class="card-title fw-bold" style="color: var(--accent);">
+        <div class="dark-panel p-4 p-md-5">
+            <div class="text-center mb-5">
+                <h4 class="text-white fw-bold mb-2">
                     @Model.SelectedDate.ToString("dd MMMM yyyy, dddd")
-                </h5>
-                <p class="text-muted small">Müsait olan saat dilimlerinden birini seçiniz.</p>
+                </h4>
+                <p style="color: #777; font-size: 0.9rem;">Müsait olan saat dilimlerinden birini seçiniz.</p>
             </div>
-            <div class="card-body p-4">
-                
-                @if (Model.TimeSlots.Any())
-                {
-                    <div class="row g-3 justify-content-center">
-                        @foreach (var slot in Model.TimeSlots)
+
+            @if (Model.TimeSlots.Any())
+            {
+                <div class="d-flex flex-wrap gap-3 justify-content-center mb-5">
+                    @foreach (var slot in Model.TimeSlots)
+                    {
+                        @if (slot.IsBooked)
                         {
-                            <div class="col-auto">
-                                @if (slot.IsBooked)
-                                {
-                                    <button type="button" class="btn btn-lg rounded-pill px-4" style="width: 120px; background: rgba(255,255,255,0.05); color: var(--text-muted-dark); border: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; cursor: not-allowed;" title="Dolu" disabled>
-                                        <i class="bi bi-dash me-1"></i> @slot.Time.ToString(@"hh\:mm")
-                                    </button>
-                                }
-                                else
-                                {
-                                    <form method="post">
-                                        <input type="hidden" name="selectedTime" value="@slot.Time" />
-                                        <button type="submit" class="btn btn-lg rounded-pill px-4 fw-bold" style="width: 120px; border: 1px solid var(--accent); color: var(--accent); transition: 0.2s; font-size: 0.95rem;"
-                                                onmouseover="this.style.backgroundColor='var(--accent)'; this.style.color='#fff';"
-                                                onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--accent)';">
-                                            @slot.Time.ToString(@"hh\:mm")
-                                        </button>
-                                    </form>
-                                }
-                            </div>
+                            <button type="button" class="time-slot-btn booked" title="Bu saat dolu" disabled>
+                                <i class="bi bi-dash me-1"></i> @slot.Time.ToString(@"hh\:mm")
+                            </button>
                         }
-                    </div>
+                        else
+                        {
+                            <form method="post" class="m-0">
+                                <input type="hidden" name="selectedTime" value="@slot.Time" />
+                                <button type="submit" class="time-slot-btn available">
+                                    @slot.Time.ToString(@"hh\:mm")
+                                </button>
+                            </form>
+                        }
+                    }
+                </div>
 
-                    <div class="mt-4 text-center">
-                         <div class="d-inline-flex gap-3 small" style="color: var(--text-muted-dark);">
-                             <div><span class="d-inline-block rounded-circle me-1" style="width:10px; height:10px; border: 1px solid var(--accent);"></span> Müsait</div>
-                             <div><span class="d-inline-block rounded-circle me-1" style="width:10px; height:10px; background: rgba(255,255,255,0.1);"></span> Dolu</div>
-                         </div>
+                <div class="mt-4 text-center">
+                    <div class="d-inline-flex gap-4 small" style="color: #666; font-weight: 700;">
+                        <div><span class="d-inline-block me-1"
+                                       style="width:12px; height:12px; border: 1px solid #555; background: #000; border-radius: 2px;"></span>
+                            MÜSAİT</div>
+                            <div><span class="d-inline-block me-1"
+                                           style="width:12px; height:12px; background: #111; border: 1px solid #111; border-radius: 2px;"></span>
+                                DOLU</div>
+                            </div>
+                        </div>
+                    }
+            else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-clock-x d-block mb-3" style="font-size: 4rem; color: #333;"></i>
+                            <h4 class="fw-bold text-white mb-2">Uygun Saat Bulunamadı</h4>
+                            <p style="color: #666;">Seçtiğiniz tarihte veya hizmet süresine uygun boşluğumuz bulunmamaktadır.</p>
+                        </div>
+                    }
+
+                    <div class="d-flex justify-content-between pt-4 mt-4" style="border-top: 1px solid #222;">
+                        <a asp-page="Step2_Date" class="btn-dark-outline">
+                            <i class="bi bi-arrow-left me-2"></i> GERİ
+                        </a>
                     </div>
-                }
-                else
-                {
-                    <div class="text-center py-5">
-                        <i class="bi bi-clock-x display-1 mb-3 d-block" style="color: var(--text-muted-dark); opacity: 0.5;"></i>
-                        <h4 class="fw-bold" style="color: var(--text-muted-dark);">Uygun Saat Bulunamadı</h4>
-                        <p style="color: var(--text-muted-dark);">Seçtiğiniz tarihte veya seçtiğiniz toplam hizmet süresine uygun boşluğumuz bulunmamaktadır.</p>
-                    </div>
-                }
+                </div>
             </div>
         </div>
-
-        <div class="d-flex justify-content-between mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.08);">
-            <a asp-page="Step2_Date" class="btn btn-outline-secondary btn-lg px-4">
-                <i class="bi bi-arrow-left me-2"></i> Geri
-            </a>
-        </div>
-    </div>
-</div>
