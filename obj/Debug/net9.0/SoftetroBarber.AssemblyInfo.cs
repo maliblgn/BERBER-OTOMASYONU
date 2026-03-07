@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SoftetroBarber")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+128435c3f711d7a5c15e63abdccb84ebfc6cd26b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eec25504910ee029489e8c5e475681908ffa01ab")]
 [assembly: System.Reflection.AssemblyProductAttribute("SoftetroBarber")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SoftetroBarber")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

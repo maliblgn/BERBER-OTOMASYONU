@@ -1,200 +1,194 @@
 @page
 @model SoftetroBarber.Pages.Admin.LoginModel
 @{
-    Layout = null; // AdminLayout'u burada kullanmıyoruz, sayfa kendi stilini taşır.
-    ViewData["Title"] = "Giriş Yap";
+    Layout = null;
+    ViewData["Title"] = "Yetkili Girişi";
 }
 
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Softetro Barber - Yetkili Girişi</title>
+    <title>Berber Girişi - Softetro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-            :root {
-                --theme-red: #e34c38;
-                --theme-red-glow: rgba(227, 76, 56, 0.4);
-            }
+                        :root {
+                            --theme-red: #e34c38;
+                            --theme-red-glow: rgba(227, 76, 56, 0.4);
+                        }
 
-            body {
-                background-color: #000;
-                background-image:
-                    radial-gradient(circle at 20% 30%, rgba(227, 76, 56, 0.05) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 70%, rgba(227, 76, 56, 0.05) 0%, transparent 50%);
-                height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin: 0;
-                font-family: 'Inter', sans-serif;
-            }
+                        body {
+                            background-color: #000;
+                            background-image:
+                                radial-gradient(circle at 20% 30%, rgba(227, 76, 56, 0.05) 0%, transparent 50%),
+                                radial-gradient(circle at 80% 70%, rgba(227, 76, 56, 0.05) 0%, transparent 50%);
+                            height: 100vh;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin: 0;
+                            font-family: 'Inter', sans-serif;
+                        }
 
-            .login-card {
-                background: #1a1a1a;
-                border: 1px solid #222;
-                border-radius: 8px;
-                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-                width: 100%;
-                max-width: 420px;
-                padding: 45px;
-                position: relative;
-            }
+                        .login-card {
+                            background: #111;
+                            /* Biraz daha koyu, kart belirginleşsin */
+                            border: 1px solid #222;
+                            border-radius: 12px;
+                            box-shadow: 0 30px 70px rgba(0, 0, 0, 1);
+                            width: 100%;
+                            max-width: 420px;
+                            padding: 45px;
+                            position: relative;
+                        }
 
-            .brand-icon-container {
-                width: 80px;
-                height: 80px;
-                background: #000;
-                border: 1px solid #222;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin: 0 auto 30px auto;
-                color: var(--theme-red);
-                font-size: 2.5rem;
-                filter: drop-shadow(0 0 10px var(--theme-red-glow));
-            }
+                        /* İkon Beyaz Oldu */
+                        .brand-icon-container {
+                            width: 80px;
+                            height: 80px;
+                            background: #000;
+                            border: 1px solid #222;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin: 0 auto 30px auto;
+                            color: #ffffff;
+                            /* Beyaz ikon */
+                            font-size: 2.5rem;
+                            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
+                        }
 
-            .login-title {
-                color: #fff;
-                font-weight: 900;
-                letter-spacing: 2px;
-                text-transform: uppercase;
-                font-size: 1.4rem;
-                margin-bottom: 10px;
-            }
+                        .login-title {
+                            color: #fff;
+                            font-weight: 900;
+                            letter-spacing: 1px;
+                            text-transform: uppercase;
+                            font-size: 1.6rem;
+                            margin-bottom: 5px;
+                        }
 
-            .login-subtitle {
-                color: #555;
-                font-size: 0.8rem;
-                font-weight: 700;
-                letter-spacing: 1px;
-                margin-bottom: 35px;
-            }
+                        .login-subtitle {
+                            color: #666;
+                            font-size: 0.85rem;
+                            font-weight: 700;
+                            letter-spacing: 1px;
+                            margin-bottom: 35px;
+                        }
 
-            /* Input Stilleri */
-            .dark-label {
-                color: #777;
-                font-weight: 800;
-                font-size: 0.7rem;
-                letter-spacing: 1px;
-                margin-bottom: 8px;
-                display: block;
-            }
+                        /* Beyaz Input Stilleri */
+                        .dark-label {
+                            color: #aaa;
+                            font-weight: 800;
+                            font-size: 0.75rem;
+                            letter-spacing: 1px;
+                            margin-bottom: 10px;
+                            display: block;
+                        }
 
-            .dark-input-group {
-                display: flex;
-                align-items: center;
-                background: #000;
-                border: 1px solid #222;
-                border-radius: 4px;
-                padding: 0 15px;
-                margin-bottom: 25px;
-                height: 55px;
-                transition: 0.3s;
-            }
+                        .light-input-group {
+                            display: flex;
+                            align-items: center;
+                            background: #fff;
+                            /* Arka plan beyaz */
+                            border: 1px solid #ddd;
+                            border-radius: 8px;
+                            padding: 0 20px;
+                            margin-bottom: 25px;
+                            height: 60px;
+                            transition: 0.3s;
+                        }
 
-            .dark-input-group:focus-within {
-                border-color: var(--theme-red);
-                box-shadow: 0 0 15px var(--theme-red-glow);
-            }
+                        .light-input-group i {
+                            color: #e34c38;
+                            /* İkonlar kırmızı kalsın, dikkat çeksin */
+                            font-size: 1.3rem;
+                            margin-right: 15px;
+                        }
 
-            .dark-input-group i {
-                color: #444;
-                font-size: 1.2rem;
-            }
+                        .light-input {
+                            background: transparent;
+                            border: none;
+                            color: #111;
+                            /* Yazı siyah */
+                            width: 100%;
+                            outline: none;
+                            font-weight: 800;
+                            /* Kalın font */
+                            font-size: 1.05rem;
+                        }
 
-            .dark-input {
-                background: transparent;
-                border: none;
-                color: #fff;
-                padding-left: 15px;
-                width: 100%;
-                outline: none;
-                font-weight: 700;
-                font-size: 1rem;
-            }
+                        .light-input::placeholder {
+                            color: #bbb;
+                            font-weight: 600;
+                        }
 
-            .dark-input::placeholder {
-                color: #333;
-            }
+                        /* Buton Efekti */
+                        .btn-sharp-red {
+                            background: var(--theme-red);
+                            color: #fff;
+                            border: none;
+                            width: 100%;
+                            height: 60px;
+                            font-weight: 900;
+                            letter-spacing: 1.5px;
+                            border-radius: 50px;
+                            /* Diğer butonların gibi oval */
+                            transition: all 0.3s ease;
+                            cursor: pointer;
+                            text-transform: uppercase;
+                            margin-top: 10px;
+                        }
 
-            /* Butonlar */
-            .btn-sharp-red {
-                background: var(--theme-red);
-                color: #fff;
-                border: none;
-                width: 100%;
-                height: 55px;
-                font-weight: 800;
-                letter-spacing: 1.5px;
-                border-radius: 4px;
-                transition: 0.3s;
-                cursor: pointer;
-                text-transform: uppercase;
-                margin-bottom: 20px;
-            }
+                        .btn-sharp-red:hover {
+                            box-shadow: 0 10px 25px rgba(227, 76, 56, 0.4);
+                            transform: translateY(-2px);
+                        }
 
-            .btn-sharp-red:hover {
-                box-shadow: 0 5px 20px var(--theme-red-glow);
-                filter: brightness(1.1);
-            }
+                        .back-link {
+                            color: #555;
+                            text-decoration: none;
+                            font-size: 0.85rem;
+                            font-weight: 800;
+                            margin-top: 20px;
+                            display: inline-block;
+                            transition: 0.3s;
+                        }
 
-            .back-link {
-                color: #444;
-                text-decoration: none;
-                font-size: 0.8rem;
-                font-weight: 800;
-                letter-spacing: 1px;
-                transition: 0.3s;
-            }
-
-            .back-link:hover {
-                color: #888;
-            }
-
-            /* Chrome Autofill Çözümü */
-            input:-webkit-autofill {
-                -webkit-box-shadow: 0 0 0 30px #000 inset !important;
-                -webkit-text-fill-color: white !important;
-            }
+                        .back-link:hover {
+                            color: #fff;
+                        }
     </style>
 </head>
+
 <body>
 
     <div class="login-card text-center">
         <div class="brand-icon-container">
-            <i class="bi bi-shield-lock"></i>
+            <i class="bi bi-key-fill"></i>
         </div>
 
-        <h4 class="login-title">Yönetici Paneli</h4>
-        <p class="login-subtitle">Softetro Güvenli Erişim Sistemi</p>
-
-        @if (!ModelState.IsValid)
-        {
-            <div class="alert mb-4 text-start"
-                 style="background: rgba(227, 76, 56, 0.1); border: 1px solid var(--theme-red); color: var(--theme-red); font-size: 0.8rem; font-weight: 700;">
-                <div asp-validation-summary="All" class="mb-0"></div>
-            </div>
-        }
+        <h4 class="login-title">BERBER GİRİŞİ</h4>
+        <p class="login-subtitle">ELİT MAKAS YÖNETİM SİSTEMİ</p>
 
         <form method="post">
             <div class="text-start">
                 <label class="dark-label">KULLANICI ADI</label>
-                <div class="dark-input-group">
-                    <i class="bi bi-person"></i>
-                    <input asp-for="Username" type="text" class="dark-input" placeholder="admin" required autofocus />
+                <div class="light-input-group">
+                    <i class="bi bi-person-fill"></i>
+                    <input asp-for="Username" type="text" class="light-input" placeholder="Kullanıcı adınız" required
+                           autofocus />
                 </div>
             </div>
 
             <div class="text-start">
-                <label class="dark-label">ŞİFRE</label>
-                <div class="dark-input-group">
-                    <i class="bi bi-key"></i>
-                    <input asp-for="Password" type="password" class="dark-input" placeholder="••••••" required />
+                <label class="dark-label">GÜVENLİ ŞİFRE</label>
+                <div class="light-input-group">
+                    <i class="bi bi-key-fill"></i>
+                    <input asp-for="Password" type="password" class="light-input" placeholder="••••••" required />
                 </div>
             </div>
 
@@ -202,9 +196,9 @@
                 SİSTEME GİRİŞ YAP
             </button>
 
-            <div class="mt-3">
+            <div>
                 <a href="/" class="back-link">
-                    <i class="bi bi-arrow-left me-1"></i> RANDEVU EKRANINA DÖN
+                    <i class="bi bi-arrow-left me-1"></i> ANA SAYFAYA DÖN
                 </a>
             </div>
         </form>

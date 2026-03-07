@@ -1,4 +1,6 @@
-/* SOFTETRO PREMIUM DARK - GLOBAL REPAIR CSS */
+/* SOFTETRO PREMIUM DARK - GLOBAL REPAIR & BRANDING CSS */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap');
+
 :root {
   --bg-black: #000000;
   --card-bg: #111111;
@@ -10,19 +12,41 @@
 body {
   background-color: var(--bg-black);
   color: #fff;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif !important;
+  margin: 0;
+  padding: 0;
 }
 
-/* BEYAZ TABLO SORUNUNU KÖKTEN ÇÖZEN KISIM */
+/* Navigasyon ve Üst Bar */
+.navbar-custom {
+  background-color: var(--bg-black);
+  padding: 20px 0;
+}
+
+/* ELİT MAKAS BERBER - Tam Kırmızı ve Bold */
+.brand-red-full {
+  color: var(--theme-red) !important;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Üst Bar Altındaki İnce Çizgi (Beyaz/Gri) */
+.header-divider {
+  border-bottom: 1px solid #333;
+  width: 100%;
+}
+
+/* Tablo ve Form Düzeltmeleri */
 .table,
-.table> :not(caption)>*>*,
-.table-striped>tbody>tr:nth-of-type(odd)>*,
-.table-hover tbody tr:hover td {
+.table> :not(caption)>*>* {
   background-color: transparent !important;
-  /* Beyazlığı tamamen siler */
   color: #ccc !important;
   border-bottom: 1px solid var(--border-color) !important;
-  box-shadow: none !important;
 }
 
 .table thead th {
@@ -31,50 +55,32 @@ body {
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 1.5px;
-  border: none !important;
 }
 
-/* ANA SAYFA İÇ İÇE GİRME VE LİNK SORUNU DÜZELTMESİ */
-.master-booking-card {
-  background-color: #1a1a1a;
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 0;
-  overflow: hidden;
-}
-
-.tab-body {
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-/* MAVİ LİNKLERİ SİYAH/KIRMIZI YAPAR */
-a {
-  color: inherit;
-  text-decoration: none !important;
-}
-
-.btn-pill-red {
-  background-color: var(--theme-red) !important;
-  color: #fff !important;
-  padding: 15px 30px;
-  border-radius: 50px;
-  font-weight: 800;
-  text-align: center;
-  transition: 0.3s;
-}
-
-.btn-pill-red:hover {
-  box-shadow: 0 0 20px var(--theme-red-glow);
-  transform: translateY(-2px);
-}
-
-/* INPUTLARI SİYAH YAPAR */
-.dark-input,
-.form-control {
+/* Input ve Butonlar */
+.dark-input {
   background-color: #000 !important;
   border: 1px solid var(--border-color) !important;
   color: #fff !important;
+}
+
+.btn-sharp-red {
+  background: var(--theme-red);
+  color: #fff;
+  font-weight: 800;
+  border: none;
+  border-radius: 4px;
+  transition: 0.3s;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.btn-sharp-red:hover {
+  filter: brightness(1.2);
+  box-shadow: 0 0 20px var(--theme-red-glow);
+}
+
+a {
+  color: inherit;
+  text-decoration: none !important;
 }

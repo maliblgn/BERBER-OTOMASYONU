@@ -198,9 +198,9 @@
 
             <form method="post">
                 <div class="mb-5 d-flex flex-column align-items-center mt-3">
-                    <input asp-for="SelectedDate" type="date"                     class="dark-date-input"
+                    <input asp-for="SelectedDate" type="date" class="dark-date-input"
                            min="@DateTime.Today.ToString("yyyy-MM-dd")"
-                           max="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")"       required />
+                           max="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")" required />
 
                     <small style="color: #555; margin-top: 15px; font-weight: 600;">En fazla 14 gün sonrası için randevu
                         alabilirsiniz.</small>

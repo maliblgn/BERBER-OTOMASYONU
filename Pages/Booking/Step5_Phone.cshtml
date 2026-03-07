@@ -5,7 +5,12 @@
 }
 
 <style>
-    /* Yatay Adım Göstergesi (Step Indicator) */
+    :root {
+        --theme-red: #e34c38;
+        --theme-red-glow: rgba(227, 76, 56, 0.4);
+    }
+
+    /* Yatay Adım Göstergesi */
     .step-indicator {
         display: flex;
         justify-content: space-between;
@@ -45,102 +50,102 @@
         font-weight: 900;
         margin: 0 auto 8px auto;
         border: 2px solid #222;
-        transition: 0.3s;
     }
 
-    .step-title {
-        font-size: 0.75rem;
-        color: #666;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    /* Aktif Adım */
     .step-item.active .step-circle {
-        background: var(--theme-red, #e34c38);
+        background: var(--theme-red);
         color: #fff;
-        border-color: var(--theme-red, #e34c38);
-        box-shadow: 0 0 15px rgba(227, 76, 56, 0.4);
+        border-color: var(--theme-red);
+        box-shadow: 0 0 15px var(--theme-red-glow);
     }
 
-    .step-item.active .step-title {
-        color: #fff;
-    }
-
-    /* Tamamlanmış Adım */
     .step-item.completed .step-circle {
         background: rgba(227, 76, 56, 0.1);
-        color: var(--theme-red, #e34c38);
-        border-color: var(--theme-red, #e34c38);
-    }
-
-    .step-item.completed .step-title {
-        color: var(--theme-red, #e34c38);
+        color: var(--theme-red);
+        border-color: var(--theme-red);
     }
 
     /* Karanlık Ana Kartlar */
     .dark-panel {
         background-color: #1a1a1a;
         border: 1px solid #222;
-        border-radius: 6px;
+        border-radius: 8px;
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
     }
 
-    /* Input Alanları (Simsiyah Kutu) */
-    .dark-input-group {
+    /* BEYAZ INPUT GRUBU (8px Radius) */
+    .white-input-group {
         display: flex;
         align-items: center;
-        background: #000;
-        border: 1px solid #222;
+        background: #fff;
+        border: 2px solid #fff;
         padding: 0 15px;
-        height: 55px;
-        border-radius: 4px;
-        transition: 0.3s;
+        height: 60px;
+        border-radius: 8px;
+        /* İstediğin gibi azaltıldı */
+        transition: all 0.3s ease;
     }
 
-    .dark-input-group:focus-within {
-        border-color: var(--theme-red, #e34c38);
-        box-shadow: 0 0 10px rgba(227, 76, 56, 0.2);
+    .white-input-group:focus-within {
+        border-color: var(--theme-red);
+        box-shadow: 0 0 15px rgba(227, 76, 56, 0.3);
     }
 
-    .dark-input-group .prefix {
-        color: #777;
-        font-weight: 700;
-        font-size: 1rem;
-    }
-
-    .dark-input-group .divider {
-        width: 1px;
-        height: 25px;
-        background: #222;
-        margin: 0 15px;
-    }
-
-    .dark-input {
+    /* Input İç Stili */
+    .white-input {
         background: transparent;
         border: none;
-        color: #fff;
-        outline: none;
+        color: #333;
         width: 100%;
-        font-weight: 700;
+        outline: none;
+        font-weight: bold;
         font-size: 1.1rem;
     }
 
-    .dark-input::placeholder {
+    .prefix {
         color: #333;
+        font-weight: bold;
+        font-size: 1.1rem;
     }
 
-    /* Butonlar */
+    .divider {
+        width: 1px;
+        height: 25px;
+        background: #ddd;
+        margin: 0 15px;
+    }
+
+    /* BUTONLAR (Zıplayan Efekt) */
+    .btn-sharp-red {
+        background: var(--theme-red);
+        color: #fff;
+        border: none;
+        height: 60px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        border-radius: 8px;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+    }
+
+    .btn-sharp-red:hover {
+        box-shadow: 0 10px 25px var(--theme-red-glow);
+        transform: translateY(-5px);
+        color: #fff;
+    }
+
     .btn-dark-outline {
         background: transparent;
         border: 1px solid #333;
         color: #888;
-        padding: 0 30px;
-        height: 55px;
+        height: 60px;
         font-weight: 800;
-        border-radius: 4px;
-        transition: 0.3s;
+        border-radius: 8px;
+        transition: all 0.3s ease;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -148,39 +153,15 @@
     }
 
     .btn-dark-outline:hover {
-        border-color: var(--theme-red, #e34c38);
+        border-color: #555;
+        transform: translateY(-5px);
         color: #fff;
     }
 
-    .btn-sharp-red {
-        background: var(--theme-red, #e34c38);
-        color: #fff;
-        border: none;
-        padding: 0 40px;
-        height: 55px;
-        font-weight: 800;
-        letter-spacing: 1px;
-        border-radius: 4px;
-        transition: 0.3s;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-sharp-red:hover {
-        box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4);
-        filter: brightness(1.1);
-    }
-
-    /* Chrome Beyaz Input Sorunu Çözümü */
-    input:-webkit-autofill,
-    input:-webkit-autofill:hover,
-    input:-webkit-autofill:focus,
-    input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 30px #000 inset !important;
-        -webkit-text-fill-color: white !important;
-        transition: background-color 5000s ease-in-out 0s;
+    /* Chrome Autofill Fix */
+    input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 30px #fff inset !important;
+        -webkit-text-fill-color: #333 !important;
     }
 </style>
 
@@ -225,7 +206,7 @@
                     </div>
                     <div class="row mb-3 pb-3" style="border-bottom: 1px solid #222;">
                         <div class="col-sm-4" style="color: #777;"><i class="bi bi-calendar-check me-2"></i> Tarih</div>
-                        <div class="col-sm-8 fw-bold text-white">@Model.SessionData.SelectedDate.ToString("dd MMMM yyyy, dddd")</div>
+                        <div class="col-sm-8 fw-bold text-white">@Model.SessionData.SelectedDate.ToString("dd MMMM yyyy,                      dddd")</div>
                     </div>
                     <div class="row mb-4">
                         <div class="col-sm-4" style="color: #777;"><i class="bi bi-clock me-2"></i> Saat</div>
@@ -282,34 +263,37 @@
                             <div class="mb-4">
                                 <label asp-for="CustomerName" class="form-label text-white fw-bold mb-2"
                                        style="font-size: 0.9rem; letter-spacing: 0.5px;">AD SOYAD</label>
-                                <div class="dark-input-group">
-                                    <input asp-for="CustomerName" type="text" class="dark-input" placeholder="Örn: Ahmet Yılmaz"
-                                           required autocomplete="off" />
+                                <div class="mb-4">
+                                    <label asp-for="CustomerName" class="form-label text-white fw-bold small mb-2 ms-1">ADINIZ
+                                        SOYADINIZ</label>
+                                        <div class="white-input-group">
+                                            <input asp-for="CustomerName" type="text" class="white-input"
+                                                   placeholder="Örn: Ahmet Yılmaz" required autocomplete="off" />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="mb-5">
-                                <label asp-for="CustomerPhone" class="form-label text-white fw-bold mb-2"
-                                       style="font-size: 0.9rem; letter-spacing: 0.5px;">TELEFON NUMARASI</label>
-                                <div class="dark-input-group">
-                                    <span class="prefix">+90</span>
-                                    <div class="divider"></div>
-                                    <input asp-for="CustomerPhone" type="tel" class="dark-input" placeholder="5XX XXX XX XX"
-                                           required pattern="[0-9]*" maxlength="11" autocomplete="off" />
+                                <div class="mb-5">
+                                    <label class="form-label text-white fw-bold small mb-2 ms-1">TELEFON NUMARASI</label>
+                                    <div class="white-input-group">
+                                        <span class="prefix">+90</span>
+                                        <div class="divider"></div>
+                                        <input asp-for="CustomerPhone" type="tel" id="phoneInput" class="white-input"
+                                               placeholder="5XX XXX XX XX" required maxlength="10"
+                                               oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-4 mt-2"
-                                 style="border-top: 1px solid #222; gap: 15px;">
-                                <a asp-page="Step4_Barber" class="btn-dark-outline w-100 w-md-auto">
-                                    <i class="bi bi-arrow-left me-2"></i> GERİ
-                                </a>
-                                <button type="submit" class="btn-sharp-red w-100 w-md-auto">
-                                    ONAYLA VE KOD GÖNDER <i class="bi bi-shield-lock ms-2"></i>
-                                </button>
-                            </div>
-                        </form>
+                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-4 mt-2"
+                                     style="border-top: 1px solid #222; gap: 15px;">
+                                    <a asp-page="Step4_Barber" class="btn-dark-outline w-100 w-md-auto">
+                                        <i class="bi bi-arrow-left me-2"></i> GERİ
+                                    </a>
+                                    <button type="submit" class="btn-sharp-red w-100 w-md-auto">
+                                        ONAYLA VE KOD GÖNDER <i class="bi bi-shield-lock ms-2"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
                     </div>
-
                 </div>
-            </div>
