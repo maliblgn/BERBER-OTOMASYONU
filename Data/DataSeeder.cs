@@ -67,5 +67,34 @@ public static class DataSeeder
             await context.WorkingHours.AddRangeAsync(workingHours);
             await context.SaveChangesAsync();
         }
+        // 3. Mevcut berberlerden Çalışma Saati (WorkingHours) olmayanlara geriye dönük ekleme yap
+        var barbersWithoutHours = await context.Barbers
+            .Include(b => b.WorkingHours)
+            .Where(b => !b.WorkingHours.Any())
+            .ToListAsync();
+
+        if (barbersWithoutHours.Any())
+        {
+            var openTime = new TimeSpan(9, 0, 0);
+            var closeTime = new TimeSpan(19, 0, 0);
+            var missingWorkingHours = new List<WorkingHours>();
+
+            foreach (var barber in barbersWithoutHours)
+            {
+                for (int day = 1; day <= 6; day++) // Pazartesi(1) - Cumartesi(6)
+                {
+                    missingWorkingHours.Add(new WorkingHours
+                    {
+                        Id = Guid.NewGuid(),
+                        BarberId = barber.Id,
+                        DayOfWeek = (DayOfWeek)day,
+                        OpenTime = openTime,
+                        CloseTime = closeTime
+                    });
+                }
+            }
+            await context.WorkingHours.AddRangeAsync(missingWorkingHours);
+            await context.SaveChangesAsync();
+        }
     }
 }

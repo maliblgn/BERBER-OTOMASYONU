@@ -47,7 +47,24 @@ public class BarbersModel : PageModel
             IsActive = true
         };
 
+        var workingHours = new List<WorkingHours>();
+        var openTime = new TimeSpan(9, 0, 0);   // 09:00
+        var closeTime = new TimeSpan(19, 0, 0); // 19:00
+
+        for (int day = 1; day <= 6; day++)
+        {
+            workingHours.Add(new WorkingHours
+            {
+                Id = Guid.NewGuid(),
+                BarberId = barber.Id,
+                DayOfWeek = (DayOfWeek)day,
+                OpenTime = openTime,
+                CloseTime = closeTime
+            });
+        }
+
         await _context.Barbers.AddAsync(barber);
+        await _context.WorkingHours.AddRangeAsync(workingHours);
         await _context.SaveChangesAsync();
 
         TempData["SuccessMessage"] = $"{NewBarberName} isimli berber başarıyla eklendi.";
