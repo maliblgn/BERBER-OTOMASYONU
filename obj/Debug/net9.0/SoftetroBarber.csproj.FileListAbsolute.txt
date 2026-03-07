@@ -225,7 +225,6 @@ C:\Users\User\Desktop\BERBER-OTOMASYONU\SoftetroBarber\bin\Debug\net9.0\Softetro
 C:\Users\User\Desktop\BERBER-OTOMASYONU\SoftetroBarber\bin\Debug\net9.0\SoftetroBarber.pdb
 C:\Users\User\Desktop\BERBER-OTOMASYONU\SoftetroBarber\obj\Debug\net9.0\SoftetroBarber.genruntimeconfig.cache
 C:\Users\User\Desktop\BERBER-OTOMASYONU\SoftetroBarber\obj\Debug\net9.0\ref\SoftetroBarber.dll
-C:\Users\User\Desktop\BERBER-OTOMASYONU\SoftetroBarber\obj\Debug\net9.0\compressed\w3wvatv4k8-vmjm4grzzg.gz
 C:\Users\ACER\Desktop\BERBER-OTOMASYONU\BERBER-OTOMASYONU\bin\Debug\net9.0\appsettings.Development.json
 C:\Users\ACER\Desktop\BERBER-OTOMASYONU\BERBER-OTOMASYONU\bin\Debug\net9.0\appsettings.json
 C:\Users\ACER\Desktop\BERBER-OTOMASYONU\BERBER-OTOMASYONU\bin\Debug\net9.0\SoftetroBarber.staticwebassets.runtime.json
@@ -455,3 +454,5 @@ C:\Users\ACER\Desktop\BERBER-OTOMASYONU\BERBER-OTOMASYONU\obj\Debug\net9.0\Softe
 C:\Users\ACER\Desktop\BERBER-OTOMASYONU\BERBER-OTOMASYONU\obj\Debug\net9.0\SoftetroBarber.genruntimeconfig.cache
 C:\Users\ACER\Desktop\BERBER-OTOMASYONU\BERBER-OTOMASYONU\obj\Debug\net9.0\ref\SoftetroBarber.dll
 C:\Users\ACER\Desktop\BERBER-OTOMASYONU\BERBER-OTOMASYONU\obj\Debug\net9.0\compressed\w3wvatv4k8-snu90qdtfl.gz
+C:\Users\User\Desktop\BERBER-OTOMASYONU\SoftetroBarber\obj\Debug\net9.0\SoftetroBarber.sourcelink.json
+C:\Users\User\Desktop\BERBER-OTOMASYONU\SoftetroBarber\obj\Debug\net9.0\compressed\w3wvatv4k8-snu90qdtfl.gz
