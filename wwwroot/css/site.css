@@ -64,6 +64,33 @@ body {
   color: #fff !important;
 }
 
+.badge-softetro-yellow {
+  background-color: #ffd942 !important;
+  /* Premium Altın/Sarı tonu */
+  color: #000 !important;
+  /* Siyah metin sarı üzerinde daha elit durur */
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  border: none;
+  /* Saf siyah arka planda kehribar parlaması */
+  box-shadow: 0 0 12px rgba(241, 196, 15, 0.25);
+  text-transform: uppercase;
+  font-size: 0.7rem;
+}
+
+.badge-softetro-red {
+  background-color: #e34c38 !important;
+  /* Softetro Kırmızısı */
+  color: #fff !important;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  border: none;
+  /* Karanlık temada kırmızıyı patlatan hafif gölge */
+  box-shadow: 0 0 10px rgba(227, 76, 56, 0.3);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
 .btn-sharp-red {
   background: var(--theme-red);
   color: #fff;

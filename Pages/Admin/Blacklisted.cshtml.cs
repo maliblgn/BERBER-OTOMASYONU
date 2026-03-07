@@ -8,11 +8,11 @@ using SoftetroBarber.Models;
 namespace SoftetroBarber.Pages.Admin;
 
 [Authorize(Roles = "Admin")]
-public class CustomersModel : PageModel
+public class BlacklistedModel : PageModel
 {
     private readonly ApplicationDbContext _context;
 
-    public CustomersModel(ApplicationDbContext context)
+    public BlacklistedModel(ApplicationDbContext context)
     {
         _context = context;
     }
@@ -21,10 +21,14 @@ public class CustomersModel : PageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
+        // Kara listedekiler YADA gelmeyişi (NoShow) > 0 olanları getir ve tersten sırala (En kritikler üstte)
         Customers = await _context.Customers
             .Include(c => c.Appointments)
-            .OrderBy(c => c.FullName)
+            .Where(c => c.IsBlacklisted || c.Appointments.Any(a => a.Status == SoftetroBarber.Enums.AppointmentStatus.NoShow))
+            .OrderByDescending(c => c.IsBlacklisted)
+            .ThenByDescending(c => c.Appointments.Count(a => a.Status == SoftetroBarber.Enums.AppointmentStatus.NoShow))
             .ToListAsync();
+            
         return Page();
     }
 
@@ -36,7 +40,7 @@ public class CustomersModel : PageModel
             customer.IsBlacklisted = !customer.IsBlacklisted;
             await _context.SaveChangesAsync();
             
-            TempData["SuccessMessage"] = $"Müşteri ({(customer.FullName)}) kara liste durumu güncellendi.";
+            TempData["SuccessMessage"] = $"Müşteri ({(customer.FullName)}) işlem başarıyla gerçekleşti.";
         }
         
         return RedirectToPage();

@@ -131,15 +131,27 @@
                                         <td>
                                             @if (item.IsBlacklisted)
                                             {
-                                                <span class="badge badge-glow-danger rounded-pill px-3 py-2"><i
-                                                    class="bi bi-slash-circle me-1"></i> Kara Listede</span>
-                                                }
+                                                <span class="badge badge-glow-danger rounded-pill px-3 py-2"><i class="bi bi-slash-circle me-1"></i> Kara Listede</span>
+                                            }
                                             else
-                                                {
-                                                    <span class="badge badge-glow-success rounded-pill px-3 py-2"><i
-                                                        class="bi bi-shield-check me-1"></i> Temiz</span>
-                                                    }
-                                                </td>
+                                            {
+                                                <span class="badge badge-glow-success rounded-pill px-3 py-2"><i class="bi bi-shield-check me-1"></i> Temiz</span>
+                                            }
+
+                                            @{
+                                                var noShowCount = item.Appointments.Count(a => a.Status == SoftetroBarber.Enums.AppointmentStatus.NoShow);
+                                            }
+                                            <div class="mt-2" style="font-size: 0.8rem; color: #888;">
+                                                Gelmedi: <strong class="text-white">@noShowCount</strong>
+                                            </div>
+
+                                            @if (noShowCount >= 2 && !item.IsBlacklisted)
+                                            {
+                                                <div class="mt-1">
+                                                    <span class="badge bg-warning text-dark px-2 py-1" style="font-weight: 800;">⚠️ 2 Kez Gelmedi!</span>
+                                                </div>
+                                            }
+                                        </td>
                                                 <td class="text-end pe-4">
                                                     <form method="post" asp-page-handler="ToggleBlacklist" class="d-inline">
                                                         <input type="hidden" name="customerId" value="@item.Id" />

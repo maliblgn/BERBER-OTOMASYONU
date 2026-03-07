@@ -58,18 +58,32 @@
                 <h5 class="mt-2 fw-bold text-white">Makas Admin</h5>
             </div>
             <ul class="nav flex-column">
-                <li class="nav-item"><a
-                    class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Index" ? "active" : "")"
-                    asp-page="/Admin/Index"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                    <li class="nav-item"><a
-                        class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Appointments" ? "active" : "")"
-                        asp-page="/Admin/Appointments"><i class="bi bi-calendar-check me-2"></i> Randevular</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-page="/Admin/Barbers"><i
-                            class="bi bi-person-badge me-2"></i> Berberler</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-page="/Admin/Services"><i class="bi bi-tags me-2"></i>
-                                Hizmetler</a></li>
-                            </ul>
-                        </nav>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Index" ? "active" : "")"
+                       asp-page="/Admin/Index"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Appointments" ? "active" : "")"
+                       asp-page="/Admin/Appointments"><i class="bi bi-calendar-check me-2"></i> Randevular</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Customers" ? "active" : "")" 
+                       asp-page="/Admin/Customers"><i class="bi bi-people-fill me-2"></i> Müşteriler</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Barbers" ? "active" : "")" 
+                        asp-page="/Admin/Barbers"><i class="bi bi-person-badge me-2"></i> Berberler</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Services" ? "active" : "")" 
+                        asp-page="/Admin/Services"><i class="bi bi-tags me-2"></i> Hizmetler</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Blacklisted" ? "active" : "")" 
+                        asp-page="/Admin/Blacklisted"><i class="bi bi-shield-x me-2"></i> Kara Liste</a>
+                </li>
+            </ul>
+        </nav>
 
                         <div class="content-wrapper">
                             <nav class="admin-nav rounded d-flex justify-content-between align-items-center mb-4">

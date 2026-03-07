@@ -455,4 +455,4 @@ C:\Users\ACER\Desktop\BERBER-OTOMASYONU\BERBER-OTOMASYONU\obj\Debug\net9.0\Softe
 C:\Users\ACER\Desktop\BERBER-OTOMASYONU\BERBER-OTOMASYONU\obj\Debug\net9.0\ref\SoftetroBarber.dll
 C:\Users\ACER\Desktop\BERBER-OTOMASYONU\BERBER-OTOMASYONU\obj\Debug\net9.0\compressed\w3wvatv4k8-snu90qdtfl.gz
 C:\Users\User\Desktop\BERBER-OTOMASYONU\SoftetroBarber\obj\Debug\net9.0\SoftetroBarber.sourcelink.json
-C:\Users\User\Desktop\BERBER-OTOMASYONU\SoftetroBarber\obj\Debug\net9.0\compressed\w3wvatv4k8-snu90qdtfl.gz
+C:\Users\User\Desktop\BERBER-OTOMASYONU\SoftetroBarber\obj\Debug\net9.0\compressed\w3wvatv4k8-1m60erup4b.gz

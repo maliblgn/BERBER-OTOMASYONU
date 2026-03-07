@@ -33,11 +33,33 @@ public class AppointmentsModel : PageModel
 
     public async Task<IActionResult> OnPostUpdateStatusAsync(Guid appointmentId, AppointmentStatus newStatus)
     {
-        var appointment = await _context.Appointments.FindAsync(appointmentId);
+        var appointment = await _context.Appointments
+            .Include(a => a.Customer)
+            .FirstOrDefaultAsync(a => a.Id == appointmentId);
+            
         if (appointment != null)
         {
             appointment.Status = newStatus;
             await _context.SaveChangesAsync();
+            
+            if (newStatus == AppointmentStatus.NoShow)
+            {
+                var noShowCount = await _context.Appointments
+                    .CountAsync(a => a.CustomerId == appointment.CustomerId && a.Status == AppointmentStatus.NoShow);
+                    
+                if (noShowCount >= 2 && !appointment.Customer.IsBlacklisted)
+                {
+                    TempData["WarningMessage"] = $"DİKKAT: {appointment.Customer.FullName} isimli müşteri 2. kez randevusuna gelmedi! Lütfen Müşteriler sayfasından kendisini Kara Listeye almayı değerlendirin.";
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = "Randevu durumu 'Gelmedi' olarak işaretlendi.";
+                }
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "Randevu durumu başarıyla güncellendi.";
+            }
         }
         
         return RedirectToPage();
