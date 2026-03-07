@@ -5,52 +5,95 @@
 }
 
 <style>
-    /* Premium Premium Team UI */
+    /* SOFTETRO PREMIUM UI - HATASIZ CSS */
     .master-wrapper {
-        min-height: 75vh;
-        padding: 60px 20px;
+        min-height: 80vh;
+        padding: 40px 20px 80px 20px;
     }
-    
+
+    .team-header-area {
+        display: flex;
+        align-items: center;
+        margin-bottom: 50px;
+        position: relative;
+    }
+
+    .btn-dark-outline {
+        background: transparent;
+        border: 1px solid #333;
+        color: #888;
+        padding: 0 25px;
+        height: 50px;
+        font-weight: 800;
+        border-radius: 4px;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        z-index: 10;
+        text-transform: uppercase;
+        margin-bottom: 0 !important;
+    }
+
+    .btn-dark-outline:hover {
+        border-color: #e34c38;
+        color: #fff;
+        box-shadow: 0 5px 15px rgba(227, 76, 56, 0.15);
+    }
+
+    .section-title-wrapper {
+        flex-grow: 1;
+        text-align: center;
+        margin-left: -110px;
+    }
+
     .section-title {
         font-weight: 900;
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         text-transform: uppercase;
         letter-spacing: 3px;
         color: #fff;
-        text-shadow: 0 5px 15px rgba(227, 76, 56, 0.3);
-        margin-bottom: 20px;
+        margin-bottom: 0;
+        text-shadow: 0 5px 15px rgba(227, 76, 56, 0.2);
     }
 
     .section-subtitle {
-        color: #888;
-        font-size: 1.1rem;
-        max-width: 600px;
-        margin: 0 auto 50px auto;
+        color: #666;
+        font-size: 1rem;
+        max-width: 650px;
+        margin: 15px auto 0 auto;
         line-height: 1.6;
+        font-weight: 500;
     }
 
     .barber-card-premium {
-        background-color: #111;
+        background-color: #0d0d0d;
         border: 1px solid #222;
-        border-radius: 15px;
+        border-radius: 12px;
         overflow: hidden;
-        transition: all 0.4s ease;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         height: 100%;
         display: flex;
         flex-direction: column;
+        max-width: 280px;
+        margin: 0 auto;
     }
 
     .barber-card-premium:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(227, 76, 56, 0.15);
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(227, 76, 56, 0.15);
         border-color: #333;
     }
 
     .barber-img-wrapper {
         position: relative;
-        padding-top: 100%; /* 1:1 Aspect Ratio */
+        padding-top: 100%;
         overflow: hidden;
         background-color: #080808;
+        border-bottom: 1px solid #1a1a1a;
     }
 
     .barber-img-wrapper img {
@@ -60,113 +103,101 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: 0.5s ease;
-    }
-
-    .barber-card-premium:hover .barber-img-wrapper img {
-        transform: scale(1.05);
+        transition: 0.6s ease;
     }
 
     .barber-card-body {
-        padding: 30px;
+        padding: 20px;
         text-align: center;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
+        justify-content: center;
     }
 
     .barber-name {
-        font-size: 1.5rem;
-        font-weight: 800;
+        font-size: 1.1rem;
+        font-weight: 900;
         color: #fff;
-        margin-bottom: 15px;
-        letter-spacing: 1px;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
     }
 
     .barber-bio {
-        color: #777;
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin-bottom: 25px;
-        flex-grow: 1;
+        color: #555;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        margin-bottom: 0;
+        font-weight: 600;
     }
 
-    .book-btn {
-        background: transparent;
-        border: 1px solid #e34c38;
-        color: #e34c38;
-        padding: 12px 25px;
-        border-radius: 50px;
-        font-weight: 700;
-        text-decoration: none;
-        transition: 0.3s;
-        display: inline-block;
-        letter-spacing: 1px;
-        font-size: 0.85rem;
-    }
+    /* ÇAKIŞMAYI ÖNLEMEK İÇİN @@ SEMBOLÜ KULLANILDI */
+    @@media (max-width: 768px) {
+        .team-header-area {
+            flex-direction: column;
+            gap: 20px;
+        }
 
-    .book-btn:hover {
-        background-color: #e34c38;
-        color: #fff;
-        box-shadow: 0 5px 15px rgba(227, 76, 56, 0.3);
-    }
+        .section-title-wrapper {
+            margin-left: 0;
+        }
 
-    /* Boş durum için */
-    .empty-state {
-        text-align: center;
-        padding: 80px 20px;
-        background: #111;
-        border-radius: 15px;
-        border: 1px dashed #333;
+        .section-title {
+            font-size: 1.6rem;
+        }
+
+        .btn-dark-outline {
+            width: 100%;
+        }
     }
 </style>
 
 <div class="header-divider"></div>
 
 <div class="master-wrapper container">
-    <div class="text-center">
-        <h1 class="section-title">Uzman Kadromuz</h1>
-        <p class="section-subtitle">Stilinizi en iyi ellere emanet edin. Deneyimli berber kadromuz, size özel dokunuşlarla en iyi görünümü sunmak için burada.</p>
+    <div class="team-header-area">
+        <a asp-page="/Index" class="btn-dark-outline">
+            <i class="bi bi-arrow-left me-2"></i> GERİ
+        </a>
+        <div class="section-title-wrapper">
+            <h1 class="section-title">Uzman Kadromuz</h1>
+        </div>
     </div>
 
-    @if (Model.Barbers != null && Model.Barbers.Any())
-    {
-        <div class="row g-4 justify-content-center">
-            @foreach (var barber in Model.Barbers)
-            {
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="barber-card-premium">
-                        <div class="barber-img-wrapper">
-                            @if (!string.IsNullOrEmpty(barber.ImagePath))
-                            {
-                                <img src="@barber.ImagePath" alt="@barber.Name">
-                            }
-                            else
-                            {
-                                // Default placeholder if no image
-                                <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="position: absolute; top: 0; left: 0; background: #1a1a1a;">
-                                    <i class="bi bi-person text-secondary" style="font-size: 5rem;"></i>
-                                </div>
-                            }
-                        </div>
-                        <div class="barber-card-body">
-                            <h3 class="barber-name">@barber.Name</h3>
-                            <p class="barber-bio">@(string.IsNullOrEmpty(barber.Bio) ? "Profesyonel saç ve sakal tasarımı uzmanı." : barber.Bio)</p>
-                            <div>
-                                <a href="/Booking/Step1_Services" class="book-btn">RANDEVU AL</a>
+    <div class="text-center mb-5">
+        <p class="section-subtitle">Stilinizi usta ellere emanet edin. Profesyonel ekibimiz size en iyi hizmeti sunmak
+            için burada.</p>
+        </div>
+
+        @if (Model.Barbers != null && Model.Barbers.Any())
+        {
+            <div class="row g-4 justify-content-center">
+                @foreach (var barber in Model.Barbers)
+                {
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="barber-card-premium">
+                            <div class="barber-img-wrapper">
+                                @if (!string.IsNullOrEmpty(barber.ImagePath))
+                                {
+                                    <img src="@barber.ImagePath" alt="@barber.Name">
+                                }
+                                else
+                                {
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center"
+                                         style="position: absolute; top: 0; left: 0; background: #1a1a1a;">
+                                        <i class="bi bi-person text-secondary" style="font-size: 3rem; opacity: 0.3;"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="barber-card-body">
+                                <h3 class="barber-name">@barber.Name</h3>
+                                <p class="barber-bio">@(string.IsNullOrEmpty(barber.Bio) ? "Profesyonel Stil Uzmanı" : barber.Bio)
+                                </p>
                             </div>
                         </div>
                     </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="empty-state">
-            <i class="bi bi-people" style="font-size: 4rem; color: #444;"></i>
-            <h3 class="text-light mt-3">Henüz Berber Eklenmedi</h3>
-            <p class="text-muted">Yakında uzman kadromuzla hizmetinizde olacağız.</p>
-        </div>
-    }
-</div>
+                }
+            </div>
+        }
+    </div>
