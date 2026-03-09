@@ -21,31 +21,35 @@ public class ServicesModel : PageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
+        // Hizmetleri isim sırasına göre listeliyoruz
         ServicesList = await _context.Services.OrderBy(s => s.Name).ToListAsync();
         return Page();
     }
 
-    public async Task<IActionResult> OnPostUpdatePriceAsync(Guid serviceId, decimal newPrice)
+    // Services.cshtml.cs
+    // Services.cshtml.cs içindeki metodlar
+    // Services.cshtml.cs
+    public async Task<JsonResult> OnPostAutoUpdateAsync(Guid serviceId, decimal? price, int? duration)
     {
-        var service = await _context.Services.FindAsync(serviceId);
-        if (service != null)
+        try
         {
-            if (newPrice < 0)
-            {
-                TempData["ErrorMessage"] = "Fiyat negatif olamaz.";
-                return RedirectToPage();
-            }
+            var service = await _context.Services.FindAsync(serviceId);
+            if (service == null) return new JsonResult(new { success = false, message = "Hizmet bulunamadı." });
 
-            service.Price = newPrice;
+            if (price.HasValue) service.Price = price.Value;
+            if (duration.HasValue) service.DurationInMinutes = duration.Value;
+
             await _context.SaveChangesAsync();
-            
-            TempData["SuccessMessage"] = $"{service.Name} hizmetinin fiyatı {newPrice:C} olarak güncellendi.";
+
+            return new JsonResult(new
+            {
+                success = true,
+                message = $"{service.Name} başarıyla güncellendi."
+            });
         }
-        else
+        catch (Exception ex)
         {
-            TempData["ErrorMessage"] = "Hizmet bulunamadı.";
+            return new JsonResult(new { success = false, message = "Hata: " + ex.Message });
         }
-        
-        return RedirectToPage();
     }
 }

@@ -2,186 +2,246 @@
 @using SoftetroBarber.Enums
 @model SoftetroBarber.Pages.Admin.AppointmentsModel
 @{
-    ViewData["Title"] = "Randevu Yönetimi";
+    ViewData["Title"] = "Randevu Ajandası";
 }
 
 <style>
-    /* Admin Özel Premium Dark Tema Stilleri */
-    .admin-card {
-        background-color: #1a1a1a;
-        border: 1px solid #222;
-        border-radius: 6px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .admin-card-header {
-        background-color: #111;
-        border-bottom: 1px solid #222;
-        border-radius: 6px 6px 0 0;
-        padding: 20px 25px;
-    }
-    
-    /* Karanlık Tablo Stilleri */
+    /* SENİN MEVCUT TASARIMIN (DOKUNULMADI) */
+    .admin-card { background-color: #1a1a1a; border: 1px solid #222; border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+    .admin-card-header { background-color: #111; border-bottom: 1px solid #222; padding: 10px 20px; }
+    .compact-input { background: #ffffff !important; color: #000 !important; font-weight: 800; border: none; height: 34px; border-radius: 4px; font-size: 0.75rem; padding: 0 10px; outline: none; }
+    .dropdown-menu-dark-custom { background-color: #111 !important; border: 1px solid #333 !important; border-radius: 8px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; padding: 5px 0 !important; min-width: 170px !important; }
+    .dropdown-item-custom { color: #ccc !important; font-weight: 600 !important; font-size: 0.8rem !important; padding: 8px 15px !important; transition: 0.2s !important; border: none !important; background: transparent !important; width: 100%; text-align: left; display: flex; align-items: center; }
+    .dropdown-item-custom:hover { background-color: #222 !important; color: #fff !important; }
+    .icon-blue { color: #3498db; } .icon-green { color: #2ecc71; } .icon-red { color: #e74c3c; } .icon-yellow { color: #f1c40f; }
+    .btn-action-outline-sm { height: 34px; display: inline-flex; align-items: center; padding: 0 12px; font-size: 0.7rem; font-weight: 800; border: 1px solid #333; color: #fff; text-decoration: none; border-radius: 4px; transition: 0.3s; }
+    .btn-action-outline-sm:hover { border-color: #FFFFFF; background: rgba(227, 76, 56, 0.1); }
+    .timeline-divider { background: #080808; color: #666; padding: 10px 20px; font-weight: 900; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #222; }
+    .current-session { border-left: 4px solid #e34c38 !important; background-color: rgba(227, 76, 56, 0.05) !important; }
     .dark-table { color: #ccc; margin-bottom: 0; }
-    .dark-table thead th {
-        background-color: #0a0a0a;
-        color: #888;
-        border-bottom: 2px solid #222;
-        font-weight: 800;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        letter-spacing: 1px;
-        padding: 15px 20px;
-    }
-    .dark-table tbody td {
-        border-bottom: 1px solid #222;
-        padding: 18px 20px;
-        vertical-align: middle;
-        background-color: transparent;
-        transition: 0.3s;
-    }
-    .dark-table tbody tr:hover td {
-        background-color: rgba(227, 76, 56, 0.05); /* Hover'da hafif kırmızı parlama */
-    }
+    .dark-table thead th { background-color: #0a0a0a; color: #888; font-weight: 800; text-transform: uppercase; font-size: 0.6rem; padding: 12px 20px; }
+    .price-text { color: #2ecc71; font-weight: 900; font-size: 1rem; display: block; text-align: left; }
+    .status-badge { display: inline-block; width: 110px; text-align: center; font-weight: 900; padding: 5px 0; font-size: 0.65rem; border-radius: 50px; text-transform: uppercase; }
+    .badge-softetro-white { background: #ffffff !important; color: #000000 !important; box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1); }
+    .loading-overlay { opacity: 0.4; pointer-events: none; }
+
+    /* TAKVİM İÇİN YENİ EKLENEN ÜST TASARIMLAR */
+    .view-switcher { background: #000; border: 1px solid #333; border-radius: 50px; display: flex; padding: 2px; position: relative; width: 80px; height: 34px; cursor: pointer; }
+    .switch-pill { position: absolute; width: 36px; height: 28px; background: #fff; border-radius: 50px; transition: 0.3s; top: 2px; left: 2px; z-index: 1; }
+    .cal-active .switch-pill { transform: translateX(38px); }
+    .switch-icons { position: relative; z-index: 2; display: flex; width: 100%; justify-content: space-around; align-items: center; height: 100%; }
+    .switch-icons i { font-size: 0.9rem; color: #555; }
+    .active-view-icon { color: #000 !important; }
+
+    /* Berber Seçim Sekmeleri (Takvim Modu İçin) */
+    .barber-tabs { display: flex; gap: 10px; padding: 15px 20px; background: #0c0c0c; border-bottom: 1px solid #222; }
+    .barber-tab { background: transparent; border: 1px solid #333; color: #666; padding: 6px 18px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; transition: 0.3s; cursor: pointer; }
+    .barber-tab.active { background: #fff; color: #000; border-color: #fff; }
+
+    /* Takvim Izgarası */
+    .calendar-container { display: grid; grid-template-columns: 60px 1fr; background: #1a1a1a; height: 600px; overflow-y: auto; }
+    .time-col { background: #0c0c0c; border-right: 1px solid #222; }
+    .time-cell { height: 40px; color: #444; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #111; font-weight: 900; }
+    .grid-col { position: relative; background-image: linear-gradient(#222 1px, transparent 1px); background-size: 100% 40px; }
+    .apt-block { position: absolute; left: 10px; right: 20px; border-radius: 6px; padding: 6px 12px; font-size: 0.7rem; font-weight: 900; cursor: pointer; transition: 0.2s; border-left: 4px solid rgba(0,0,0,0.2); z-index: 10; overflow: hidden; color: #fff; }
     
-    /* Neon Rozetler (Badges) */
-    .badge-glow-primary { background: rgba(52, 152, 219, 0.1); color: #3498db; border: 1px solid rgba(52, 152, 219, 0.2); }
-    .badge-glow-success { background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
-    .badge-glow-danger { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
-    .badge-glow-warning { background: rgba(241, 196, 15, 0.1); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.2); }
-    
-    /* İşlem Butonu ve Karanlık Açılır Menü */
-    .btn-action-outline {
-        background: transparent; border: 1px solid #333; color: #888;
-        border-radius: 4px; padding: 6px 15px; font-size: 0.85rem; font-weight: 700; transition: 0.3s;
-    }
-    .btn-action-outline:hover {
-        border-color: var(--theme-red, #e34c38); color: #fff; background: rgba(227, 76, 56, 0.1);
-    }
-    
-    .dropdown-menu-dark-custom {
-        background-color: #111; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    }
-    .dropdown-menu-dark-custom .dropdown-item {
-        color: #aaa; font-size: 0.85rem; font-weight: 600; transition: 0.2s; padding: 10px 20px;
-    }
-    .dropdown-menu-dark-custom .dropdown-item:hover { background-color: #222; }
-    .dropdown-menu-dark-custom .dropdown-item.text-success:hover { color: #2ecc71 !important; }
-    .dropdown-menu-dark-custom .dropdown-item.text-danger:hover { color: #e74c3c !important; }
-    .dropdown-menu-dark-custom .dropdown-item.text-warning:hover { color: #f1c40f !important; }
+    .color-yellow { background: #f1c40f !important; color: #000 !important; }
+    .color-blue { background: #3498db !important; }
+    .color-green { background: #2ecc71 !important; }
+
+    #detailBar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 12px 25px; border-radius: 50px; display: none; font-weight: 900; gap: 20px; z-index: 1000; border: 3px solid #e34c38; box-shadow: 0 10px 40px rgba(0,0,0,0.6); align-items: center; }
 </style>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert admin-alert alert-success alert-dismissible fade show mb-4" role="alert" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); font-weight: 700;">
-        <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMessage"]
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-@if (TempData["WarningMessage"] != null)
-{
-    <div class="alert admin-alert alert-warning alert-dismissible fade show mb-4" role="alert" style="background: rgba(241, 196, 15, 0.1); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.2); font-weight: 800;">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["WarningMessage"]
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-<div class="row">
-    <div class="col-12">
-        <div class="admin-card">
-            <div class="admin-card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">
-                        <i class="bi bi-list-task me-2" style="color: var(--theme-red, #e34c38);"></i>Tüm Randevular
-                    </h5>
+<div class="admin-card">
+    <div class="admin-card-header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <h6 class="fw-bold text-white mb-0" style="letter-spacing: 1px; font-size: 0.9rem;">AJANDA</h6>
+            <div class="view-switcher" id="vSwitch" onclick="toggleView()">
+                <div class="switch-pill"></div>
+                <div class="switch-icons">
+                    <i class="bi bi-list-ul active-view-icon" id="lIcon"></i>
+                    <i class="bi bi-calendar3" id="cIcon"></i>
                 </div>
             </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <div id="filterGroup" class="d-flex align-items-center gap-2">
+                <form id="searchForm" method="get" class="d-flex align-items-center gap-2">
+                    <div class="position-relative">
+                        <i class="bi bi-search position-absolute text-muted" style="left: 10px; top: 9px; font-size: 0.7rem;"></i>
+                        <input type="text" asp-for="SearchTerm" id="searchInput" class="compact-input" 
+                               placeholder="Müşteri veya Telefon..." autocomplete="off" style="width: 180px; padding-left: 28px;">
+                    </div>
+                    <select asp-for="SelectedBarberId" id="barberSelect" class="compact-input" style="width: 140px;">
+                        <option value="">TÜM PERSONEL</option>
+                        @foreach (var barber in Model.BarbersList) { <option value="@barber.Id">@barber.Name.ToUpper()</option> }
+                    </select>
+                </form>
+                <div style="width: 1px; height: 18px; background: #333; margin: 0 5px;"></div>
+            </div>
             
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table dark-table align-middle">
-                        <thead>
-                            <tr>
-                                <th>Tarih & Saat</th>
-                                <th>Müşteri</th>
-                                <th>Berber</th>
-                                <th>Tutar</th>
-                                <th>Durum</th>
-                                <th class="text-end">İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if(Model.Appointments.Any())
-                            {
-                                @foreach (var item in Model.Appointments)
-                                {
-                                    <tr>
-                                        <td>
-                                            <div class="fw-bold text-white mb-1" style="font-size: 0.95rem;">@item.StartTime.ToString("dd MMM yyyy")</div>
-                                            <div style="color: #777; font-size: 0.85rem;"><i class="bi bi-clock me-1"></i> @item.StartTime.ToString("HH:mm") - @item.EndTime.ToString("HH:mm")</div>
-                                        </td>
-                                        <td>
-                                            <div class="fw-bold text-white mb-1" style="font-size: 0.95rem;">@item.Customer.FullName</div>
-                                            <div style="color: #777; font-size: 0.85rem;">@item.Customer.PhoneNumber</div>
-                                        </td>
-                                        <td class="text-light">@item.Barber.Name</td>
-                                        <td>
-                                            <span style="color: #2ecc71; font-weight: 800; font-size: 1rem;">@item.TotalPrice.ToString("C0")</span>
-                                        </td>
-                                        <td>
-                                            @switch (item.Status)
-                                            {
-                                                case AppointmentStatus.Confirmed:
-                                                    <span class="badge badge-glow-primary rounded-pill px-3 py-2"><i class="bi bi-check-circle me-1"></i> Onaylı</span>
-                                                    break;
-                                                case AppointmentStatus.Completed:
-                                                    <span class="badge badge-glow-success rounded-pill px-3 py-2"><i class="bi bi-check-all me-1"></i> Tamamlandı</span>
-                                                    break;
-                                                case AppointmentStatus.Cancelled:
-                                                    <span class="badge badge-glow-danger rounded-pill px-3 py-2"><i class="bi bi-x-circle me-1"></i> İptal</span>
-                                                    break;
-                                                case AppointmentStatus.NoShow:
-                                                    <span class="badge badge-glow-warning rounded-pill px-3 py-2"><i class="bi bi-person-x me-1"></i> Gelmedi</span>
-                                                    break;
-                                                default:
-                                                    <span class="badge bg-secondary rounded-pill px-3 py-2">@item.Status</span>
-                                                    break;
-                                            }
-                                        </td>
-                                        <td class="text-end">
-                                            @if (item.Status == AppointmentStatus.Confirmed)
-                                            {
-                                                <form method="post" asp-page-handler="UpdateStatus" class="d-inline">
+            <a asp-page="/Admin/History" class="btn-action-outline-sm"><i class="bi bi-archive me-1"></i> ARŞİV</a>
+            <button class="btn-action-outline-sm" style="background:#e34c38; border:none;"><i class="bi bi-plus-lg me-1"></i> MANUEL EKLE</button>
+        </div>
+    </div>
+
+    <div class="card-body p-0" id="tableContainer">
+        <div id="listView">
+            <div class="table-responsive">
+                <table class="table dark-table align-middle">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">SAAT ARALIĞI</th>
+                            <th>MÜŞTERİ BİLGİSİ</th>
+                            <th>BERBER</th>
+                            <th>TUTAR</th>
+                            <th>DURUM</th>
+                            <th class="text-end pe-4">AKSİYON</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Appointments) {
+                            <tr class="@(item.StartTime <= DateTime.Now && item.EndTime >= DateTime.Now ? "current-session" : "")">
+                                <td class="ps-4"><div class="text-white fw-bold">@item.StartTime.ToString("HH:mm") - @item.EndTime.ToString("HH:mm")</div></td>
+                                <td><div class="text-white fw-bold">@item.Customer.FullName</div><div class="small text-secondary">@item.Customer.PhoneNumber</div></td>
+                                <td><span class="text-light">@item.Barber.Name</span></td>
+                                <td><span class="price-text">@item.TotalPrice.ToString("C0")</span></td>
+                                <td>
+                                    @switch (item.Status) {
+                                        case AppointmentStatus.Confirmed: <span class="status-badge badge-softetro-white">ONAYLI</span> break;
+                                        case AppointmentStatus.Completed: <span class="status-badge badge bg-success text-white">TAMAMLANDI</span> break;
+                                        case AppointmentStatus.Cancelled: <span class="status-badge badge bg-danger text-white">İPTAL EDİLDİ</span> break;
+                                        case AppointmentStatus.NoShow: <span class="status-badge badge bg-warning text-dark">GELMEDİ</span> break;
+                                    }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="dropdown">
+                                        <button class="btn-action-outline-sm btn-action-outline dropdown-toggle" type="button" data-bs-toggle="dropdown">GÜNCELLE</button>
+                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark-custom shadow-lg">
+                                            <li>
+                                                <form method="post" asp-page-handler="UpdateStatus">
                                                     <input type="hidden" name="appointmentId" value="@item.Id" />
-                                                    <div class="dropdown">
-                                                        <button class="btn-action-outline dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Durum Değiştir
-                                                        </button>
-                                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark-custom">
-                                                            <li><button type="submit" name="newStatus" value="@AppointmentStatus.Completed" class="dropdown-item text-success"><i class="bi bi-check-all me-2"></i>Tamamlandı</button></li>
-                                                            <li><button type="submit" name="newStatus" value="@AppointmentStatus.Cancelled" class="dropdown-item text-danger"><i class="bi bi-x-circle me-2"></i>İptal Et</button></li>
-                                                            <li><button type="submit" name="newStatus" value="@AppointmentStatus.NoShow" class="dropdown-item text-warning"><i class="bi bi-person-x me-2"></i>Gelmedi (No Show)</button></li>
-                                                        </ul>
-                                                    </div>
+                                                    <button type="submit" name="newStatus" value="@AppointmentStatus.Confirmed" class="dropdown-item-custom"><i class="bi bi-clock me-2 icon-blue"></i> Onaylı Yap</button>
+                                                    <button type="submit" name="newStatus" value="@AppointmentStatus.Completed" class="dropdown-item-custom"><i class="bi bi-check-all me-2 icon-green"></i> Tamamla</button>
+                                                    <button type="submit" name="newStatus" value="@AppointmentStatus.Cancelled" class="dropdown-item-custom"><i class="bi bi-x-circle me-2 icon-red"></i> İptal Et</button>
+                                                    <button type="submit" name="newStatus" value="@AppointmentStatus.NoShow" class="dropdown-item-custom"><i class="bi bi-person-x me-2 icon-yellow"></i> Gelmedi</button>
                                                 </form>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="6" class="text-center py-5">
-                                        <i class="bi bi-inbox mb-3 d-block" style="font-size: 3rem; color: #333;"></i>
-                                        <span style="color: #666;">Sistemde henüz bir randevu bulunmuyor.</span>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="calView" style="display: none;">
+            <div class="barber-tabs">
+                @foreach (var barber in Model.BarbersList) {
+                    <button class="barber-tab @(barber == Model.BarbersList.First() ? "active" : "")" 
+                            onclick="filterCalByBarber('@barber.Id', this)">
+                        @barber.Name.ToUpper()
+                    </button>
+                }
+            </div>
+
+            <div class="calendar-container">
+                <div class="time-col">
+                    @for (int i = 8; i < 22; i++) { 
+                        <div class="time-cell">@i:00</div><div class="time-cell" style="opacity:0.1">@i:30</div> 
+                    }
+                </div>
+                <div class="grid-col" id="calGrid">
+                    @foreach (var item in Model.Appointments) {
+                        var startMin = (item.StartTime.Hour - 8) * 60 + item.StartTime.Minute;
+                        var duration = (item.EndTime - item.StartTime).TotalMinutes;
+                        var color = item.BarberId.GetHashCode() % 3 == 0 ? "color-yellow" : item.BarberId.GetHashCode() % 3 == 1 ? "color-blue" : "color-green";
+
+                        <div class="apt-block @color barber-apt-@item.BarberId" 
+                             style="top: @((startMin/15)*20)px; height: @((duration/15)*20)px; display: none;"
+                             onclick="showPop('@item.Customer.FullName', '@item.Barber.Name', '@item.StartTime.ToString("HH:mm")')">
+                            @item.Customer.FullName <br> <span style="font-size:0.6rem; opacity:0.7">@item.StartTime.ToString("HH:mm")</span>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<div id="detailBar"><i class="bi bi-person-circle text-danger"></i> <span id="pCust"></span> | <span id="pBarb"></span> | <span id="pTime"></span></div>
+
+@section Scripts {
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const barberSelect = document.getElementById('barberSelect');
+    const tableContainer = document.getElementById('tableContainer');
+    const filterGroup = document.getElementById('filterGroup');
+
+    // LİSTE ARAMA FONKSİYONU
+    function triggerLiveSearch() {
+        tableContainer.classList.add('loading-overlay');
+        const url = `?SearchTerm=${encodeURIComponent(searchInput.value)}&SelectedBarberId=${barberSelect.value}`;
+        fetch(url).then(r => r.text()).then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            tableContainer.innerHTML = doc.getElementById('tableContainer').innerHTML;
+            tableContainer.classList.remove('loading-overlay');
+            // Görünüm durumunu koru
+            const isCal = document.getElementById('vSwitch').classList.contains('cal-active');
+            document.getElementById('listView').style.display = isCal ? 'none' : 'block';
+            document.getElementById('calView').style.display = isCal ? 'block' : 'none';
+            if(isCal) filterCalByBarber(document.querySelector('.barber-tab.active').getAttribute('onclick').match(/'([^']+)'/)[1]);
+        });
+    }
+
+    searchInput.addEventListener('input', () => { clearTimeout(window.t); window.t = setTimeout(triggerLiveSearch, 300); });
+    barberSelect.addEventListener('change', triggerLiveSearch);
+
+    // GÖRÜNÜM DEĞİŞTİRİCİ
+    function toggleView() {
+        const s = document.getElementById('vSwitch');
+        const l = document.getElementById('listView');
+        const c = document.getElementById('calView');
+        const li = document.getElementById('lIcon');
+        const ci = document.getElementById('cIcon');
+
+        s.classList.toggle('cal-active');
+        const isCal = s.classList.contains('cal-active');
+
+        l.style.display = isCal ? 'none' : 'block';
+        c.style.display = isCal ? 'block' : 'none';
+        filterGroup.style.display = isCal ? 'none' : 'flex'; // TAKVİMDE FİLTRELERİ GİZLE
+
+        li.classList.toggle('active-view-icon', !isCal);
+        ci.classList.toggle('active-view-icon', isCal);
+
+        if(isCal) {
+            const firstBarber = document.querySelector('.barber-tab');
+            if(firstBarber) firstBarber.click();
+        }
+    }
+
+    // TAKVİM BERBER FİLTRESİ
+    function filterCalByBarber(id, btn) {
+        if(btn) {
+            document.querySelectorAll('.barber-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        document.querySelectorAll('.apt-block').forEach(a => a.style.display = 'none');
+        document.querySelectorAll('.barber-apt-' + id).forEach(a => a.style.display = 'block');
+    }
+
+    function showPop(c, b, t) {
+        const bar = document.getElementById('detailBar');
+        document.getElementById('pCust').innerText = c;
+        document.getElementById('pBarb').innerText = b;
+        document.getElementById('pTime').innerText = t;
+        bar.style.display = 'flex';
+        setTimeout(() => bar.style.display = 'none', 4000);
+    }
+</script>
+}

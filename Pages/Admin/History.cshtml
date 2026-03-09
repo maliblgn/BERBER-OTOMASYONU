@@ -1,0 +1,179 @@
+@page
+@model SoftetroBarber.Pages.Admin.HistoryModel
+@{
+    ViewData["Title"] = "Randevu Arşivi";
+}
+
+<style>
+    /* SOFTETRO PREMIUM - FULL SCREEN FOCUS MODE */
+    .sidebar,
+    #sidebar-wrapper,
+    .navbar-vertical,
+    aside {
+        display: none !important;
+    }
+
+    main,
+    .main-content,
+    .container-fluid {
+        margin-left: 0 !important;
+        padding: 15px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .admin-card {
+        background-color: #1a1a1a;
+        border: 1px solid #222;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    /* GERİ DÖN VE TEMİZLE BUTONLARI */
+    .btn-back-premium {
+        background: #ffffff;
+        color: #000;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 800;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        text-decoration: none;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-back-premium:hover {
+        background: #e34c38;
+        color: #fff;
+        transform: translateX(-5px);
+    }
+
+    /* DURUM ROZETLERİ (SABİT GENİŞLİK) */
+    .status-badge-archive {
+        display: inline-block;
+        width: 120px;
+        text-align: center;
+        font-weight: 900;
+        padding: 6px 0;
+        font-size: 0.7rem;
+        border-radius: 50px;
+        text-transform: uppercase;
+    }
+
+    .badge-completed {
+        background: #ffffff !important;
+        color: #000 !important;
+    }
+
+    .badge-cancelled {
+        background: rgba(231, 76, 60, 0.1) !important;
+        color: #e74c3c !important;
+        border: 1px solid #e74c3c;
+    }
+
+    .badge-noshow {
+        background: rgba(241, 196, 15, 0.1) !important;
+        color: #f1c40f !important;
+        border: 1px solid #f1c40f;
+    }
+
+    .dark-table tbody {
+        opacity: 0.9;
+    }
+</style>
+
+<div class="container-fluid">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success border-0 mb-3"
+             style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; font-weight: 700;">
+            <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="admin-card">
+        <div
+            class="admin-card-header d-flex justify-content-between align-items-center p-4 border-bottom border-secondary">
+            <div class="d-flex align-items-center gap-3">
+                <a asp-page="/Admin/Appointments" class="btn-back-premium">
+                    <i class="bi bi-arrow-left"></i> GERİ DÖN
+                </a>
+                <h5 class="text-white fw-bold m-0">
+                    <i class="bi bi-archive me-2 text-danger"></i>RANDEVU ARŞİVİ
+                </h5>
+            </div>
+
+            <form method="post" asp-page-handler="DeleteOldAppointments"
+                  onsubmit="return confirm('3 günden eski veriler kalıcı olarak silinecektir. Onaylıyor musunuz?');">
+                <button type="submit" class="btn-back-premium"
+                        style="background: transparent; border: 1px solid #444; color: #888;">
+                    <i class="bi bi-trash3"></i> ESKİLERİ TEMİZLE
+                </button>
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table dark-table align-middle m-0">
+                <thead style="background: #080808;">
+                    <tr class="text-secondary small">
+                        <th class="ps-4 py-3">İŞLEM TARİHİ</th>
+                        <th>MÜŞTERİ</th>
+                        <th>HİZMETİ VEREN</th>
+                        <th>KAZANÇ</th>
+                        <th class="pe-4 text-end">DURUM SİCİLİ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.PastAppointments.Any())
+                    {
+                        @foreach (var item in Model.PastAppointments)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="text-white fw-bold">@item.StartTime.ToString("dd MMM yyyy")</div>
+                                    <div class="small text-muted">@item.StartTime.ToString("HH:mm")</div>
+                                </td>
+                                <td class="text-white fw-bold">@item.Customer.FullName</td>
+                                <td><i class="bi bi-person-badge me-1"></i> @item.Barber.Name</td>
+                                <td class="text-success fw-bold">@item.TotalPrice.ToString("C0")</td>
+                                <td class="pe-4 text-end">
+                                    @* DURUMA GÖRE DİNAMİK ROZET *@
+                                    @switch (item.Status)
+                                    {
+                                        case SoftetroBarber.Enums.AppointmentStatus.Confirmed:
+        @* Saati geçmiş ama durumu güncellenmemiş randevular için *@
+        <span class="status-badge-archive badge bg-secondary text-white">SÜRESİ GEÇTİ</span>
+        break;
+                                        case SoftetroBarber.Enums.AppointmentStatus.Completed:
+                                            <span class="status-badge-archive badge-completed">TAMAMLANDI</span>
+                                            break;
+                                        case SoftetroBarber.Enums.AppointmentStatus.Cancelled:
+                                            <span class="status-badge-archive badge-cancelled">İPTAL EDİLDİ</span>
+                                            break;
+                                        case SoftetroBarber.Enums.AppointmentStatus.NoShow:
+                                            <span class="status-badge-archive badge-noshow">GELMEDİ</span>
+                                            break;
+                                        default:
+                                            <span class="status-badge-archive badge bg-secondary text-white">@item.Status</span>
+                                            break;
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted fw-bold">Arşivde henüz kayıtlı randevu
+                                bulunmuyor.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>

@@ -21,14 +21,15 @@ public class IndexModel : PageModel
     public int TotalBarbersCount { get; set; }
     public int TotalCustomersCount { get; set; }
     public decimal TodayRevenue { get; set; }
-    
+
     public List<Models.Appointment> UpcomingAppointments { get; set; } = new();
 
     public async Task<IActionResult> OnGetAsync()
     {
+        var now = DateTime.Now; // Şu anki tarih ve saat: 09.03.2026 16:31
         var today = DateTime.Today;
 
-        // Statistics
+        // İstatistikler aynı kalıyor
         TodayAppointmentsCount = await _context.Appointments
             .Where(a => a.StartTime.Date == today && a.Status != AppointmentStatus.Cancelled)
             .CountAsync();
@@ -40,13 +41,12 @@ public class IndexModel : PageModel
             .Where(a => a.StartTime.Date == today && a.Status == AppointmentStatus.Completed)
             .SumAsync(a => a.TotalPrice);
 
-        // Upcoming Appointments (Top 5)
+        // Sadece bugünün KALAN randevuları
         UpcomingAppointments = await _context.Appointments
             .Include(a => a.Customer)
             .Include(a => a.Barber)
-            .Where(a => a.StartTime >= DateTime.Now && a.Status == AppointmentStatus.Confirmed)
+            .Where(a => a.StartTime >= now && a.StartTime.Date == today && a.Status == AppointmentStatus.Confirmed)
             .OrderBy(a => a.StartTime)
-            .Take(5)
             .ToListAsync();
 
         return Page();

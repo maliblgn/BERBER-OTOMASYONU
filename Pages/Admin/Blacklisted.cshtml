@@ -46,7 +46,7 @@
         color: #e74c3c;
         border: 1px solid rgba(231, 76, 60, 0.2);
     }
-    
+
     .badge-glow-warning {
         background: rgba(241, 196, 15, 0.1);
         color: #f1c40f;
@@ -101,112 +101,117 @@
                 <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">
                     <i class="bi bi-slash-circle text-danger me-2"></i>Kara Liste ve İhlal Takipleri
                 </h5>
-                <p class="text-muted mb-0 mt-2" style="font-size: 0.85rem;">Burada sadakatsiz müşterileri ve halihazırda yasaklanmış kişileri görebilirsiniz.</p>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table dark-table align-middle">
-                        <thead>
-                            <tr>
-                                <th class="ps-4">Müşteri Detayı</th>
-                                <th>Ceza Puanı</th>
-                                <th>Sistem İzni</th>
-                                <th class="text-end pe-4">Aksiyon</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.Customers.Any())
-                            {
-                                @foreach (var item in Model.Customers)
+                <p class="text-secondary mb-0 mt-2" style="font-size: 0.85rem; ">Burada sadakatsiz müşterileri ve
+                    halihazırda
+                    yasaklanmış kişileri görebilirsiniz.</p>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table dark-table align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Müşteri Detayı</th>
+                                    <th>Ceza Puanı</th>
+                                    <th>Sistem İzni</th>
+                                    <th class="text-end pe-4">Aksiyon</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Customers.Any())
                                 {
-                                    <tr>
-                                        <td class="ps-4">
-                                            <div class="fw-bold text-white" style="font-size: 1.05rem;">
-                                                <i class="bi bi-person-circle me-2" style="color: #555;"></i>@item.FullName
-                                            </div>
-                                            <div class="text-muted" style="font-size: 0.85rem; padding-left: 28px;">
-                                                @item.PhoneNumber
-                                            </div>
-                                        </td>
-                                        
-                                        <td>
-                                            @{
-                                                var noShowCount = item.Appointments.Count(a => a.Status == SoftetroBarber.Enums.AppointmentStatus.NoShow);
-                                            }
-                                            <div style="font-size: 1rem; font-weight: bold;">
-                                                @if(noShowCount >= 2)
-                                                {
-                                                    <span class="text-danger">@noShowCount Kez Gelmedi</span>
+                                    @foreach (var item in Model.Customers)
+                                    {
+                                        <tr>
+                                            <td class="ps-4">
+                                                <div class="fw-bold text-white" style="font-size: 1.05rem;">
+                                                    <i class="bi bi-person-circle me-2" style="color: #555;"></i>@item.FullName
+                                                </div>
+                                                <div class="text-secondary" style="font-size: 0.85rem; padding-left: 28px;">
+                                                    @item.PhoneNumber
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                @{
+                                                    var noShowCount = item.Appointments.Count(a => a.Status ==
+                                        SoftetroBarber.Enums.AppointmentStatus.NoShow);
                                                 }
-                                                else if(noShowCount == 1)
-                                                {
-                                                    <span class="text-warning">@noShowCount Kez Gelmedi</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="text-muted">İhlal Yok</span>
-                                                }
-                                            </div>
-                                        </td>
-                                        
-                                        <td>
-                                            @if (item.IsBlacklisted)
-                                            {
-                                                <span class="badge badge-glow-danger rounded-pill px-3 py-2">
-                                                    <i class="bi bi-x-circle me-1"></i> Randevu Alamaz (Kara Liste)
-                                                </span>
-                                            }
-                                            else
-                                            {
-                                                @if(noShowCount >= 2)
-                                                {
-                                                    <span class="badge badge-glow-warning rounded-pill px-3 py-2 text-dark">
-                                                        <i class="bi bi-exclamation-triangle me-1"></i> RİSKLİ! Yasaklanmalı
-                                                    </span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-dark border border-secondary rounded-pill px-3 py-2 text-muted">
-                                                        <i class="bi bi-check me-1"></i> Temiz
-                                                    </span>
-                                                }
-                                            }
-                                        </td>
-                                        
-                                        <td class="text-end pe-4">
-                                            <form method="post" asp-page-handler="ToggleBlacklist" class="d-inline">
-                                                <input type="hidden" name="customerId" value="@item.Id" />
+                                                <div style="font-size: 1rem; font-weight: bold;">
+                                                    @if (noShowCount >= 2)
+                                                    {
+                                                        <span class="text-danger">@noShowCount Kez Gelmedi</span>
+                                                    }
+                                                    else if (noShowCount == 1)
+                                                    {
+                                                        <span class="text-warning">@noShowCount Kez Gelmedi</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">İhlal Yok</span>
+                                                    }
+                                                </div>
+                                            </td>
+
+                                            <td>
                                                 @if (item.IsBlacklisted)
                                                 {
-                                                    <button type="submit" class="btn-outline-action success">
-                                                        KARA LİSTEDEN ÇIKAR
-                                                    </button>
+                                                    <span class="badge badge-glow-danger rounded-pill px-3 py-2">
+                                                        <i class="bi bi-x-circle me-1"></i> Randevu Alamaz (Kara Liste)
+                                                    </span>
                                                 }
                                                 else
                                                 {
-                                                    <button type="submit" class="btn-outline-action danger"
-                                                            onclick="return confirm('Bu müşteriyi kara listeye almak istediğinize emin misiniz? Sistemden bir daha kendi numarasıyla randevu alamayacaktır.');">
-                                                        KARA LİSTEYE AL
-                                                    </button>
+                                                    @if (noShowCount >= 2)
+{
+    <span class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm" style="font-weight: 800;">
+        <i class="bi bi-exclamation-triangle me-1 text-danger"></i> RİSKLİ! Yasaklanmalı
+    </span>
+}
+else
+{
+    <span class="badge bg-white text-dark rounded-pill px-3 py-2 shadow-sm" style="font-weight: 800;">
+        <i class="bi bi-check me-1 text-success"></i> Temiz
+    </span>
+}
                                                 }
-                                            </form>
-                                        </td>
-                                    </tr>
+                                            </td>
+
+                                            <td class="text-end pe-4">
+                                                <form method="post" asp-page-handler="ToggleBlacklist" class="d-inline">
+                                                    <input type="hidden" name="customerId" value="@item.Id" />
+                                                    @if (item.IsBlacklisted)
+                                                    {
+                                                        <button type="submit" class="btn-outline-action success">
+                                                            KARA LİSTEDEN ÇIKAR
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button type="submit" class="btn-outline-action danger"
+                                                                onclick="return confirm('Bu müşteriyi kara listeye almak istediğinize emin misiniz? Sistemden bir daha kendi numarasıyla randevu alamayacaktır.');">
+                                                            KARA LİSTEYE AL
+                                                        </button>
+                                                    }
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="4" class="text-center py-5">
-                                        <i class="bi bi-shield-check mb-2 d-block" style="font-size: 2.5rem; color: #444;"></i>
-                                        <span style="color: #666; font-weight: 600;">Temiz! Kara listede veya ihlal sınırında müşteri bulunmuyor.</span>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center py-5">
+                                            <i class="bi bi-shield-check mb-2 d-block"
+                                               style="font-size: 2.5rem; color: #444;"></i>
+                                            <span style="color: #666; font-weight: 600;">Temiz! Kara listede veya ihlal
+                                                sınırında müşteri bulunmuyor.</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
