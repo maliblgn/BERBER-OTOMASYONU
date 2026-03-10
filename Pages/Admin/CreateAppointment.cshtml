@@ -1,0 +1,125 @@
+@page
+@model SoftetroBarber.Pages.Admin.CreateAppointmentModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Manuel Randevu Ekle";
+}
+
+<div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+        <h2 class="mb-0 text-white"><i class="bi bi-calendar-plus text-danger me-2"></i>Manuel Randevu Ekle</h2>
+        <p class="text-secondary mb-0">Sisteme doğrudan yeni bir randevu girin.</p>
+    </div>
+    <div class="col-md-6 text-end">
+        <a asp-page="/Admin/Appointments" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Geri Dön</a>
+    </div>
+</div>
+
+<div class="card" style="background:#1a1a2e; border:1px solid #2a2a3e;">
+    <div class="card-body p-4">
+        
+        @if (!ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> Lütfen hataları düzeltin.
+                <div asp-validation-summary="All" class="mt-2 mb-0 text-danger"></div>
+            </div>
+        }
+
+        <form method="post">
+            <div class="row g-4">
+                
+                <!-- Sol Kolon: Müşteri ve Zaman Seçimi -->
+                <div class="col-md-6">
+                    <h5 class="text-white mb-3 border-bottom border-secondary pb-2">Müşteri ve Randevu Bilgileri</h5>
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-secondary">Müşteri Ad Soyad <span class="text-danger">*</span></label>
+                        <input type="text" asp-for="CustomerName" class="form-control dark-input" required placeholder="Örn: Ali Yılmaz" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary">Telefon Numarası <span class="text-danger">*</span></label>
+                        <input type="text" asp-for="CustomerPhone" class="form-control dark-input" required placeholder="0555 555 5555" />
+                        <small class="text-muted">Sistemde kayıtlıysa eski bilgiler güncellenir, kayıtlı değilse yeni müşteri oluşturulur.</small>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary">Tarih <span class="text-danger">*</span></label>
+                            <!-- Tarih değiştiğinde saatlerin güncellenmesi için basit bir postback tetikleyici (Opsiyonel ama kullanışlı) -->
+                            <input type="date" asp-for="AppointmentDate" class="form-control dark-input" required onchange="reloadSlots()" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary">Saat <span class="text-danger">*</span></label>
+                            <select asp-for="AppointmentTime" class="form-select dark-input" required>
+                                <option value="">Seçiniz...</option>
+                                @foreach (var slot in Model.TimeSlots)
+                                {
+                                    <option value="@slot.Time">@slot.Time.ToString(@"hh\:mm") @(slot.IsBooked ? "(Dolu)" : "")</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary">Berber / Personel Seçimi <span class="text-danger">*</span></label>
+                        <select asp-for="SelectedBarberId" class="form-select dark-input" required>
+                            <option value="">Berber Seçiniz...</option>
+                            @foreach (var barber in Model.ActiveBarbers)
+                            {
+                                <option value="@barber.Id">@barber.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- Sağ Kolon: Hizmetler -->
+                <div class="col-md-6">
+                    <h5 class="text-white mb-3 border-bottom border-secondary pb-2">Hizmet Seçimi <span class="text-danger">*</span></h5>
+                    
+                    <div class="row">
+                        @foreach (var service in Model.AvailableServices)
+                        {
+                            <div class="col-md-6 mb-2">
+                                <div class="form-check custom-checkbox">
+                                    <input class="form-check-input" type="checkbox" name="SelectedServiceIds" value="@service.Id" id="srv_@service.Id" @(Model.SelectedServiceIds.Contains(service.Id) ? "checked" : "")>
+                                    <label class="form-check-label text-white" for="srv_@service.Id">
+                                        @service.Name 
+                                        <br><small class="text-danger">@service.Price.ToString("C") - @service.DurationInMinutes dk</small>
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+            </div>
+
+            <hr class="border-secondary my-4" />
+            
+            <div class="text-end">
+                <button type="submit" class="btn btn-danger px-4 py-2">
+                    <i class="bi bi-check2-circle me-1"></i> Randevuyu Kaydet
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function reloadSlots() {
+            var dateVal = document.getElementById('AppointmentDate').value;
+            // Sayfayı yeni tarihle Get ederek saatleri doldur (seçili hizmet süreleri frontend de olmadığından varsayılan 30dk hesaplar)
+            window.location.href = '?date=' + dateVal;
+        }
+
+        // URL'de date varsa, ve formda hatalar nedeniyle dönülmediyse, seçili tarihi tut.
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('date') && !document.querySelector('.alert-danger')) {
+            document.getElementById('AppointmentDate').value = urlParams.get('date');
+        }
+    </script>
+}

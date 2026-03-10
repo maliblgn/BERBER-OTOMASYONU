@@ -23,13 +23,24 @@ public class AppointmentsModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? SearchTerm { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public string CurrentSortColumn { get; set; } = "StartTime"; // Varsayılan sıralama
+
+    [BindProperty(SupportsGet = true)]
+    public string CurrentSortOrder { get; set; } = "asc"; // asc veya desc
+
     public async Task OnGetAsync()
     {
         BarbersList = await _context.Barbers.Where(b => b.IsActive).ToListAsync();
 
+        var today = DateTime.Today;
+
+        // 1. DÜZELTME: Sadece bugünün ve geleceğin randevuları.
+        // Geçmiş randevular (dün ve öncesi) History sayfasına düşer.
         var query = _context.Appointments
             .Include(a => a.Customer)
             .Include(a => a.Barber)
+            .Where(a => a.StartTime.Date >= today)
             .AsQueryable();
 
         // Filtreleme ve Arama
@@ -39,10 +50,21 @@ public class AppointmentsModel : PageModel
         if (!string.IsNullOrWhiteSpace(SearchTerm))
             query = query.Where(a => a.Customer.FullName.Contains(SearchTerm) || a.Customer.PhoneNumber.Contains(SearchTerm));
 
-        // Bugünün verileri (Takvim ve Liste için)
-        Appointments = await query
-            .OrderBy(a => a.StartTime)
-            .ToListAsync();
+        // 2. SIRALAMA (SORTING) MANTIĞI
+        bool isDesc = CurrentSortOrder?.ToLower() == "desc";
+
+        query = CurrentSortColumn switch
+        {
+            "Customer.FullName" => isDesc ? query.OrderByDescending(a => a.Customer.FullName) : query.OrderBy(a => a.Customer.FullName),
+            "Barber.Name" => isDesc ? query.OrderByDescending(a => a.Barber.Name) : query.OrderBy(a => a.Barber.Name),
+            "TotalPrice" => isDesc ? query.OrderByDescending(a => a.TotalPrice) : query.OrderBy(a => a.TotalPrice),
+            "Status" => isDesc ? query.OrderByDescending(a => a.Status) : query.OrderBy(a => a.Status),
+            // Varsayılan: Tarih ve Saat
+            _ => isDesc ? query.OrderByDescending(a => a.StartTime) : query.OrderBy(a => a.StartTime)
+        };
+
+        // Verileri Çek
+        Appointments = await query.ToListAsync();
     }
 
     public async Task<IActionResult> OnPostUpdateStatusAsync(Guid appointmentId, AppointmentStatus newStatus)

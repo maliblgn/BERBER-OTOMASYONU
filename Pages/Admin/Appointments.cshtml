@@ -50,6 +50,10 @@
     .color-green { background: #2ecc71 !important; }
 
     #detailBar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 12px 25px; border-radius: 50px; display: none; font-weight: 900; gap: 20px; z-index: 1000; border: 3px solid #e34c38; box-shadow: 0 10px 40px rgba(0,0,0,0.6); align-items: center; }
+
+    /* Cursor for sortable headers */
+    .cursor-pointer { cursor: pointer; transition: color 0.2s; }
+    .cursor-pointer:hover { color: #fff !important; }
 </style>
 
 <div class="admin-card">
@@ -82,7 +86,7 @@
             </div>
             
             <a asp-page="/Admin/History" class="btn-action-outline-sm"><i class="bi bi-archive me-1"></i> ARŞİV</a>
-            <button class="btn-action-outline-sm" style="background:#e34c38; border:none;"><i class="bi bi-plus-lg me-1"></i> MANUEL EKLE</button>
+            <a asp-page="/Admin/CreateAppointment" class="btn-action-outline-sm text-white" style="background:#e34c38; border:none; text-decoration:none;"><i class="bi bi-plus-lg me-1"></i> MANUEL EKLE</a>
         </div>
     </div>
 
@@ -92,18 +96,36 @@
                 <table class="table dark-table align-middle">
                     <thead>
                         <tr>
-                            <th class="ps-4">SAAT ARALIĞI</th>
-                            <th>MÜŞTERİ BİLGİSİ</th>
-                            <th>BERBER</th>
-                            <th>TUTAR</th>
-                            <th>DURUM</th>
+                            <th class="ps-4 cursor-pointer sortable-header" data-sort-column="StartTime">
+                                TARİH & SAAT 
+                                @if (Model.CurrentSortColumn == "StartTime") { <i class="bi @(Model.CurrentSortOrder == "desc" ? "bi-sort-numeric-down-alt" : "bi-sort-numeric-up") ms-1"></i> }
+                            </th>
+                            <th class="cursor-pointer sortable-header" data-sort-column="Customer.FullName">
+                                MÜŞTERİ BİLGİSİ 
+                                @if (Model.CurrentSortColumn == "Customer.FullName") { <i class="bi @(Model.CurrentSortOrder == "desc" ? "bi-sort-alpha-down-alt" : "bi-sort-alpha-up") ms-1"></i> }
+                            </th>
+                            <th class="cursor-pointer sortable-header" data-sort-column="Barber.Name">
+                                BERBER 
+                                @if (Model.CurrentSortColumn == "Barber.Name") { <i class="bi @(Model.CurrentSortOrder == "desc" ? "bi-sort-alpha-down-alt" : "bi-sort-alpha-up") ms-1"></i> }
+                            </th>
+                            <th class="cursor-pointer sortable-header" data-sort-column="TotalPrice">
+                                TUTAR 
+                                @if (Model.CurrentSortColumn == "TotalPrice") { <i class="bi @(Model.CurrentSortOrder == "desc" ? "bi-sort-numeric-down-alt" : "bi-sort-numeric-up") ms-1"></i> }
+                            </th>
+                            <th class="cursor-pointer sortable-header" data-sort-column="Status">
+                                DURUM 
+                                @if (Model.CurrentSortColumn == "Status") { <i class="bi @(Model.CurrentSortOrder == "desc" ? "bi-sort-alpha-down-alt" : "bi-sort-alpha-up") ms-1"></i> }
+                            </th>
                             <th class="text-end pe-4">AKSİYON</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model.Appointments) {
                             <tr class="@(item.StartTime <= DateTime.Now && item.EndTime >= DateTime.Now ? "current-session" : "")">
-                                <td class="ps-4"><div class="text-white fw-bold">@item.StartTime.ToString("HH:mm") - @item.EndTime.ToString("HH:mm")</div></td>
+                                <td class="ps-4">
+                                    <div class="text-white fw-bold">@item.StartTime.ToString("dd MMM yyyy")</div>
+                                    <div class="small" style="color: #888;">@item.StartTime.ToString("HH:mm") - @item.EndTime.ToString("HH:mm")</div>
+                                </td>
                                 <td><div class="text-white fw-bold">@item.Customer.FullName</div><div class="small text-secondary">@item.Customer.PhoneNumber</div></td>
                                 <td><span class="text-light">@item.Barber.Name</span></td>
                                 <td><span class="price-text">@item.TotalPrice.ToString("C0")</span></td>
@@ -138,6 +160,9 @@
             </div>
         </div>
 
+        @* Takvim modunda sadece "BUGÜNÜN" randevularını göstermek mantıklı olduğu için 
+           şimdilik takvimi gizlemiyoruz, ancak çok ileri tarihli randevular karışıklık yaratabilir.
+           Burayı opsiyonel olarak sadece bugün seçili ise takvim göster şeklinde geliştirebiliriz *@
         <div id="calView" style="display: none;">
             <div class="barber-tabs">
                 @foreach (var barber in Model.BarbersList) {
@@ -176,30 +201,71 @@
 
 @section Scripts {
 <script>
-    const searchInput = document.getElementById('searchInput');
-    const barberSelect = document.getElementById('barberSelect');
-    const tableContainer = document.getElementById('tableContainer');
-    const filterGroup = document.getElementById('filterGroup');
+    const elSearch = document.getElementById('searchInput');
+    const elBarber = document.getElementById('barberSelect');
+    const elTable = document.getElementById('tableContainer');
+    const elFilter = document.getElementById('filterGroup');
+
+    // MEvcut Sıralama Değerleri
+    let currentSortColumn = '@Model.CurrentSortColumn' || 'StartTime';
+    let currentSortOrder = '@Model.CurrentSortOrder' || 'asc';
+
+    // EVENT LISTENER MANTIĞI: DOKÜMAN YÜKLENDİĞİNDE SIRALANABİLİR BAŞLIKLARI DİNLE
+    document.addEventListener("DOMContentLoaded", function() {
+        const sortableHeaders = document.querySelectorAll('.sortable-header');
+        
+        sortableHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const column = this.getAttribute('data-sort-column');
+                
+                // Aynı kolona tıkladıysa yönü değiştir, farklı kolona tıkladıysa asc yap
+                if (currentSortColumn === column) {
+                    currentSortOrder = (currentSortOrder === 'asc') ? 'desc' : 'asc';
+                } else {
+                    currentSortColumn = column;
+                    currentSortOrder = 'asc';
+                }
+                
+                // Sayfayı yeni query parametreleriyle reload et (Sayfa postback olacak ve C# yakalayacak)
+                const url = new URL(window.location.href);
+                url.searchParams.set('CurrentSortColumn', currentSortColumn);
+                url.searchParams.set('CurrentSortOrder', currentSortOrder);
+                
+                // Arama veya berber filtresi varsa onları da koru
+                if (elSearch.value) url.searchParams.set('SearchTerm', elSearch.value);
+                if (elBarber.value) url.searchParams.set('SelectedBarberId', elBarber.value);
+
+                window.location.href = url.pathname + url.search;
+            });
+        });
+    });
 
     // LİSTE ARAMA FONKSİYONU
     function triggerLiveSearch() {
-        tableContainer.classList.add('loading-overlay');
-        const url = `?SearchTerm=${encodeURIComponent(searchInput.value)}&SelectedBarberId=${barberSelect.value}`;
+        elTable.classList.add('loading-overlay');
+        const url = `?SearchTerm=${encodeURIComponent(elSearch.value)}&SelectedBarberId=${elBarber.value}&CurrentSortColumn=${currentSortColumn}&CurrentSortOrder=${currentSortOrder}`;
         fetch(url).then(r => r.text()).then(html => {
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
-            tableContainer.innerHTML = doc.getElementById('tableContainer').innerHTML;
-            tableContainer.classList.remove('loading-overlay');
+            elTable.innerHTML = doc.getElementById('tableContainer').innerHTML;
+            elTable.classList.remove('loading-overlay');
+            
             // Görünüm durumunu koru
             const isCal = document.getElementById('vSwitch').classList.contains('cal-active');
             document.getElementById('listView').style.display = isCal ? 'none' : 'block';
             document.getElementById('calView').style.display = isCal ? 'block' : 'none';
-            if(isCal) filterCalByBarber(document.querySelector('.barber-tab.active').getAttribute('onclick').match(/'([^']+)'/)[1]);
+            if(isCal) { 
+                const activeTab = document.querySelector('.barber-tab.active');
+                if(activeTab) {
+                    const match = activeTab.getAttribute('onclick').match(/'([^']+)'/);
+                    if(match) filterCalByBarber(match[1]);
+                }
+            }
         });
     }
 
-    searchInput.addEventListener('input', () => { clearTimeout(window.t); window.t = setTimeout(triggerLiveSearch, 300); });
-    barberSelect.addEventListener('change', triggerLiveSearch);
+    elSearch.addEventListener('input', () => { clearTimeout(window.t); window.t = setTimeout(triggerLiveSearch, 300); });
+    elBarber.addEventListener('change', triggerLiveSearch);
 
     // GÖRÜNÜM DEĞİŞTİRİCİ
     function toggleView() {
@@ -214,7 +280,7 @@
 
         l.style.display = isCal ? 'none' : 'block';
         c.style.display = isCal ? 'block' : 'none';
-        filterGroup.style.display = isCal ? 'none' : 'flex'; // TAKVİMDE FİLTRELERİ GİZLE
+        elFilter.style.display = isCal ? 'none' : 'flex'; // TAKVİMDE FİLTRELERİ GİZLE
 
         li.classList.toggle('active-view-icon', !isCal);
         ci.classList.toggle('active-view-icon', isCal);
