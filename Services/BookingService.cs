@@ -17,14 +17,13 @@ public class BookingService : IBookingService
 
     public async Task<List<Barber>> GetAvailableBarbersForSlotAsync(DateTime date, TimeSpan startTime, int totalDurationMinutes)
     {
-        var availableBarbers = new List<Barber>();
         var requiredTimeSpan = TimeSpan.FromMinutes(totalDurationMinutes);
         var potentialStart = date.Date + startTime;
         var potentialEnd = potentialStart + requiredTimeSpan;
 
-        // Skip if requested time is in the past
+        // Geçmiş zamana randevu alınamaz
         if (potentialStart <= DateTime.Now)
-            return availableBarbers;
+            return new List<Barber>();
 
         var activeBarbers = await _context.Barbers
             .Where(b => b.IsActive)
@@ -33,28 +32,23 @@ public class BookingService : IBookingService
             .Include(b => b.Appointments.Where(a => a.Status != AppointmentStatus.Cancelled))
             .ToListAsync();
 
-        foreach (var barber in activeBarbers)
+        return activeBarbers.Where(barber =>
         {
-            // 1. Check Working Hours
+            // 1. Çalışma saatleri kontrolü (Mesai İçi ve Mesai Sonu koruması)
             var workingHours = barber.WorkingHours.FirstOrDefault(w => w.DayOfWeek == date.DayOfWeek);
-            if (workingHours == null) continue; // Not working today
+            if (workingHours == null || startTime < workingHours.OpenTime || startTime + requiredTimeSpan > workingHours.CloseTime)
+                return false;
 
-            if (startTime < workingHours.OpenTime || startTime + requiredTimeSpan > workingHours.CloseTime)
-                continue; // Outside working hours
-
-            // 2. Check Time Offs
+            // 2. Mola/İzin kontrolü (Randevu süresince mola ile kesişmeme)
             bool hasTimeOff = barber.TimeOffs.Any(t => potentialStart < t.EndDateTime && potentialEnd > t.StartDateTime);
-            if (hasTimeOff) continue;
+            if (hasTimeOff) return false;
 
-            // 3. Check existing appointments
+            // 3. Mevcut randevularla çakışma kontrolü (Kesintisiz Slot Kontrolü)
             bool hasConflict = barber.Appointments.Any(a => potentialStart < a.EndTime && potentialEnd > a.StartTime);
-            if (hasConflict) continue;
+            if (hasConflict) return false;
 
-            // Barber is available!
-            availableBarbers.Add(barber);
-        }
-
-        return availableBarbers;
+            return true;
+        }).ToList();
     }
 
     public async Task<List<TimeSlotDto>> GetTimeSlotsForDateAsync(DateTime date, int totalDurationMinutes)

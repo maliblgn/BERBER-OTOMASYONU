@@ -94,6 +94,8 @@ public class Step5_PhoneModel : PageModel
         sessionModel.CustomerPhone = CustomerPhone;
         HttpContext.Session.Set("BookingSession", sessionModel);
 
+        TempData["OtpMessage"] = "Kod başarıyla gönderildi, lütfen telefonunuzu kontrol edin";
+
         return RedirectToPage("Step6_Verify");
     }
 

@@ -1,8 +1,7 @@
 namespace SoftetroBarber.Models;
 
-public class Barber
+public class Barber : BaseEntity
 {
-    public Guid Id { get; set; }
     public required string Name { get; set; }
     public string? Bio { get; set; }
     public string? ImagePath { get; set; }
