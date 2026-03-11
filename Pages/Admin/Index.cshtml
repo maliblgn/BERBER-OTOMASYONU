@@ -120,7 +120,10 @@
 
     <div class="col-sm-6 col-xl-3">
         <div class="stat-card stat-success">
-            <div class="stat-label">Bugünkü Ciro</div>
+            <div class="stat-label d-flex justify-content-between align-items-center">
+                <span>Bugünkü Ciro</span>
+                <span class="badge bg-success bg-opacity-25 text-success rounded-pill px-2">@Model.TodayCompletedCount İşlem</span>
+            </div>
             <div class="stat-value">@Model.TodayRevenue.ToString("C0")</div>
             <i class="bi bi-cash-stack stat-icon"></i>
         </div>

@@ -17,7 +17,7 @@ public class IndexModel : PageModel
         _context = context;
     }
 
-    public int TodayAppointmentsCount { get; set; }
+    public int TodayCompletedCount { get; set; }
     public int TotalBarbersCount { get; set; }
     public int TotalCustomersCount { get; set; }
     public decimal TodayRevenue { get; set; }
@@ -29,9 +29,9 @@ public class IndexModel : PageModel
         var now = DateTime.Now; // Şu anki tarih ve saat: 09.03.2026 16:31
         var today = DateTime.Today;
 
-        // İstatistikler aynı kalıyor
-        TodayAppointmentsCount = await _context.Appointments
-            .Where(a => a.StartTime.Date == today && a.Status != AppointmentStatus.Cancelled)
+        // Ciro kartında tamamlanan işlemlerin sayısını ("miktarını") da göstermek için
+        TodayCompletedCount = await _context.Appointments
+            .Where(a => a.StartTime.Date == today && a.Status == AppointmentStatus.Completed)
             .CountAsync();
 
         TotalBarbersCount = await _context.Barbers.CountAsync(b => b.IsActive);

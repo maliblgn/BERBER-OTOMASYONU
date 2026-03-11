@@ -23,39 +23,59 @@ public class AppointmentsModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? SearchTerm { get; set; }
 
+    [BindProperty(SupportsGet = true)]
+    public string CurrentSortColumn { get; set; } = "StartTime";
+
+    [BindProperty(SupportsGet = true)]
+    public string CurrentSortOrder { get; set; } = "asc";
+
     public async Task OnGetAsync()
     {
         // Aktif personelleri çekiyoruz
         BarbersList = await _context.Barbers.Where(b => b.IsActive).ToListAsync();
 
-        var now = DateTime.Now; // Şu anki zamanı alıyoruz
+        var now = DateTime.Now;
+        var today = DateTime.Today;
 
+        // Temel sorgu: Müşteri ve Berber bilgilerini dahil et
         var query = _context.Appointments
             .Include(a => a.Customer)
             .Include(a => a.Barber)
             .AsQueryable();
 
-        // KRİTİK FİLTRE: Sadece bitiş saati şu andan sonra olanları getir
-        // Bu satır sayesinde 7 Mart veya saati geçmiş bugünün randevuları listeden kalkar.
-        query = query.Where(a => a.EndTime >= now);
+        // 1. ZAMAN FİLTRESİ: 
+        // Sadece bugünün ve geleceğin randevularını getir.
+        // Ayrıca bitiş saati şu andan önce olan (geçmiş) randevuları listeden kaldır.
+        query = query.Where(a => a.StartTime.Date >= today && a.EndTime >= now);
 
-        // İsim veya Telefon ile Arama
+        // 2. ARAMA FİLTRESİ (İsim veya Telefon)
         if (!string.IsNullOrWhiteSpace(SearchTerm))
         {
             query = query.Where(a => a.Customer.FullName.Contains(SearchTerm) ||
-                                     a.Customer.PhoneNumber.Contains(SearchTerm));
+                                 a.Customer.PhoneNumber.Contains(SearchTerm));
         }
 
-        // Berber Filtrelemesi
+        // 3. BERBER FİLTRESİ
         if (SelectedBarberId.HasValue && SelectedBarberId != Guid.Empty)
         {
             query = query.Where(a => a.BarberId == SelectedBarberId);
         }
 
-        // Kronolojik olarak sırala
-        Appointments = await query
-            .OrderBy(a => a.StartTime)
-            .ToListAsync();
+        // 4. SIRALAMA (SORTING) MANTIĞI
+        bool isDesc = CurrentSortOrder?.ToLower() == "desc";
+
+        query = CurrentSortColumn switch
+        {
+            "Customer.FullName" => isDesc ? query.OrderByDescending(a => a.Customer.FullName) : query.OrderBy(a => a.Customer.FullName),
+            "Barber.Name" => isDesc ? query.OrderByDescending(a => a.Barber.Name) : query.OrderBy(a => a.Barber.Name),
+            "TotalPrice" => isDesc ? query.OrderByDescending(a => a.TotalPrice) : query.OrderBy(a => a.TotalPrice),
+            "Status" => isDesc ? query.OrderByDescending(a => a.Status) : query.OrderBy(a => a.Status),
+            // Varsayılan: Başlangıç Saati
+            _ => isDesc ? query.OrderByDescending(a => a.StartTime) : query.OrderBy(a => a.StartTime)
+        };
+
+        // Verileri Çek
+        Appointments = await query.ToListAsync();
     }
 
     public async Task<IActionResult> OnPostUpdateStatusAsync(Guid appointmentId, AppointmentStatus newStatus)
@@ -67,6 +87,14 @@ public class AppointmentsModel : PageModel
             await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Randevu başarıyla güncellendi.";
         }
-        return RedirectToPage(new { SelectedBarberId, SearchTerm });
+
+        // Güncelleme sonrası sayfaya dönerken mevcut filtreleri ve sıralamayı koru
+        return RedirectToPage(new
+        {
+            SelectedBarberId,
+            SearchTerm,
+            CurrentSortColumn,
+            CurrentSortOrder
+        });
     }
 }
