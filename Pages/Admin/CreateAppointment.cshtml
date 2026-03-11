@@ -2,124 +2,146 @@
 @model SoftetroBarber.Pages.Admin.CreateAppointmentModel
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Manuel Randevu Ekle";
+    ViewData["Title"] = "Hızlı Randevu Kaydı";
 }
 
-<div class="row mb-4 align-items-center">
-    <div class="col-md-6">
-        <h2 class="mb-0 text-white"><i class="bi bi-calendar-plus text-danger me-2"></i>Manuel Randevu Ekle</h2>
-        <p class="text-secondary mb-0">Sisteme doğrudan yeni bir randevu girin.</p>
+<style>
+    /* SOFTETRO PREMIUM MANUEL AKIŞ UI */
+    body { background-color: #0c0c0c; color: #fff; }
+    .page-container { max-width: 650px; margin: 0 auto; padding: 20px 15px; }
+
+    /* Navigasyon Butonu (Geri Tuşu) */
+    .btn-back {
+        display: inline-flex; align-items: center; gap: 8px;
+        color: #888; text-decoration: none; font-weight: 800; font-size: 0.75rem;
+        padding: 8px 15px; border: 1px solid #222; border-radius: 50px;
+        transition: 0.3s; margin-bottom: 20px;
+    }
+    .btn-back:hover { color: #fff; border-color: #e34c38; background: rgba(227, 76, 56, 0.05); }
+
+    /* Kutucuk Tasarımları */
+    .selection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px; }
+    .box-option {
+        background: #111; border: 1px solid #222; border-radius: 12px; padding: 10px; text-align: center;
+        cursor: pointer; transition: 0.2s; color: #555; font-weight: 800; font-size: 0.75rem;
+    }
+    .box-option.active { border-color: #e34c38; color: #fff; background: rgba(227, 76, 56, 0.1); }
+
+    /* Tarih Seçici */
+    .date-box {
+        background: #111; border: 1px solid #e34c38; border-radius: 50px;
+        padding: 5px 15px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 25px;
+    }
+    .date-input-custom { background: transparent; border: none; color: #e34c38; font-weight: 900; font-size: 1rem; outline: none; cursor: pointer; }
+
+    /* Saat Slotları */
+    .time-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 6px; margin-bottom: 25px; }
+    .time-slot {
+        background: #111; border: 1px solid #222; border-radius: 6px; padding: 12px;
+        text-align: center; font-weight: 900; font-size: 0.8rem; color: #fff; cursor: pointer; position: relative;
+    }
+    .time-slot.booked { opacity: 0.15; cursor: not-allowed; text-decoration: line-through; }
+    .time-slot.selected { background: #fff; color: #000; border-color: #fff; transform: scale(1.05); }
+
+    /* Giriş Alanları */
+    .premium-input { background: #111; border: 1px solid #222; border-radius: 10px; padding: 12px; color: #fff; font-weight: 700; width: 100%; margin-bottom: 12px; outline: none; }
+
+    /* Fiyat Alanına Özel Tasarım */
+    .price-wrapper { position: relative; display: flex; align-items: center; }
+    .price-symbol { position: absolute; left: 15px; color: #e34c38; font-weight: 900; font-size: 1.1rem; pointer-events: none; }
+    .premium-input-price {
+        background: #111; border: 1px solid #222; border-radius: 10px; padding: 12px 15px 12px 40px;
+        color: #fff; font-weight: 700; width: 100%; outline: none; transition: 0.3s;
+        border-left: 4px solid #e34c38 !important;
+    }
+</style>
+
+<div class="page-container text-center">
+    <div class="text-start">
+        <a asp-page="/Admin/Appointments" class="btn-back">
+            <i class="bi bi-arrow-left"></i> AJANDAYA DÖN
+        </a>
     </div>
-    <div class="col-md-6 text-end">
-        <a asp-page="/Admin/Appointments" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i> Geri Dön</a>
-    </div>
-</div>
 
-<div class="card" style="background:#1a1a2e; border:1px solid #2a2a3e;">
-    <div class="card-body p-4">
-        
-        @if (!ModelState.IsValid)
-        {
-            <div class="alert alert-danger">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i> Lütfen hataları düzeltin.
-                <div asp-validation-summary="All" class="mt-2 mb-0 text-danger"></div>
-            </div>
-        }
+    <form method="post" id="mainForm">
+        <h6 class="text-secondary small fw-bold mb-2">1. PERSONEL SEÇİNİZ</h6>
+        <div class="selection-grid">
+            @foreach (var barber in Model.ActiveBarbers)
+            {
+                <div class="box-option @(Model.SelectedBarberId == barber.Id ? "active" : "")"
+                     onclick="updateBarber('@barber.Id')">@barber.Name.ToUpper()</div>
+            }
+            <input type="hidden" asp-for="SelectedBarberId" id="hidBarber" />
+        </div>
 
-        <form method="post">
-            <div class="row g-4">
-                
-                <!-- Sol Kolon: Müşteri ve Zaman Seçimi -->
-                <div class="col-md-6">
-                    <h5 class="text-white mb-3 border-bottom border-secondary pb-2">Müşteri ve Randevu Bilgileri</h5>
-                    
-                    <div class="mb-3">
-                        <label class="form-label text-secondary">Müşteri Ad Soyad <span class="text-danger">*</span></label>
-                        <input type="text" asp-for="CustomerName" class="form-control dark-input" required placeholder="Örn: Ali Yılmaz" />
-                    </div>
+        <div class="date-box">
+            <input type="date" asp-for="AppointmentDate" id="datePicker" 
+                   min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                   class="date-input-custom" onchange="refreshAll()" />
+            <i class="bi bi-calendar3 text-secondary"></i>
+        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label text-secondary">Telefon Numarası <span class="text-danger">*</span></label>
-                        <input type="text" asp-for="CustomerPhone" class="form-control dark-input" required placeholder="0555 555 5555" />
-                        <small class="text-muted">Sistemde kayıtlıysa eski bilgiler güncellenir, kayıtlı değilse yeni müşteri oluşturulur.</small>
-                    </div>
+        <h6 class="text-secondary small fw-bold mb-2">2. İŞLEM SÜRESİ</h6>
+        <div class="selection-grid">
+            @foreach (var min in new[] { 15, 30, 45, 60, 90 })
+            {
+                <div class="box-option @(Model.Duration == min ? "active" : "")" onclick="updateDuration(@min)">@min DK</div>
+            }
+            <input type="hidden" asp-for="Duration" id="hidDuration" />
+        </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label text-secondary">Tarih <span class="text-danger">*</span></label>
-                            <!-- Tarih değiştiğinde saatlerin güncellenmesi için basit bir postback tetikleyici (Opsiyonel ama kullanışlı) -->
-                            <input type="date" asp-for="AppointmentDate" class="form-control dark-input" required onchange="reloadSlots()" />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label text-secondary">Saat <span class="text-danger">*</span></label>
-                            <select asp-for="AppointmentTime" class="form-select dark-input" required>
-                                <option value="">Seçiniz...</option>
-                                @foreach (var slot in Model.TimeSlots)
-                                {
-                                    <option value="@slot.Time">@slot.Time.ToString(@"hh\:mm") @(slot.IsBooked ? "(Dolu)" : "")</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label text-secondary">Berber / Personel Seçimi <span class="text-danger">*</span></label>
-                        <select asp-for="SelectedBarberId" class="form-select dark-input" required>
-                            <option value="">Berber Seçiniz...</option>
-                            @foreach (var barber in Model.ActiveBarbers)
-                            {
-                                <option value="@barber.Id">@barber.Name</option>
-                            }
-                        </select>
-                    </div>
-
+        <h6 class="text-secondary small fw-bold mb-2">3. UYGUN SAATLER</h6>
+        <div class="time-grid">
+            @foreach (var slot in Model.TimeSlots)
+            {
+                <div class="time-slot @(slot.IsBooked ? "booked" : "")"
+                     onclick="@(slot.IsBooked ? "" : $"selectTime('{slot.Time}', this)")">
+                    @slot.Time.ToString(@"hh\:mm")
+                    @if(slot.IsBooked) { <div style="font-size:0.5rem; color:#ff4d4d; position:absolute; bottom:2px; left:0; right:0;">DOLU</div> }
                 </div>
+            }
+            <input type="hidden" asp-for="AppointmentTime" id="hidTime" />
+        </div>
 
-                <!-- Sağ Kolon: Hizmetler -->
-                <div class="col-md-6">
-                    <h5 class="text-white mb-3 border-bottom border-secondary pb-2">Hizmet Seçimi <span class="text-danger">*</span></h5>
-                    
-                    <div class="row">
-                        @foreach (var service in Model.AvailableServices)
-                        {
-                            <div class="col-md-6 mb-2">
-                                <div class="form-check custom-checkbox">
-                                    <input class="form-check-input" type="checkbox" name="SelectedServiceIds" value="@service.Id" id="srv_@service.Id" @(Model.SelectedServiceIds.Contains(service.Id) ? "checked" : "")>
-                                    <label class="form-check-label text-white" for="srv_@service.Id">
-                                        @service.Name 
-                                        <br><small class="text-danger">@service.Price.ToString("C") - @service.DurationInMinutes dk</small>
-                                    </label>
-                                </div>
-                            </div>
-                        }
+        <div class="text-start" style="background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222;">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="text-secondary small fw-bold mb-1">TELEFON NUMARASI *</label>
+                    <input type="text" asp-for="CustomerPhone" class="premium-input" placeholder="05XX XXX XX XX" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="text-secondary small fw-bold mb-1">FİYAT (OPSİYONEL)</label>
+                    <div class="price-wrapper">
+                        <span class="price-symbol">₺</span>
+                        <input type="text" asp-for="TotalPrice" class="premium-input-price" placeholder="0" />
                     </div>
-
                 </div>
             </div>
+            <label class="text-secondary small fw-bold mb-1">MÜŞTERİ AD SOYAD (OPSİYONEL)</label>
+            <input type="text" asp-for="CustomerName" class="premium-input" placeholder="Yazılmasa da olur..." />
+        </div>
 
-            <hr class="border-secondary my-4" />
-            
-            <div class="text-end">
-                <button type="submit" class="btn btn-danger px-4 py-2">
-                    <i class="bi bi-check2-circle me-1"></i> Randevuyu Kaydet
-                </button>
-            </div>
-        </form>
-    </div>
+        <button type="submit" class="btn btn-danger w-100 py-3 mt-4 fw-bold shadow-lg" style="border-radius: 12px; font-size: 1rem;">
+            RANDEVUYU SİSTEME İŞLE
+        </button>
+    </form>
 </div>
 
 @section Scripts {
     <script>
-        function reloadSlots() {
-            var dateVal = document.getElementById('AppointmentDate').value;
-            // Sayfayı yeni tarihle Get ederek saatleri doldur (seçili hizmet süreleri frontend de olmadığından varsayılan 30dk hesaplar)
-            window.location.href = '?date=' + dateVal;
+        function updateBarber(id) { document.getElementById('hidBarber').value = id; refreshAll(); }
+        function updateDuration(val) { document.getElementById('hidDuration').value = val; refreshAll(); }
+        function selectTime(time, el) {
+            if (el.classList.contains('booked')) return;
+            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('hidTime').value = time;
         }
-
-        // URL'de date varsa, ve formda hatalar nedeniyle dönülmediyse, seçili tarihi tut.
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('date') && !document.querySelector('.alert-danger')) {
-            document.getElementById('AppointmentDate').value = urlParams.get('date');
+        function refreshAll() {
+            const date = document.getElementById('datePicker').value;
+            const dur = document.getElementById('hidDuration').value;
+            const barb = document.getElementById('hidBarber').value;
+            window.location.href = `?date=${date}&duration=${dur}&barberId=${barb}`;
         }
     </script>
 }

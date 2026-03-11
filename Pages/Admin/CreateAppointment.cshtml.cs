@@ -5,136 +5,117 @@ using Microsoft.EntityFrameworkCore;
 using SoftetroBarber.Data;
 using SoftetroBarber.Enums;
 using SoftetroBarber.Models;
-using SoftetroBarber.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace SoftetroBarber.Pages.Admin;
-
-[Authorize(Roles = "Admin")]
-public class CreateAppointmentModel : PageModel
+namespace SoftetroBarber.Pages.Admin
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IBookingService _bookingService;
-
-    public CreateAppointmentModel(ApplicationDbContext context, IBookingService bookingService)
+    public class LocalTimeSlot
     {
-        _context = context;
-        _bookingService = bookingService;
+        public TimeSpan Time { get; set; }
+        public bool IsBooked { get; set; }
+        public bool IsPassed { get; set; } // Geçmiş saatler için yeni özellik
     }
 
-    // Reference Data
-    public List<Barber> ActiveBarbers { get; set; } = new();
-    public List<Service> AvailableServices { get; set; } = new();
-    public List<TimeSlotDto> TimeSlots { get; set; } = new();
-
-    // Bound Form Data
-    [BindProperty] public string CustomerName { get; set; } = string.Empty;
-    [BindProperty] public string CustomerPhone { get; set; } = string.Empty;
-    [BindProperty] public List<Guid> SelectedServiceIds { get; set; } = new();
-    [BindProperty] public DateTime AppointmentDate { get; set; } = DateTime.Today;
-    [BindProperty] public TimeSpan AppointmentTime { get; set; }
-    [BindProperty] public Guid SelectedBarberId { get; set; }
-
-    public async Task OnGetAsync(DateTime? date, int duration = 30)
+    [Authorize(Roles = "Admin")]
+    public class CreateAppointmentModel : PageModel
     {
-        await LoadReferenceDataAsync();
+        private readonly ApplicationDbContext _context;
+        public CreateAppointmentModel(ApplicationDbContext context) => _context = context;
 
-        // Eğer belli bir tarih seçilip post-back olmuşsa saatleri ona göre yükle
-        var dateToLoad = date ?? DateTime.Today;
-        AppointmentDate = dateToLoad;
-        TimeSlots = await _bookingService.GetTimeSlotsForDateAsync(dateToLoad, duration);
-    }
+        public List<Barber> ActiveBarbers { get; set; } = new();
+        public List<LocalTimeSlot> TimeSlots { get; set; } = new();
 
-    public async Task<IActionResult> OnPostAsync()
-    {
-        await LoadReferenceDataAsync(); // Model hatalıysa geri dönerken listeler boş olmasın diye
+        [BindProperty] public string? CustomerName { get; set; }
+        [BindProperty] public string CustomerPhone { get; set; } = string.Empty;
+        [BindProperty] public decimal? TotalPrice { get; set; }
+        [BindProperty] public DateTime AppointmentDate { get; set; } = DateTime.Today;
+        [BindProperty] public TimeSpan AppointmentTime { get; set; }
+        [BindProperty] public Guid SelectedBarberId { get; set; }
+        [BindProperty] public int Duration { get; set; } = 30;
 
-        if (!SelectedServiceIds.Any())
+        public async Task OnGetAsync(DateTime? date, Guid? barberId, int duration = 30)
         {
-            ModelState.AddModelError("", "Lütfen en az bir hizmet seçin.");
-            return Page();
+            ActiveBarbers = await _context.Barbers.Where(b => b.IsActive).ToListAsync();
+            AppointmentDate = date ?? DateTime.Today;
+            Duration = duration;
+            SelectedBarberId = barberId ?? (ActiveBarbers.FirstOrDefault()?.Id ?? Guid.Empty);
+
+            if (SelectedBarberId != Guid.Empty) await GenerateInternalTimeSlots();
         }
 
-        if (string.IsNullOrWhiteSpace(CustomerName) || string.IsNullOrWhiteSpace(CustomerPhone))
+        private async Task GenerateInternalTimeSlots()
         {
-            ModelState.AddModelError("", "Müşteri adı ve telefonu zorunludur.");
-            return Page();
-        }
+            TimeSlots = new List<LocalTimeSlot>();
+            var start = new TimeSpan(10, 0, 0);
+            var end = new TimeSpan(21, 0, 0);
+            var now = DateTime.Now; // Şu anki zaman
 
-        // Seçili hizmetleri ve süreleri topla
-        var services = await _context.Services.Where(s => SelectedServiceIds.Contains(s.Id)).ToListAsync();
-        int totalDuration = services.Sum(s => s.DurationInMinutes);
-        decimal totalPrice = services.Sum(s => s.Price);
+            var existingApts = await _context.Appointments
+                .Where(a => a.BarberId == SelectedBarberId && a.StartTime.Date == AppointmentDate.Date)
+                .Select(a => new { a.StartTime, a.EndTime })
+                .ToListAsync();
 
-        // Çakışma (Conflict) Kontrolü
-        var availableBarbersForSlot = await _bookingService.GetAvailableBarbersForSlotAsync(AppointmentDate, AppointmentTime, totalDuration);
-
-        if (!availableBarbersForSlot.Any(b => b.Id == SelectedBarberId))
-        {
-            ModelState.AddModelError("", "Seçilen berber bu saat diliminde uygun değildir (Mesai saati dışı, izinli veya başka randevusu var). Lütfen başka bir saat veya berber seçiniz.");
-            TimeSlots = await _bookingService.GetTimeSlotsForDateAsync(AppointmentDate, totalDuration);
-            return Page();
-        }
-
-        // Transaction Başlat
-        using var transaction = await _context.Database.BeginTransactionAsync();
-        try
-        {
-            // Müşteriyi bul veya oluştur
-            var cleanPhone = new string(CustomerPhone.Where(char.IsDigit).ToArray());
-            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.PhoneNumber == cleanPhone);
-
-            if (customer == null)
+            while (start.Add(TimeSpan.FromMinutes(Duration)) <= end)
             {
-                customer = new Customer { Id = Guid.NewGuid(), FullName = CustomerName, PhoneNumber = cleanPhone };
-                await _context.Customers.AddAsync(customer);
-            }
-            else
-            {
-                customer.FullName = CustomerName; // İsim güncel değilse ez
-            }
+                var slotStart = AppointmentDate.Date.Add(start);
+                var slotEnd = slotStart.AddMinutes(Duration);
 
+                // 1. Durum: Randevu zaten dolu mu?
+                bool isBooked = existingApts.Any(a =>
+                    (slotStart >= a.StartTime && slotStart < a.EndTime) ||
+                    (slotEnd > a.StartTime && slotEnd <= a.EndTime) ||
+                    (a.StartTime >= slotStart && a.StartTime < slotEnd));
+
+                // 2. Durum: Bu saat bugün geçti mi?
+                bool isPassed = slotStart < now;
+
+                TimeSlots.Add(new LocalTimeSlot
+                {
+                    Time = start,
+                    IsBooked = isBooked || isPassed, // İkisinden biri doğruysa kapat
+                    IsPassed = isPassed
+                });
+                start = start.Add(TimeSpan.FromMinutes(15));
+            }
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (string.IsNullOrEmpty(CustomerPhone)) return Page();
             var startTime = AppointmentDate.Date + AppointmentTime;
-            
-            // Randevu Oluştur
-            var appointment = new Appointment
+
+            // BACKEND KORUMASI: Form bir şekilde geçilse bile geçmişe randevu kaydetme
+            if (startTime < DateTime.Now)
+            {
+                ModelState.AddModelError("", "Geçmiş bir tarihe/saate randevu alamazsınız.");
+                await OnGetAsync(AppointmentDate, SelectedBarberId, Duration);
+                return Page();
+            }
+
+            var cleanPhone = new string(CustomerPhone.Where(char.IsDigit).ToArray());
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.PhoneNumber == cleanPhone)
+                           ?? new Customer { Id = Guid.NewGuid(), FullName = CustomerName ?? "Müşteri", PhoneNumber = cleanPhone };
+
+            if (customer.Id != Guid.Empty && string.IsNullOrEmpty(customer.FullName) == false) _context.Customers.Update(customer);
+            else await _context.Customers.AddAsync(customer);
+
+            await _context.Appointments.AddAsync(new Appointment
             {
                 Id = Guid.NewGuid(),
                 CustomerId = customer.Id,
                 BarberId = SelectedBarberId,
                 StartTime = startTime,
-                EndTime = startTime.AddMinutes(totalDuration),
-                TotalPrice = totalPrice,
-                Status = AppointmentStatus.Confirmed
-            };
-            await _context.Appointments.AddAsync(appointment);
-
-            // İlişkili Servisleri Ekle
-            foreach (var service in services)
-            {
-                await _context.AppointmentServices.AddAsync(new AppointmentService
-                {
-                    AppointmentId = appointment.Id,
-                    ServiceId = service.Id
-                });
-            }
+                EndTime = startTime.AddMinutes(Duration),
+                Status = AppointmentStatus.Confirmed,
+                TotalPrice = TotalPrice ?? 0
+            });
 
             await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-
-            TempData["SuccessMessage"] = "Randevu başarıyla manuel olarak oluşturuldu.";
+            TempData["SuccessMessage"] = "Randevu başarıyla eklendi.";
             return RedirectToPage("/Admin/Appointments");
         }
-        catch (Exception ex)
-        {
-            await transaction.RollbackAsync();
-            ModelState.AddModelError("", "Kayıt işlemi sırasında sistemsel bir hata oluştu: " + ex.Message);
-            return Page();
-        }
-    }
-
-    private async Task LoadReferenceDataAsync()
-    {
-        ActiveBarbers = await _context.Barbers.Where(b => b.IsActive).ToListAsync();
-        AvailableServices = await _context.Services.ToListAsync();
     }
 }

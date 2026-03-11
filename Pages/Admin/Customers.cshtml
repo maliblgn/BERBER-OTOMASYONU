@@ -5,187 +5,183 @@
 }
 
 <style>
-    /* Admin Paneli Ortak Karanlık Tema */
-    .admin-card {
-        background-color: #1a1a1a;
-        border: 1px solid #222;
-        border-radius: 6px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
+    /* SOFTETRO PREMIUM DARK THEME */
+    .admin-card { background-color: #1a1a1a; border: 1px solid #222; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); overflow: hidden; }
+    .admin-card-header { background-color: #111; border-bottom: 1px solid #222; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+    
+    /* ARAMA KUTUSU VE GİRİŞLER */
+    .compact-input { background: #ffffff !important; color: #000 !important; font-weight: 800; border: none; height: 36px; border-radius: 6px; font-size: 0.75rem; padding: 0 10px 0 32px; outline: none; transition: 0.3s; width: 220px; }
+    .compact-input:focus { box-shadow: 0 0 10px rgba(255,255,255,0.2); width: 260px; }
 
-    .admin-card-header {
-        background-color: #111;
-        border-bottom: 1px solid #222;
-        border-radius: 6px 6px 0 0;
-        padding: 20px 25px;
-    }
+    /* TABLO TASARIMI */
+    .dark-table { color: #ccc; margin-bottom: 0; }
+    .dark-table thead th { background-color: #0a0a0a; color: #888; border-bottom: 2px solid #222; font-weight: 800; text-transform: uppercase; font-size: 0.7rem; padding: 15px 20px; }
+    .dark-table tbody td { border-bottom: 1px solid #222; padding: 15px 20px; vertical-align: middle; }
 
-    /* Tablo Stilleri */
-    .dark-table {
-        color: #ccc;
-        margin-bottom: 0;
-    }
+    /* DURUM ROZETLERİ */
+    .status-badge { font-size: 0.6rem; font-weight: 900; letter-spacing: 1px; padding: 5px 10px; border-radius: 4px; display: inline-block; }
+    .badge-ok { background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
+    .badge-no { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2); }
+    
+    .loyalty-info { display: flex; align-items: center; gap: 8px; margin-top: 5px; color: #888; font-size: 0.75rem; }
+    .reset-icon { color: #f1c40f; cursor: pointer; transition: 0.3s; font-size: 1rem; border: none; background: transparent; padding: 0; outline: none; }
+    .reset-icon:hover { transform: rotate(180deg); color: #fff; }
 
-    .dark-table thead th {
-        background-color: #0a0a0a;
-        color: #888;
-        border-bottom: 2px solid #222;
-        font-weight: 800;
-        text-transform: uppercase;
-        font-size: 0.75rem;
-        letter-spacing: 1px;
-        padding: 15px 20px;
-    }
+    /* BUTONLAR */
+    .btn-softetro { background: transparent; border: 1px solid #333; color: #888; padding: 8px 15px; font-size: 0.7rem; font-weight: 800; border-radius: 6px; transition: 0.3s; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-softetro:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.05); }
+    .btn-wa:hover { border-color: #25d366; color: #25d366; }
+    .btn-ban:hover { background: #e74c3c; border-color: #e74c3c; color: #fff; }
 
-    .dark-table tbody td {
-        border-bottom: 1px solid #222;
-        padding: 18px 20px;
-        vertical-align: middle;
-    }
-
-    /* Neon Rozetler */
-    .badge-glow-success {
-        background: rgba(46, 204, 113, 0.1);
-        color: #2ecc71;
-        border: 1px solid rgba(46, 204, 113, 0.2);
-    }
-
-    .badge-glow-danger {
-        background: rgba(231, 76, 60, 0.1);
-        color: #e74c3c;
-        border: 1px solid rgba(231, 76, 60, 0.2);
-    }
-
-    /* İşlem Butonları */
-    .btn-outline-action {
-        background: transparent;
-        border: 1px solid #333;
-        color: #888;
-        padding: 6px 15px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        border-radius: 4px;
-        transition: 0.3s;
-        text-decoration: none;
-    }
-
-    .btn-outline-action.danger:hover {
-        border-color: #e74c3c;
-        color: #fff;
-        background: #e74c3c;
-    }
-
-    .btn-outline-action.success:hover {
-        border-color: #2ecc71;
-        color: #fff;
-        background: #2ecc71;
-    }
-
-    .admin-alert {
-        border-radius: 4px;
-        font-weight: 700;
-        border: none;
-        font-size: 0.9rem;
-    }
+    /* SİTE İÇİ ONAY MODALI (Tarayıcı Confirm Yerine) */
+    #softetroModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(8px); }
+    .modal-box { background: #1a1a1a; border-radius: 15px; padding: 35px; width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.9); border-top: 4px solid #e34c38; }
+    .loading-overlay { opacity: 0.3; pointer-events: none; }
 </style>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert admin-alert alert-success alert-dismissible fade show" role="alert"
-         style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2);">
-        <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMessage"]
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="admin-card">
+    <div class="admin-card-header">
+        <h6 class="fw-bold text-white mb-0"><i class="bi bi-people-fill me-2" style="color:#e34c38;"></i>MÜŞTERİ YÖNETİMİ</h6>
+        
+        <div class="d-flex align-items-center gap-3">
+            @* CANLI ARAMA BÖLÜMÜ *@
+            <div class="position-relative">
+                <i class="bi bi-search position-absolute text-muted" style="left: 10px; top: 10px; font-size: 0.75rem;"></i>
+                <input type="text" asp-for="SearchTerm" id="searchInput" class="compact-input" 
+                       placeholder="İsim veya Telefon Yazın..." autocomplete="off">
+            </div>
+        </div>
     </div>
-}
 
-<div class="row">
-    <div class="col-12">
-        <div class="admin-card">
-            <div class="admin-card-header">
-                <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">
-                    <i class="bi bi-people-fill me-2" style="color: var(--theme-red, #e34c38);"></i>Kayıtlı Tüm
-                    Müşteriler
-                </h5>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table dark-table align-middle">
-                        <thead>
-                            <tr>
-                                <th class="ps-4">Müşteri Adı</th>
-                                <th>Telefon Numarası</th>
-                                <th>Durum</th>
-                                <th class="text-end pe-4">Kara Liste İşlemi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.Customers.Any())
-                            {
-                                @foreach (var item in Model.Customers)
-                                {
-                                    <tr>
-                                        <td class="ps-4 fw-bold text-white">
-                                            <i class="bi bi-person-circle fs-5 me-2" style="color: #444;"></i> @item.FullName
-                                        </td>
-                                        <td class="text-light">@item.PhoneNumber</td>
-                                        <td>
-                                            @if (item.IsBlacklisted)
-                                            {
-                                                <span class="badge badge-glow-danger rounded-pill px-3 py-2"><i class="bi bi-slash-circle me-1"></i> Kara Listede</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge badge-glow-success rounded-pill px-3 py-2"><i class="bi bi-shield-check me-1"></i> Temiz</span>
-                                            }
-
-                                            @{
-                                                var noShowCount = item.Appointments.Count(a => a.Status == SoftetroBarber.Enums.AppointmentStatus.NoShow);
-                                            }
-                                            <div class="mt-2" style="font-size: 0.8rem; color: #888;">
-                                                Gelmedi: <strong class="text-white">@noShowCount</strong>
-                                            </div>
-
-                                            @if (noShowCount >= 2 && !item.IsBlacklisted)
-                                            {
-                                                <div class="mt-1">
-                                                    <span class="badge bg-warning text-dark px-2 py-1" style="font-weight: 800;">⚠️ 2 Kez Gelmedi!</span>
-                                                </div>
-                                            }
-                                        </td>
-                                                <td class="text-end pe-4">
-                                                    <form method="post" asp-page-handler="ToggleBlacklist" class="d-inline">
-                                                        <input type="hidden" name="customerId" value="@item.Id" />
-                                                        @if (item.IsBlacklisted)
-                                                        {
-                                                            <button type="submit" class="btn-outline-action success">
-                                                                KARA LİSTEDEN ÇIKAR
-                                                            </button>
-                                                        }
-                                                        else
-                                                        {
-                                                            <button type="submit" class="btn-outline-action danger"
-                                                                    onclick="return confirm('Bu müşteriyi kara listeye almak istediğinize emin misiniz?');">
-                                                                KARA LİSTEYE AL
-                                                            </button>
-                                                        }
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        }
+    <div id="tableContainer">
+        <div class="table-responsive">
+            <table class="table dark-table align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Müşteri Profili</th>
+                        <th>Telefon</th>
+                        <th>Durum / Sadakat</th>
+                        <th class="text-end pe-4">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Customers)
+                    {
+                        var noShowCount = item.Appointments.Count(a => a.Status == SoftetroBarber.Enums.AppointmentStatus.NoShow);
+                        var isVip = item.Appointments.Count(a => a.Status == SoftetroBarber.Enums.AppointmentStatus.Completed) >= 10;
+                        
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:35px; height:35px; background:#252525; border:1px solid #333; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#e34c38; font-weight:900; font-size:0.8rem;">
+                                        @item.FullName.Substring(0,1).ToUpper()
+                                    </div>
+                                    <div class="fw-bold text-white">
+                                        @item.FullName 
+                                        @if(isVip) { <i class="bi bi-star-fill text-warning ms-1" style="font-size:0.75rem;" title="VIP Müşteri"></i> }
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-light">@item.PhoneNumber</td>
+                            <td>
+                                @if (item.IsBlacklisted) { <span class="status-badge badge-no"><i class="bi bi-x-circle me-1"></i> KARA LİSTEDE</span> }
+                                else { <span class="status-badge badge-ok"><i class="bi bi-check-circle me-1"></i> GÜVENİLİR</span> }
+                                
+                                <div class="loyalty-info">
+                                    <span>Gelmedi: <strong>@noShowCount</strong></span>
+                                    @* SIFIRLAMA BUTONU (YENİ YERİ) *@
+                                    <button class="reset-icon" title="Sayacı Sıfırla" onclick="openModal('@item.Id', '@item.FullName', 'reset')">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="https://wa.me/@item.PhoneNumber" target="_blank" class="btn-softetro btn-wa"><i class="bi bi-whatsapp"></i></a>
+                                    
+                                    @if (item.IsBlacklisted) {
+                                        <form method="post" asp-page-handler="ToggleBlacklist">
+                                            <input type="hidden" name="customerId" value="@item.Id" />
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn-softetro" style="color:#2ecc71; border-color:rgba(46, 204, 113, 0.3);">YASAĞI KALDIR</button>
+                                        </form>
+                                    } else {
+                                        <button class="btn-softetro btn-ban" onclick="openModal('@item.Id', '@item.FullName', 'ban')">YASAKLA</button>
                                     }
-                            else
-                                    {
-                                        <tr>
-                                            <td colspan="4" class="text-center py-5">
-                                                <span style="color: #444; font-weight: 700;">Sistemde henüz kayıtlı müşteri
-                                                    bulunmuyor.</span>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@* SOFTETRO ÖZEL ONAY PENCERESİ *@
+<div id="softetroModal">
+    <div class="modal-box">
+        <i id="mIcon" class="bi fs-1"></i>
+        <h5 id="mTitle" class="text-white fw-bold mt-3"></h5>
+        <p id="mDesc" class="text-secondary small mb-4"></p>
+        
+        <div class="d-flex justify-content-center gap-2">
+            <button type="button" class="btn-softetro" onclick="closeModal()">VAZGEÇ</button>
+            <form id="modalForm" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="customerId" id="mId" />
+                <button type="submit" id="mBtn" class="btn-softetro"></button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const sInput = document.getElementById('searchInput');
+        const tCont = document.getElementById('tableContainer');
+        const modal = document.getElementById('softetroModal');
+        const form = document.getElementById('modalForm');
+
+        // 1. CANLI ARAMA (Fetch API ile Sayfa Yenilenmez)
+        function triggerLiveSearch() {
+            tCont.classList.add('loading-overlay');
+            const url = `?SearchTerm=${encodeURIComponent(sInput.value)}`;
+            fetch(url).then(r => r.text()).then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                tCont.innerHTML = doc.getElementById('tableContainer').innerHTML;
+                tCont.classList.remove('loading-overlay');
+            });
+        }
+
+        sInput.addEventListener('input', () => { 
+            clearTimeout(window.searchTimer); 
+            window.searchTimer = setTimeout(triggerLiveSearch, 300); 
+        });
+
+        // 2. MODAL YÖNETİMİ
+        function openModal(id, name, type) {
+            document.getElementById('mId').value = id;
+            document.getElementById('mTitle').innerText = name;
+            
+            if(type === 'reset') {
+                setupModal('ResetLoyalty', 'bi-arrow-clockwise text-warning', 'Bu müşterinin gelmediği randevu kayıtları temizlensin mi?', 'SIFIRLA', 'btn-wa');
+            } else {
+                setupModal('ToggleBlacklist', 'bi-shield-slash text-danger', 'Bu müşteri kara listeye alınsın mı? Artık randevu alamaz.', 'YASAKLA', 'btn-ban');
+            }
+            modal.style.display = 'flex';
+        }
+
+        function setupModal(handler, icon, desc, btnText, btnClass) {
+            form.action = `?handler=${handler}`;
+            document.getElementById('mIcon').className = 'bi ' + icon;
+            document.getElementById('mDesc').innerText = desc;
+            document.getElementById('mBtn').innerText = btnText;
+            document.getElementById('mBtn').className = 'btn-softetro ' + btnClass;
+        }
+
+        function closeModal() { modal.style.display = 'none'; }
+        window.onclick = function(e) { if(e.target == modal) closeModal(); }
+    </script>
+}

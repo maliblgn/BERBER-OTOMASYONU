@@ -5,167 +5,242 @@
 }
 
 <style>
-    /* Admin Paneli Ortak Karanlık Tema */
+    /* SOFTETRO PREMIUM UI */
+    body {
+        background-color: #0c0c0c;
+        color: #fff;
+    }
+
     .admin-card {
         background-color: #1a1a1a;
         border: 1px solid #222;
-        border-radius: 6px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
     }
+
     .admin-card-header {
         background-color: #111;
         border-bottom: 1px solid #222;
-        border-radius: 6px 6px 0 0;
-        padding: 20px 25px;
+        padding: 18px 25px;
     }
 
-    /* Form Elemanları */
-    .dark-label { color: #888; font-weight: 800; font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 8px; }
-    .dark-input, .dark-textarea {
-        background-color: #000; border: 1px solid #222; color: #fff;
-        border-radius: 4px; padding: 12px 15px; width: 100%; outline: none; transition: 0.3s;
+    /* Giriş Alanları */
+    .dark-input,
+    .dark-textarea {
+        background-color: #000;
+        border: 1px solid #222;
+        color: #fff;
+        border-radius: 8px;
+        padding: 12px 15px;
+        width: 100%;
+        outline: none;
+        transition: 0.3s;
     }
-    .dark-input:focus, .dark-textarea:focus { border-color: var(--theme-red, #e34c38); box-shadow: 0 0 10px rgba(227, 76, 56, 0.1); }
 
-    /* Butonlar */
+    .dark-input:focus {
+        border-color: #e34c38;
+    }
+
     .btn-sharp-red {
-        background: var(--theme-red, #e34c38); color: #fff; border: none;
-        width: 100%; height: 50px; font-weight: 800; letter-spacing: 1px;
-        border-radius: 4px; transition: 0.3s; cursor: pointer; text-transform: uppercase;
+        background: #e34c38;
+        color: #fff;
+        border: none;
+        width: 100%;
+        height: 50px;
+        font-weight: 800;
+        border-radius: 8px;
+        transition: 0.3s;
+        cursor: pointer;
     }
-    .btn-sharp-red:hover { box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4); filter: brightness(1.1); }
 
-    /* Tablo Stilleri */
-    .dark-table { color: #ccc; margin-bottom: 0; }
+    /* Tablo Tasarımı */
+    .dark-table {
+        color: #ccc;
+        margin-bottom: 0;
+    }
+
     .dark-table thead th {
-        background-color: #0a0a0a; color: #888; border-bottom: 2px solid #222;
-        font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; padding: 15px 20px;
+        background-color: #0a0a0a;
+        color: #888;
+        font-weight: 900;
+        text-transform: uppercase;
+        font-size: 0.65rem;
+        padding: 15px 20px;
     }
-    .dark-table tbody td { border-bottom: 1px solid #222; padding: 18px 20px; vertical-align: middle; }
-    
-    /* Rozetler */
-    .badge-glow-success { background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2); }
-    .badge-glow-secondary { background: rgba(255, 255, 255, 0.05); color: #666; border: 1px solid #222; }
 
-    /* İşlem Butonları */
-    .btn-outline-action {
-        background: transparent; border: 1px solid #333; color: #888;
-        padding: 5px 12px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: 0.3s; text-decoration: none;
+    .dark-table tbody td {
+        border-bottom: 1px solid #222;
+        padding: 12px 20px;
+        vertical-align: middle;
     }
-    .btn-outline-action.danger:hover { border-color: #e74c3c; color: #e74c3c; background: rgba(231, 76, 60, 0.05); }
-    .btn-outline-action.success:hover { border-color: #2ecc71; color: #2ecc71; background: rgba(46, 204, 113, 0.05); }
 
-    /* Mesajlar */
-    .admin-alert { border-radius: 4px; font-weight: 700; border: none; font-size: 0.9rem; }
+    /* BUTONLAR */
+    .btn-action-soft {
+        background: transparent;
+        border: 1px solid #333;
+        color: #888;
+        padding: 6px 12px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        border-radius: 5px;
+        transition: 0.2s;
+        cursor: pointer;
+    }
+
+    .btn-action-soft:hover {
+        border-color: #fff;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-delete:hover {
+        background: #e34c38;
+        border-color: #e34c38;
+        color: #fff;
+    }
+
+    /* SOFTETRO MODAL */
+    #softetroModal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-box {
+        background: #1a1a1a;
+        border-radius: 15px;
+        padding: 30px;
+        width: 380px;
+        text-align: center;
+        border-top: 4px solid #e34c38;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    }
 </style>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert admin-alert alert-success alert-dismissible fade show" role="alert" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.2);">
-        <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMessage"]
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 
 <div class="row g-4">
     <div class="col-lg-4">
-        <div class="admin-card h-100">
+        <div class="admin-card">
             <div class="admin-card-header">
-                <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">
-                    <i class="bi bi-person-plus-fill me-2" style="color: var(--theme-red, #e34c38);"></i>Yeni Berber Ekle
-                </h5>
-            </div>
-            <div class="card-body p-4">
-                <form method="post" asp-page-handler="AddBarber">
-                    <div class="mb-4">
-                        <label asp-for="NewBarberName" class="dark-label">BERBER ADI <span class="text-danger">*</span></label>
-                        <input asp-for="NewBarberName" class="dark-input" placeholder="Örn: Ahmet" required />
-                    </div>
-                    <div class="mb-4">
-                        <label asp-for="NewBarberBio" class="dark-label">KISA ÖZGEÇMİŞ / UNVAN</label>
-                        <textarea asp-for="NewBarberBio" class="dark-textarea" rows="4" placeholder="Örn: Usta Makas / Renk Uzmanı"></textarea>
-                    </div>
-                    <button type="submit" class="btn-sharp-red">
-                        <i class="bi bi-plus-lg me-1"></i> SİSTEME EKLE
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-lg-8">
-        <div class="admin-card h-100">
-            <div class="admin-card-header">
-                <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">
-                    <i class="bi bi-scissors me-2" style="color: var(--theme-red, #e34c38);"></i>Mevcut Berberler
-                </h5>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table dark-table align-middle">
-                        <thead>
-                            <tr>
-                                <th class="ps-4">Berber</th>
-                                <th>Unvan (Bio)</th>
-                                <th>Durum</th>
-                                <th class="text-end pe-4">İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if(Model.Barbers.Any())
-                            {
-                                @foreach (var item in Model.Barbers)
-                                {
-                                    <tr class="@(!item.IsActive ? "opacity-50" : "")">
-                                        <td class="ps-4">
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-person-circle fs-4 me-3" style="color: @(item.IsActive ? "var(--theme-red, #e34c38)" : "#444");"></i>
-                                                <span class="fw-bold text-white">@item.Name</span>
-                                            </div>
-                                        </td>
-                                        <td style="color: #888; font-size: 0.85rem;">@(string.IsNullOrEmpty(item.Bio) ? "-" : item.Bio)</td>
-                                        <td>
-                                            @if(item.IsActive)
-                                            {
-                                                <span class="badge badge-glow-success rounded-pill px-3 py-2">AKTİF</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge badge-glow-secondary rounded-pill px-3 py-2 text-uppercase">Pasif</span>
-                                            }
-                                        </td>
-                                        <td class="text-end pe-4">
-                                            <form method="post" asp-page-handler="ToggleActive" class="d-inline">
-                                                <input type="hidden" name="barberId" value="@item.Id" />
-                                                @if(item.IsActive)
-                                                {
-                                                    <button type="submit" class="btn-outline-action danger" onclick="return confirm('@item.Name isimli berberi pasife almak istediğinize emin misiniz?');">
-                                                        PASİFE AL
-                                                    </button>
-                                                }
-                                                else
-                                                {
-                                                    <button type="submit" class="btn-outline-action success">
-                                                        AKTİFLEŞTİR
-                                                    </button>
-                                                }
-                                            </form>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="4" class="text-center py-5">
-                                        <span style="color: #444; font-weight: 700;">Sistemde henüz berber bulunmuyor.</span>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                <h6 class="fw-bold text-white mb-0"><i class="bi bi-person-plus-fill me-2"
+                                                           style="color:#e34c38;"></i>YENİ PERSONEL</h6>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" asp-page-handler="AddBarber">
+                        <label class="text-secondary small fw-bold mb-2">BERBER ADI *</label>
+                        <input asp-for="NewBarberName" class="dark-input mb-3" placeholder="Örn: Ahmet" required />
+                        <label class="text-secondary small fw-bold mb-2">KISA ÖZGEÇMİŞ / UNVAN</label>
+                        <textarea asp-for="NewBarberBio" class="dark-textarea mb-3" rows="3"
+                                  placeholder="Örn: Usta Makas / Renk Uzmanı"></textarea>
+                        <button type="submit" class="btn-sharp-red">+ SİSTEME EKLE</button>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+
+        <div class="col-lg-8">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h6 class="fw-bold text-white mb-0"><i class="bi bi-scissors me-2" style="color:#e34c38;"></i>MEVCUT
+                        KADRO</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table dark-table align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Berber</th>
+                                    <th>Unvan</th>
+                                    <th>Durum</th>
+                                    <th class="text-end pe-4">Aksiyon</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Barbers)
+                                {
+                                    <tr style="@(!item.IsActive ? "opacity:0.35" : "")">
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center gap-2 text-white fw-bold">
+                                                <div
+                                                    style="width:30px; height:30px; background:#222; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#e34c38; font-weight:900;">
+                                                    @item.Name.Substring(0,1).ToUpper()</div>
+                                                    @item.Name
+                                                </div>
+                                            </td>
+                                            <td class="text-secondary small">@(item.Bio ?? "-")</td>
+                                            <td><span class="badge @(item.IsActive ? "bg-success" : "bg-secondary") rounded-pill"
+                                                      style="font-size:0.6rem; font-weight:900;">@(item.IsActive ? "AKTİF" :
+                                                                                    "PASİF")</span></td>
+                                                <td class="text-end pe-4">
+                                                    <div class="d-flex justify-content-end gap-2">
+                                                        <button class="btn-action-soft"
+                                                                onclick="openModal('@item.Id', '@item.Name', 'toggle')">@(item.IsActive ?
+                                                                                                    "DURDUR" : "BAŞLAT")</button>
+                                                            <button class="btn-action-soft btn-delete"
+                                                                    onclick="openModal('@item.Id', '@item.Name', 'delete')"><i
+                                                                class="bi bi-trash3"></i></button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div id="softetroModal">
+                            <div class="modal-box">
+                                <i id="mIcon" class="bi fs-1"></i>
+                                <h5 id="mTitle" class="text-white fw-bold mt-3"></h5>
+                                <p id="mDesc" class="text-secondary small mb-4"></p>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button type="button" class="btn-action-soft" onclick="closeModal()">İPTAL</button>
+                                    <form id="modalForm" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="barberId" id="mId" />
+                                        <button type="submit" id="mBtn" class="btn-action-soft"></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        @section Scripts {
+                            <script>
+                                    const modal = document.getElementById('softetroModal');
+                                    const form = document.getElementById('modalForm');
+
+                                    function openModal(id, name, type) {
+                                        document.getElementById('mId').value = id;
+                                        document.getElementById('mTitle').innerText = name;
+
+                                        if (type === 'delete') {
+                                            setup('DeleteBarber', 'bi-exclamation-triangle text-danger', 'Bu personelin tüm verileri sistemden KALICI olarak silinecektir.', 'EVET, SİL', 'btn-delete');
+                                        } else {
+                                            setup('ToggleActive', 'bi-arrow-left-right text-warning', 'Personelin çalışma durumu değiştirilecektir.', 'ONAYLA', '');
+                                        }
+                                        modal.style.display = 'flex';
+                                    }
+
+                                    function setup(h, i, d, b, c) {
+                                        form.action = `?handler=${h}`;
+                                        document.getElementById('mIcon').className = 'bi ' + i;
+                                        document.getElementById('mDesc').innerText = d;
+                                        document.getElementById('mBtn').innerText = b;
+                                        document.getElementById('mBtn').className = 'btn-action-soft ' + c;
+                                    }
+
+                                    function closeModal() { modal.style.display = 'none'; }
+                                    window.onclick = (e) => { if (e.target == modal) closeModal(); }
+                            </script>
+                        }

@@ -1,23 +1,23 @@
 @page
-@model SoftetroBarber.Pages.Booking.Step2_DateModel
+@model SoftetroBarber.Pages.Booking.Step2_DateTimeModel
 @{
-    ViewData["Title"] = "Adım 2: Tarih Seçimi";
+    ViewData["Title"] = "Adım 2: Zaman Seçimi";
 }
 
 <style>
-    /* Yatay Adım Göstergesi (Step Indicator) */
+    /* SOFTETRO STEP INDICATOR */
     .step-indicator {
         display: flex;
         justify-content: space-between;
-        margin: 2rem auto 4rem auto;
+        margin: 2rem auto 3.5rem auto;
         position: relative;
-        max-width: 600px;
+        max-width: 550px;
     }
 
     .step-indicator::before {
         content: '';
         position: absolute;
-        top: 15px;
+        top: 16px;
         left: 0;
         width: 100%;
         height: 2px;
@@ -30,12 +30,12 @@
         z-index: 2;
         text-align: center;
         background: #000;
-        padding: 0 10px;
+        padding: 0 12px;
     }
 
     .step-circle {
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
         border-radius: 50%;
         background: #111;
         color: #555;
@@ -45,78 +45,107 @@
         font-weight: 900;
         margin: 0 auto 8px auto;
         border: 2px solid #222;
-        transition: 0.3s;
+        transition: 0.4s;
     }
 
-    .step-title {
-        font-size: 0.75rem;
-        color: #666;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    /* Aktif Adım (Şu anki) */
     .step-item.active .step-circle {
-        background: var(--theme-red, #e34c38);
+        background: #e34c38;
         color: #fff;
-        border-color: var(--theme-red, #e34c38);
-        box-shadow: 0 0 15px rgba(227, 76, 56, 0.4);
+        border-color: #e34c38;
+        box-shadow: 0 0 15px rgba(227, 76, 56, 0.5);
     }
 
-    .step-item.active .step-title {
-        color: #fff;
-    }
-
-    /* Tamamlanmış Adım (Önceki) */
     .step-item.completed .step-circle {
-        background: rgba(227, 76, 56, 0.1);
-        color: var(--theme-red, #e34c38);
-        border-color: var(--theme-red, #e34c38);
+        background: rgba(227, 76, 56, 0.15);
+        color: #e34c38;
+        border-color: #e34c38;
     }
 
-    .step-item.completed .step-title {
-        color: var(--theme-red, #e34c38);
-    }
-
-    /* Karanlık Ana Kart */
+    /* DARK PANEL VE INPUT */
     .dark-panel {
-        background-color: #1a1a1a;
-        border: 1px solid #222;
-        border-radius: 6px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        background-color: #161616;
+        border: 1px solid #252525;
+        border-radius: 12px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
     }
 
-    /* Simsiyah Tarih Seçici */
     .dark-date-input {
         background: #000;
-        border: 1px solid #222;
+        border: 2px solid #e34c38;
         color: #fff;
-        padding: 15px 20px;
-        border-radius: 4px;
-        width: 100%;
-        max-width: 320px;
+        padding: 14px 25px;
+        border-radius: 50px;
         font-size: 1.2rem;
-        font-weight: 700;
+        font-weight: 800;
         text-align: center;
         outline: none;
         color-scheme: dark;
-        /* Takvimin siyah açılmasını sağlar! */
         transition: 0.3s;
+        cursor: pointer;
     }
 
-    .dark-date-input:focus {
-        border-color: var(--theme-red, #e34c38);
-        box-shadow: 0 0 15px rgba(227, 76, 56, 0.2);
+    /* SAAT GRİDİ */
+    .time-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+        gap: 12px;
     }
 
-    /* Geri ve İleri Butonları */
+    .time-slot-btn {
+        height: 50px;
+        border-radius: 8px;
+        font-weight: 800;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+        border: 1px solid #333;
+        background: #080808;
+        color: #fff;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .time-slot-btn.available:hover {
+        border-color: #e34c38;
+        background: rgba(227, 76, 56, 0.1);
+        color: #e34c38;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .time-slot-btn.booked {
+        opacity: 0.15;
+        cursor: not-allowed;
+        text-decoration: line-through;
+        border-color: #111;
+    }
+
+    .btn-soft-outline {
+        background: transparent;
+        border: 1px solid #333;
+        color: #777;
+        padding: 12px 35px;
+        font-weight: 800;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-soft-outline:hover {
+        color: #fff;
+        border-color: #fff;
+    }
+
     .btn-dark-outline {
         background: transparent;
         border: 1px solid #333;
         color: #888;
         padding: 0 30px;
-        height: 55px;
+        height: 50px;
         font-weight: 800;
         border-radius: 4px;
         transition: 0.3s;
@@ -130,27 +159,6 @@
         border-color: var(--theme-red, #e34c38);
         color: #fff;
     }
-
-    .btn-sharp-red {
-        background: var(--theme-red, #e34c38);
-        color: #fff;
-        border: none;
-        padding: 0 40px;
-        height: 55px;
-        font-weight: 800;
-        letter-spacing: 1px;
-        border-radius: 4px;
-        transition: 0.3s;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-sharp-red:hover {
-        box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4);
-        filter: brightness(1.1);
-    }
 </style>
 
 <div class="row justify-content-center">
@@ -160,20 +168,19 @@
                 <div class="step-circle"><i class="bi bi-check-lg"></i></div>
                 <div class="step-title">Hizmet</div>
             </div>
-            <div class="step-item active">
-                <div class="step-circle">2</div>
-                <div class="step-title">Tarih</div>
-            </div>
-            <div class="step-item">
-                <div class="step-circle">3</div>
-                <div class="step-title">Saat</div>
-            </div>
-            <div class="step-item">
-                <div class="step-circle">4</div>
+
+            <div class="step-item completed">
+                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
                 <div class="step-title">Berber</div>
             </div>
+
+            <div class="step-item active">
+                <div class="step-circle">3</div>
+                <div class="step-title">Tarih</div>
+            </div>
+
             <div class="step-item">
-                <div class="step-circle">5</div>
+                <div class="step-circle">4</div>
                 <div class="step-title">Onay</div>
             </div>
         </div>
@@ -181,41 +188,59 @@
 </div>
 
 <div class="row justify-content-center pb-5">
-    <div class="col-md-8 col-lg-6">
-        <div class="dark-panel p-4 p-md-5 text-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="dark-panel p-4 p-md-5">
 
-            <h4 class="mb-3 text-white fw-bold">Hangi gün gelmek istersiniz?</h4>
-            <p style="color: #777; font-size: 0.9rem;" class="mb-4">Randevunuzu planlamak için uygun bir tarih seçin.
-            </p>
+            <div class="text-center mb-5">
+                <h4 class="text-white fw-900 mb-4 text-uppercase" style="letter-spacing: 1px;">Randevu Tarihi</h4>
+                <form id="dateForm" method="get">
+                    @* Name: SelectedDate olması kritik (Model ile eşleşme) *@
+                    <input type="date" name="SelectedDate" class="dark-date-input"
+                           value="@Model.SelectedDate.ToString("yyyy-MM-dd")" min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                           max="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")" onchange="this.form.submit()" />
+                </form>
+            </div>
 
-            @if (!ModelState.IsValid)
+            <hr style="border-color: #222; border-style: dashed;" class="my-5">
+
+            <div class="text-center mb-4">
+                <h6 class="text-danger fw-900 text-uppercase small" style="letter-spacing: 3px;">
+                    <i class="bi bi-calendar-event me-2"></i> @Model.SelectedDate.ToString("dd MMMM yyyy,                  dddd").ToUpper()
+                </h6>
+            </div>
+
+            @if (Model.TimeSlots != null && Model.TimeSlots.Any())
             {
-                <div class="alert alert-danger"
-                     style="background: rgba(227, 76, 56, 0.1); border: 1px solid #e34c38; color: #e34c38;">
-                    <div asp-validation-summary="All" class="mb-0"></div>
+                <div class="time-grid">
+                    @foreach (var slot in Model.TimeSlots)
+                    {
+                        if (slot.IsBooked)
+                        {
+                            <button type="button" class="time-slot-btn booked" disabled>@slot.Time.ToString(@"hh\:mm")</button>
+                        }
+                        else
+                        {
+                            <form method="post" class="m-0">
+                                <input type="hidden" name="selectedTime" value="@slot.Time" />
+                                <input type="hidden" name="SelectedDate" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+                                <button type="submit" class="time-slot-btn available">@slot.Time.ToString(@"hh\:mm")</button>
+                            </form>
+                        }
+                    }
                 </div>
             }
-
-            <form method="post">
-                <div class="mb-5 d-flex flex-column align-items-center mt-3">
-                    <input asp-for="SelectedDate" type="date" class="dark-date-input"
-                           min="@DateTime.Today.ToString("yyyy-MM-dd")"
-                           max="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")" required />
-
-                    <small style="color: #555; margin-top: 15px; font-weight: 600;">En fazla 14 gün sonrası için randevu
-                        alabilirsiniz.</small>
-                    </div>
-
-                    <div class="d-flex justify-content-between pt-4" style="border-top: 1px solid #222;">
-                        <a asp-page="Step1_Services" class="btn-dark-outline">
-                            <i class="bi bi-arrow-left me-2"></i> GERİ
-                        </a>
-                        <button type="submit" class="btn-sharp-red">
-                            İLERİ <i class="bi bi-arrow-right ms-2"></i>
-                        </button>
-                    </div>
-                </form>
-
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-clock-history d-block mb-3 text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-secondary fw-bold">Seçilen tarihte uygun saat dilimi bulunamadı.</p>
+                </div>
+            }
+            <div class="d-flex justify-content-between pt-4 mt-5" style="border-top: 1px solid #222;">
+                <a asp-page="/Booking/Step4_Barber" class="btn-dark-outline">
+                    <i class="bi bi-arrow-left me-2"></i> Geri
+                </a>
             </div>
         </div>
     </div>
+</div>

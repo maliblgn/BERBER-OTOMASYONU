@@ -1,87 +1,104 @@
 @page
 @model SoftetroBarber.Pages.Admin.ServicesModel
 @{
-    ViewData["Title"] = "Hizmet Yönetimi";
+    ViewData["Title"] = "Hizmet Portföyü";
 }
 
-@Html.AntiForgeryToken() @* Güvenlik token'ı: Kaydetme sorunu için kritik! *@
+@Html.AntiForgeryToken()
 
 <style>
-    /* SOFTETRO PREMIUM - MINIMALIST WHITE UI */
+    /* SOFTETRO PREMIUM TASARIM */
     .admin-card {
         background-color: #1a1a1a;
         border: 1px solid #222;
-        border-radius: 8px;
+        border-radius: 12px;
+        overflow: hidden;
     }
 
-    /* Full Beyaz Kutu Tasarımı */
+    .admin-card-header {
+        background-color: #111;
+        border-bottom: 1px solid #222;
+        padding: 20px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
     .white-box {
         background: #ffffff !important;
         border: none !important;
         border-radius: 4px;
         color: #000 !important;
-        font-weight: 800 !important;
-        font-size: 1rem !important;
-        height: 40px;
-        width: 110px;
-        text-align: center;
+        font-weight: 800;
+        font-size: 0.9rem;
+        height: 38px;
         outline: none !important;
         transition: 0.3s ease;
-        appearance: none;
-        -webkit-appearance: none;
+        text-align: center;
     }
 
-    /* Select kutusunda okları gizle veya minimal tut */
-    select.white-box {
-        cursor: pointer;
-        padding-right: 5px;
-    }
-
-    /* Price TextBox spin oklarını kaldır */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    /* Kayıt başarılı olunca yeşil yanma efekti */
     .save-flash {
         box-shadow: 0 0 15px #2ecc71 !important;
-        transform: scale(1.05);
+        transform: scale(1.03);
     }
 
-    /* Bildirim Kutusu */
-    #statusAlert {
-        display: none;
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        background: #2ecc71;
+    .btn-softetro-red {
+        background: #e34c38;
         color: #fff;
-        padding: 15px 25px;
-        border-radius: 4px;
-        font-weight: 700;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        border: none;
+        padding: 8px 25px;
+        border-radius: 6px;
+        font-weight: 800;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: 0.3s;
+        text-transform: uppercase;
+    }
+
+    .btn-softetro-red:hover {
+        box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4);
+    }
+
+    /* MODAL TASARIMI */
+    #softetroModal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        backdrop-filter: blur(8px);
+    }
+
+    .modal-box {
+        background: #1a1a1a;
+        border-radius: 15px;
+        padding: 35px;
+        width: 420px;
+        text-align: center;
+        border-top: 4px solid #e34c38;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
     }
 </style>
 
-<div id="statusAlert">
-    <i class="bi bi-check-circle-fill me-2"></i> <span id="alertMsg">Başarıyla Kaydedildi!</span>
-</div>
-
 <div class="admin-card mt-4">
-    <div class="admin-card-header p-4 border-bottom border-secondary">
-        <h5 class="text-white fw-900 m-0 text-uppercase">Portfoy Yönetimi</h5>
+    <div class="admin-card-header">
+        <h6 class="text-white fw-900 m-0">HİZMET PORTFÖYÜ</h6>
+        <button class="btn-softetro-red" onclick="openAddModal()">+ YENİ HİZMET EKLE</button>
     </div>
 
     <div class="table-responsive">
         <table class="table table-dark m-0 align-middle">
             <thead>
                 <tr class="text-secondary small" style="background: #0a0a0a;">
-                    <th class="ps-4 py-3">HİZMET</th>
+                    <th class="ps-4 py-3">HİZMET ADI</th>
                     <th class="text-center">SÜRE</th>
-                    <th class="text-end pe-4">FİYAT (₺)</th>
+                    <th class="text-center">FİYAT</th>
+                    <th class="text-end pe-4">İŞLEM</th>
                 </tr>
             </thead>
             <tbody>
@@ -89,69 +106,112 @@
                 {
                     <tr>
                         <td class="ps-4 fw-bold text-white">@item.Name</td>
-
                         <td class="text-center">
-                            <select class="white-box" onchange="performAutoSave('@item.Id', null, this.value, this)">
+                            <select class="white-box w-75" onchange="performAutoSave('@item.Id', null, this.value, this)">
                                 @for (int i = 15; i <= 120; i += 15)
                                 {
-                                    <option value="@i" selected="@(item.DurationInMinutes == i)">@i dk</option>
+                                    <option value="@i"
+                                            selected="@(item.DurationInMinutes == i)">@i dk</option>
                                 }
                             </select>
                         </td>
-
-                        <td class="pe-4">
-                            <div class="d-flex justify-content-end">
-                                <input type="number" class="white-box" value="@item.Price.ToString("0")"
-                                       onfocusout="performAutoSave('@item.Id', this.value, null, this)">
-                            </div>
+                        <td class="text-center">
+                            <input type="number" class="white-box w-75" value="@item.Price.ToString("0")"
+                                   onfocusout="performAutoSave('@item.Id', this.value, null, this)">
                         </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-
-@section Scripts {
-    <script>
-            async function performAutoSave(serviceId, price, duration, element) {
-                // Anti-forgery token'ı zorunlu!
-                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-
-                // URL parametrelerini hazırla
-                let params = new URLSearchParams();
-                params.append('serviceId', serviceId);
-                if (price !== null) params.append('price', price);
-                if (duration !== null) params.append('duration', duration);
-
-                try {
-                    const response = await fetch(`?handler=AutoUpdate&${params.toString()}`, {
-                        method: 'POST',
-                        headers: {
-                            'RequestVerificationToken': token,
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-
-                    const result = await response.json();
-
-                    if (result.success) {
-                        // Görsel Onay: Kutuyu parlat
-                        element.classList.add('save-flash');
-                        setTimeout(() => element.classList.remove('save-flash'), 800);
-
-                        // Üstte Bildirim Göster
-                        const alertDiv = document.getElementById('statusAlert');
-                        document.getElementById('alertMsg').innerText = result.message;
-                        alertDiv.style.display = 'block';
-                        setTimeout(() => { alertDiv.style.display = 'none'; }, 2500);
-                    } else {
-                        alert("Hata: " + result.message);
+                        <td class="text-end pe-4">
+                            <button class="bg-transparent border-0" onclick="openDeleteModal('@item.Id', '@item.Name')"><i
+                                class="bi bi-trash3 text-muted"></i></button>
+                            </td>
+                        </tr>
                     }
-                } catch (error) {
-                    console.error('Bağlantı hatası:', error);
-                    alert("Sunucuyla bağlantı kurulamadı!");
-                }
-            }
-    </script>
-}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="softetroModal">
+        <div class="modal-box">
+            <form id="modalForm" method="post">
+                @Html.AntiForgeryToken()
+                <i id="mIcon" class="bi fs-1 mb-3 d-block"></i>
+                <h5 id="mTitle" class="text-white fw-bold mb-4"></h5>
+
+                <div id="addFormContent" style="display:none;">
+                    <input type="text" name="NewName" class="white-box w-100 mb-3"
+                           placeholder="Hizmet İsmi (Örn: Cilt Bakımı)" style="text-align:left; padding:0 15px;">
+                    <div class="d-flex gap-2">
+                        <input type="number" name="NewPrice" class="white-box w-50" placeholder="Fiyat (₺)">
+                        <select name="NewDuration" class="white-box w-50">
+                            <option value="30">30 Dakika</option>
+                            <option value="45">45 Dakika</option>
+                            <option value="60">60 Dakika</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="deleteFormContent" style="display:none;">
+                    <p class="text-secondary small">Bu hizmet silindiğinde bağlı tüm randevu detayları da temizlenecektir.
+                        Emin misiniz?</p>
+                        <input type="hidden" name="serviceId" id="delServiceId" />
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <button type="button" class="btn btn-outline-secondary px-4 border-0"
+                                onclick="closeModal()">İPTAL</button>
+                        <button type="submit" id="mBtn" class="btn-softetro-red"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @section Scripts {
+            <script>
+                    const modal = document.getElementById('softetroModal');
+                    const form = document.getElementById('modalForm');
+
+                    function openAddModal() {
+                        document.getElementById('mTitle').innerText = "YENİ HİZMET EKLE";
+                        document.getElementById('mIcon').className = "bi bi-plus-circle text-danger";
+                        document.getElementById('addFormContent').style.display = 'block';
+                        document.getElementById('deleteFormContent').style.display = 'none';
+                        document.getElementById('mBtn').innerText = "PORFÖYE KAYDET";
+                        form.action = "?handler=AddService";
+                        modal.style.display = 'flex';
+                    }
+
+                    function openDeleteModal(id, name) {
+                        document.getElementById('mTitle').innerText = name;
+                        document.getElementById('mIcon').className = "bi bi-exclamation-triangle text-danger";
+                        document.getElementById('delServiceId').value = id;
+                        document.getElementById('addFormContent').style.display = 'none';
+                        document.getElementById('deleteFormContent').style.display = 'block';
+                        document.getElementById('mBtn').innerText = "SİLMEYİ ONAYLA";
+                        form.action = "?handler=DeleteService";
+                        modal.style.display = 'flex';
+                    }
+
+                    function closeModal() { modal.style.display = 'none'; }
+
+                    async function performAutoSave(serviceId, price, duration, element) {
+                        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                        let p = new URLSearchParams();
+                        p.append('serviceId', serviceId);
+                        if (price) p.append('price', price);
+                        if (duration) p.append('duration', duration);
+
+                        try {
+                            const response = await fetch(`?handler=AutoUpdate&${p.toString()}`, {
+                                method: 'POST',
+                                headers: { 'RequestVerificationToken': token, 'X-Requested-With': 'XMLHttpRequest' }
+                            });
+                            if ((await response.json()).success) {
+                                element.classList.add('save-flash');
+                                setTimeout(() => element.classList.remove('save-flash'), 800);
+                            }
+                        } catch (e) { console.error(e); }
+                    }
+
+                    window.onclick = (e) => { if (e.target == modal) closeModal(); }
+            </script>
+        }

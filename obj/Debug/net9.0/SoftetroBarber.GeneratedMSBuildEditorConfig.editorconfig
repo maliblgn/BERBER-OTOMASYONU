@@ -36,10 +36,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQmFyYmVycy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/ACER/Desktop/BERBER-OTOMASYONU/BERBER-OTOMASYONU/Pages/Admin/BarberSchedule.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQmFyYmVyU2NoZWR1bGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/ACER/Desktop/BERBER-OTOMASYONU/BERBER-OTOMASYONU/Pages/Admin/Blacklisted.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQmxhY2tsaXN0ZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -78,10 +74,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/ACER/Desktop/BERBER-OTOMASYONU/BERBER-OTOMASYONU/Pages/Booking/Step2_Date.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQm9va2luZ1xTdGVwMl9EYXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/ACER/Desktop/BERBER-OTOMASYONU/BERBER-OTOMASYONU/Pages/Booking/Step3_Time.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQm9va2luZ1xTdGVwM19UaW1lLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ACER/Desktop/BERBER-OTOMASYONU/BERBER-OTOMASYONU/Pages/Booking/Step4_Barber.cshtml]

@@ -33,19 +33,24 @@ public class Step1_ServicesModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
+        // 1. Kontrol: Hiçbir şey seçilmemişse ilerlemez
         if (SelectedServiceIds == null || !SelectedServiceIds.Any())
         {
             ModelState.AddModelError("", "Lütfen en az bir hizmet seçiniz.");
-            var allServices = await _serviceRepository.GetAllAsync();
-            Services = allServices.ToList();
+            Services = (await _serviceRepository.GetAllAsync()).ToList();
             return Page();
         }
 
-        // Update Session
+        // 2. Session Kaydı
         var sessionModel = HttpContext.Session.Get<BookingSessionModel>("BookingSession") ?? new BookingSessionModel();
         sessionModel.SelectedServiceIds = SelectedServiceIds;
+
+        // Geçiş yaparken diğer verileri temizle ki çakışmas malicious olmasın
+        sessionModel.BarberId = Guid.Empty;
+
         HttpContext.Session.Set("BookingSession", sessionModel);
 
-        return RedirectToPage("Step2_Date");
+        // 3. YÖNLENDİRME (Mutlak yol kullanmak en güvenlisidir)
+        return RedirectToPage("/Booking/Step4_Barber");
     }
 }
