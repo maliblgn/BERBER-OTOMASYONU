@@ -10,43 +10,43 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     <style>
-                #sidebar {
-                    min-width: 250px;
-                    max-width: 250px;
-                    min-height: 100vh;
-                    background-color: var(--dark-card-solid);
-                    border-right: 1px solid rgba(255, 255, 255, 0.05);
-                }
+                            #sidebar {
+                                min-width: 250px;
+                                max-width: 250px;
+                                min-height: 100vh;
+                                background-color: var(--dark-card-solid);
+                                border-right: 1px solid rgba(255, 255, 255, 0.05);
+                            }
 
-                #sidebar .nav-link {
-                    color: var(--text-muted-dark);
-                    padding: 12px 20px;
-                    border-radius: 8px;
-                    margin: 4px 10px;
-                    transition: 0.3s;
-                }
-                #sidebar .nav-link:hover {
-                    background: rgba(255, 255, 255, 0.05);
-                    color: #fff;
-                }
+                            #sidebar .nav-link {
+                                color: var(--text-muted-dark);
+                                padding: 12px 20px;
+                                border-radius: 8px;
+                                margin: 4px 10px;
+                                transition: 0.3s;
+                            }
+                            #sidebar .nav-link:hover {
+                                background: rgba(255, 255, 255, 0.05);
+                                color: #fff;
+                            }
 
-                #sidebar .nav-link.active {
-                    background: var(--theme-red);
-                    color: #fff;
-                    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-                }
+                            #sidebar .nav-link.active {
+                                background: var(--theme-red);
+                                color: #fff;
+                                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+                            }
 
-                .content-wrapper {
-                    flex: 1;
-                    padding: 25px;
-                    background: var(--bg-black);
-                }
+                            .content-wrapper {
+                                flex: 1;
+                                padding: 25px;
+                                background: var(--bg-black);
+                            }
 
-                .admin-nav {
-                    background: var(--dark-card-solid);
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-                    padding: 15px;
-                }
+                            .admin-nav {
+                                background: var(--dark-card-solid);
+                                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                                padding: 15px;
+                            }
     </style>
 </head>
 
@@ -67,44 +67,51 @@
                        asp-page="/Admin/Appointments"><i class="bi bi-calendar-check me-2"></i> Randevular</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Customers" ? "active" : "")" 
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Customers" ? "active" : "")"
                        asp-page="/Admin/Customers"><i class="bi bi-people-fill me-2"></i> Müşteriler</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Barbers" ? "active" : "")" 
-                        asp-page="/Admin/Barbers"><i class="bi bi-person-badge me-2"></i> Berberler</a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Barbers" ? "active" : "")"
+                       asp-page="/Admin/Barbers"><i class="bi bi-person-badge me-2"></i> Berberler</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Services" ? "active" : "")" 
-                        asp-page="/Admin/Services"><i class="bi bi-tags me-2"></i> Hizmetler</a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/WorkingHours" ? "active" : "")"
+                           asp-page="/Admin/WorkingHours">
+                        <i class="bi bi-clock-history me-2"></i> Çalışma Saatleri
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Expenses/Index" ? "active" : "")" 
-                        asp-page="/Admin/Expenses/Index"><i class="bi bi-receipt-cutoff me-2"></i> Giderler</a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Services" ? "active" : "")"
+                       asp-page="/Admin/Services"><i class="bi bi-tags me-2"></i> Hizmetler</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Blacklisted" ? "active" : "")" 
-                        asp-page="/Admin/Blacklisted"><i class="bi bi-shield-x me-2"></i> Kara Liste</a>
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Expenses/Index" ? "active" : "")"
+                       asp-page="/Admin/Expenses/Index"><i class="bi bi-receipt-cutoff me-2"></i> Giderler</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Blacklisted" ? "active" : "")"
+                       asp-page="/Admin/Blacklisted"><i class="bi bi-shield-x me-2"></i> Kara Liste</a>
+                </li>
+
             </ul>
         </nav>
 
-                        <div class="content-wrapper">
-                            <nav class="admin-nav rounded d-flex justify-content-between align-items-center mb-4">
-                                <span class="fw-bold text-white fs-5">@ViewData["Title"]</span>
-                                <div>
-                                    <span class="text-white me-3"><i class="bi bi-person-circle text-danger me-1"></i>
-                                        @User.Identity?.Name</span>
-                                        <a asp-page="/Index" class="btn btn-sm btn-outline-light">Siteye Dön</a>
-                                    </div>
-                                </nav>
-                                <main>@RenderBody()</main>
-                            </div>
-                        </div>
+        <div class="content-wrapper">
+            <nav class="admin-nav rounded d-flex justify-content-between align-items-center mb-4">
+                <span class="fw-bold text-white fs-5">@ViewData["Title"]</span>
+                <div>
+                    <span class="text-white me-3"><i class="bi bi-person-circle text-danger me-1"></i>
+                        @User.Identity?.Name</span>
+                        <a asp-page="/Index" class="btn btn-sm btn-outline-light">Siteye Dön</a>
+                    </div>
+                </nav>
+                <main>@RenderBody()</main>
+            </div>
+        </div>
 
-                        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-                        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-                        @await RenderSectionAsync("Scripts", required: false)
-                    </body>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        @await RenderSectionAsync("Scripts", required: false)
+    </body>
 
-                </html>
+</html>

@@ -1,0 +1,300 @@
+@page "{handler?}"
+@model SoftetroBarber.Pages.Admin.WorkingHoursModel
+@{
+    ViewData["Title"] = "Mesai Yönetimi";
+    var gunler = new string[] { "Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi" };
+}
+
+@Html.AntiForgeryToken()
+
+<style>
+    :root {
+        --softetro-red: #e34c38;
+        --card-bg: #121212;
+        --border-color: #222;
+    }
+
+    .main-container {
+        padding: 30px;
+        background: #080808;
+        min-height: 100vh;
+        color: #fff;
+    }
+
+    .section-title {
+        color: #555;
+        font-size: 0.7rem;
+        font-weight: 900;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin: 30px 0 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #222;
+    }
+
+    .barber-selector {
+        background: #111;
+        border: 1px solid #333;
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 8px;
+        width: 100%;
+        margin-bottom: 30px;
+        outline: none;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .barber-selector:focus {
+        border-color: var(--softetro-red);
+    }
+
+    .schedule-table {
+        width: 100%;
+        background: var(--card-bg);
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        margin-bottom: 20px;
+    }
+
+    .schedule-table td {
+        padding: 15px 25px;
+        border-bottom: 1px solid #1a1a1a;
+        color: #fff;
+    }
+
+    .time-input-minimal {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        color: #fff;
+        border-radius: 6px;
+        padding: 8px;
+        font-size: 0.85rem;
+        width: 110px;
+        text-align: center;
+    }
+
+    .time-input-minimal:focus {
+        border-color: var(--softetro-red);
+        outline: none;
+    }
+
+    .status-toggle {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 800;
+        font-size: 0.7rem;
+    }
+
+    .status-toggle input {
+        display: none;
+    }
+
+    .status-toggle .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #444;
+    }
+
+    .status-toggle input:checked+.dot {
+        background: var(--softetro-red);
+        box-shadow: 0 0 8px var(--softetro-red);
+    }
+
+    .status-toggle .text {
+        color: #555;
+    }
+
+    .status-toggle input:checked~.text {
+        color: #fff;
+    }
+
+    #save-status {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 900;
+        display: none;
+        z-index: 9999;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .status-saving {
+        background: #f1c40f;
+        color: #000;
+    }
+
+    .status-saved {
+        background: #2ecc71;
+        color: #fff;
+    }
+
+    .is-closed-row {
+        opacity: 0.3;
+        filter: grayscale(1);
+    }
+
+    .fade-out {
+        opacity: 0;
+        transform: translateX(20px);
+        transition: 0.5s;
+    }
+</style>
+
+<div id="save-status"></div>
+
+<div class="main-container">
+    <div class="mb-5">
+        <h4 class="fw-900 m-0">MESAİ KONTROL MERKEZİ</h4>
+        <p class="text-secondary small">Dükkan kapalıyken berber mesaileri otomatik gizlenir.</p>
+    </div>
+
+    <div class="section-title">Dükkan Genel Çalışma Saatleri</div>
+    <table class="schedule-table" id="shop-hours-table">
+        <tbody>
+            @foreach (var item in Model.ShopHours)
+            {
+                <tr class="wh-row @(item.IsClosed ? "is-closed-row" : "")" data-id="@item.Id" data-type="shop">
+                    <td style="width: 250px;" class="fw-bold">@gunler[(int)item.DayOfWeek].ToUpper()</td>
+                    <td><input type="time" value="@item.OpenTime" class="time-input-minimal open-time"></td>
+                    <td><input type="time" value="@item.CloseTime" class="time-input-minimal close-time"></td>
+                    <td class="text-end">
+                        <label class="status-toggle ms-auto">
+                            <input type="checkbox" class="is-closed-toggle" @(item.IsClosed ? "checked" : "")>
+                            <div class="dot"></div>
+                            <span class="text">@(item.IsClosed ? "KAPALI" : "AÇIK")</span>
+                        </label>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="section-title">Personel Özel Mesai Yönetimi</div>
+    <select class="barber-selector" id="barber-select">
+        <option value="">Berber Seçerek Mesaisini Düzenleyin...</option>
+        @foreach (var b in Model.Barbers)
+        {
+            <option value="@b.Id">@b.Name.ToUpper()</option>
+        }
+    </select>
+
+    <div id="barber-hours-container" style="display: none;">
+        <table class="schedule-table">
+            <tbody id="barber-table-body">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const gunlerList = @Html.Raw(Json.Serialize(gunler));
+
+    // BERBER SAATLERİNİ YÜKLEME FONKSİYONU
+    async function loadBarberHours() {
+        const barberId = document.getElementById('barber-select').value;
+        const container = document.getElementById('barber-hours-container');
+        const tbody = document.getElementById('barber-table-body');
+
+        if (!barberId) {
+            container.style.display = 'none';
+            return;
+        }
+
+        const response = await fetch(`?handler=BarberHours&barberId=${barberId}`);
+        const data = await response.json();
+
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4 small">Dükkanın açık olduğu herhangi bir günde bu berberin kaydı bulunamadı.</td></tr>';
+        } else {
+            tbody.innerHTML = data.map(h => `
+                <tr class="wh-row ${h.isClosed ? 'is-closed-row' : ''}" data-id="${h.id}" data-type="barber">
+                    <td style="width: 250px;" class="fw-bold text-secondary">${gunlerList[h.dayOfWeek].toUpperCase()}</td>
+                    <td><input type="time" value="${h.openTime}" class="time-input-minimal open-time"></td>
+                    <td><input type="time" value="${h.closeTime}" class="time-input-minimal close-time"></td>
+                    <td class="text-end">
+                        <label class="status-toggle ms-auto">
+                            <input type="checkbox" class="is-closed-toggle" ${h.isClosed ? 'checked' : ''}>
+                            <div class="dot"></div>
+                            <span class="text">${h.isClosed ? 'KAPALI' : 'AÇIK'}</span>
+                        </label>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        container.style.display = 'block';
+    }
+
+    // SELECT DEĞİŞİNCE ÇALIŞTIR
+    document.getElementById('barber-select').addEventListener('change', loadBarberHours);
+
+    // OTOMATİK KAYIT TETİKLEYİCİ
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('open-time') ||
+            e.target.classList.contains('close-time') ||
+            e.target.classList.contains('is-closed-toggle')) {
+
+            const row = e.target.closest('.wh-row');
+            saveRow(row);
+        }
+    });
+
+    // KAYDETME VE DİNAMİK GÜNCELLEME
+    async function saveRow(row) {
+        const id = row.getAttribute('data-id');
+        const type = row.getAttribute('data-type');
+        const openTime = row.querySelector('.open-time').value;
+        const closeTime = row.querySelector('.close-time').value;
+        const isClosed = row.querySelector('.is-closed-toggle').checked;
+        const statusEl = document.getElementById('save-status');
+
+        // Satır görselini güncelle
+        row.classList.toggle('is-closed-row', isClosed);
+        row.querySelector('.text').innerText = isClosed ? "KAPALI" : "AÇIK";
+
+        statusEl.innerText = "KAYDEDİLİYOR...";
+        statusEl.className = "status-saving";
+        statusEl.style.display = "block";
+
+        const response = await fetch('?handler=UpdateRow', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: JSON.stringify({ id, openTime, closeTime, isClosed })
+        });
+
+        if (response.ok) {
+            statusEl.innerText = "BAŞARIYLA KAYDEDİLDİ";
+            statusEl.className = "status-saved";
+
+            // KRİTİK NOKTA: Dükkan saati değiştiyse ve berber seçiliyse listeyi tazele
+            if (type === 'shop') {
+                const barberId = document.getElementById('barber-select').value;
+                if (barberId) {
+                    // Küçük bir gecikmeyle (görsel akıcılık için) berber tablosunu tazele
+                    setTimeout(loadBarberHours, 300);
+                }
+            }
+
+            setTimeout(() => { statusEl.style.display = "none"; }, 2000);
+        }
+    }
+</script>
