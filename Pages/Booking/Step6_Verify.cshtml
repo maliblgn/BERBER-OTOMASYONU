@@ -106,6 +106,13 @@
                 <strong class="text-white">+90 @Model.PhoneNumberMasked</strong> numarasına WhatsApp üzerinden gönderdiğimiz 6 haneli doğrulama kodunu aşağıya giriniz.
             </p>
 
+            @if (TempData["OtpMessage"] != null)
+            {
+                <div class="alert alert-success mx-auto mb-4 text-center" style="background: rgba(37, 211, 102, 0.1); border: 1px solid #25D366; color: #25D366; font-size: 0.95rem; font-weight: 500;">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["OtpMessage"]
+                </div>
+            }
+
             @if (!ModelState.IsValid)
             {
                 <div class="alert alert-danger mx-auto mb-4 text-start" style="background: rgba(227, 76, 56, 0.1); border: 1px solid #e34c38; color: #e34c38; font-size: 0.9rem;">

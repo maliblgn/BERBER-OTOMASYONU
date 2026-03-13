@@ -79,6 +79,10 @@
                         asp-page="/Admin/Services"><i class="bi bi-tags me-2"></i> Hizmetler</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Expenses/Index" ? "active" : "")" 
+                        asp-page="/Admin/Expenses/Index"><i class="bi bi-receipt-cutoff me-2"></i> Giderler</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link @(ViewContext.RouteData.Values["Page"]?.ToString() == "/Admin/Blacklisted" ? "active" : "")" 
                         asp-page="/Admin/Blacklisted"><i class="bi bi-shield-x me-2"></i> Kara Liste</a>
                 </li>

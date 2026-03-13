@@ -2,9 +2,8 @@ using SoftetroBarber.Enums;
 
 namespace SoftetroBarber.Models;
 
-public class Appointment
+public class Appointment : BaseEntity
 {
-    public Guid Id { get; set; }
     public Guid CustomerId { get; set; }
     public Guid BarberId { get; set; }
     public DateTime StartTime { get; set; }

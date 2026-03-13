@@ -16,43 +16,74 @@ public class ApplicationDbContext : DbContext
     public DbSet<TimeOffs> TimeOffs { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<AppointmentService> AppointmentServices { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // 1. AppointmentService için Composite Primary Key (Çoka çok ilişki için tablo anahtarı)
+        // 1. AppointmentService için Composite Primary Key
         modelBuilder.Entity<AppointmentService>()
             .HasKey(x => new { x.AppointmentId, x.ServiceId });
 
-        // Hassasiyet Ayarları (Decimal alanlar için)
+        // Hassasiyet Ayarları
         modelBuilder.Entity<Appointment>().Property(a => a.TotalPrice).HasPrecision(18, 2);
         modelBuilder.Entity<Service>().Property(s => s.Price).HasPrecision(18, 2);
+        modelBuilder.Entity<Expense>().Property(e => e.Amount).HasPrecision(18, 2);
 
-        // 2. SQL Server Multiple-Cascade-Path Çakışmalarını Önlemek İçin Kısıtlamalar (Restrict)
-        
-        // Bir müşteri silinmek istenirse ve randevuları varsa, silmeyi engelle.
+        // 2. Cascade Kısıtlamaları (Restrict)
         modelBuilder.Entity<Appointment>()
             .HasOne(a => a.Customer)
             .WithMany(c => c.Appointments)
             .HasForeignKey(a => a.CustomerId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Bir berber silinmek istenirse, randevuları varsa silmeyi engelle.
         modelBuilder.Entity<Appointment>()
             .HasOne(a => a.Barber)
             .WithMany(b => b.Appointments)
             .HasForeignKey(a => a.BarberId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // Hizmetler içinden bir servis silindiğinde direkt olarak o servisin bağlı olduğu tüm randevu geçmişini silmeyi engelle.
         modelBuilder.Entity<AppointmentService>()
             .HasOne(asvc => asvc.Service)
             .WithMany(s => s.AppointmentServices)
             .HasForeignKey(asvc => asvc.ServiceId)
             .OnDelete(DeleteBehavior.Restrict);
             
-        // Not: WorkingHours, TimeOffs gibi tamamen barbere bağımlı olan alt verilerde default özellik Action/Cascade kalabilir.
-        // Berberin molası veya çalışma saati, berberle beraber silinmesinde bir problem yoktur.
+        // 3. Global Query Filter (Soft Delete)
+        modelBuilder.Entity<Barber>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<Service>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<Appointment>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<Expense>().HasQueryFilter(e => !e.IsDeleted);
+
+        // 4. Database Indexing
+        modelBuilder.Entity<Appointment>().HasIndex(a => a.StartTime);
+        modelBuilder.Entity<Appointment>().HasIndex(a => a.BarberId);
+        modelBuilder.Entity<Appointment>().HasIndex(a => a.CustomerId);
+    }
+
+    public override int SaveChanges()
+    {
+        HandleSoftDelete();
+        return base.SaveChanges();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        HandleSoftDelete();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void HandleSoftDelete()
+    {
+        var entries = ChangeTracker.Entries<BaseEntity>();
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Deleted)
+            {
+                entry.State = EntityState.Modified;
+                entry.Entity.IsDeleted = true;
+            }
+        }
     }
 }

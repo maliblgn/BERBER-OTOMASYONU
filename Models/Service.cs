@@ -1,8 +1,7 @@
 namespace SoftetroBarber.Models;
 
-public class Service
+public class Service : BaseEntity
 {
-    public Guid Id { get; set; }
     public required string Name { get; set; }
     public int DurationInMinutes { get; set; }
     public decimal Price { get; set; }

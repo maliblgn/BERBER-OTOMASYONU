@@ -27,9 +27,11 @@ builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 // Services
 builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IWhatsAppService, WhatsAppService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddHostedService<AppointmentReminderService>();
+builder.Services.AddHostedService<AppointmentStatusWorker>();
 
 // Session
 builder.Services.AddSession(options =>
