@@ -110,8 +110,7 @@
                             <select class="white-box w-75" onchange="performAutoSave('@item.Id', null, this.value, this)">
                                 @for (int i = 15; i <= 120; i += 15)
                                 {
-                                    <option value="@i"
-                                            selected="@(item.DurationInMinutes == i)">@i dk</option>
+                                    <option value="@i"                   selected="@(item.DurationInMinutes == i)">@i dk</option>
                                 }
                             </select>
                         </td>
@@ -121,7 +120,7 @@
                         </td>
                         <td class="text-end pe-4">
                             <button class="bg-transparent border-0" onclick="openDeleteModal('@item.Id', '@item.Name')"><i
-                                class="bi bi-trash3 text-muted"></i></button>
+                                class="bi bi-trash3 text-secondary"></i></button>
                             </td>
                         </tr>
                     }
@@ -167,51 +166,51 @@
 
         @section Scripts {
             <script>
-                    const modal = document.getElementById('softetroModal');
-                    const form = document.getElementById('modalForm');
+                                const modal = document.getElementById('softetroModal');
+                                const form = document.getElementById('modalForm');
 
-                    function openAddModal() {
-                        document.getElementById('mTitle').innerText = "YENİ HİZMET EKLE";
-                        document.getElementById('mIcon').className = "bi bi-plus-circle text-danger";
-                        document.getElementById('addFormContent').style.display = 'block';
-                        document.getElementById('deleteFormContent').style.display = 'none';
-                        document.getElementById('mBtn').innerText = "PORFÖYE KAYDET";
-                        form.action = "?handler=AddService";
-                        modal.style.display = 'flex';
-                    }
+                                function openAddModal() {
+                                    document.getElementById('mTitle').innerText = "YENİ HİZMET EKLE";
+                                    document.getElementById('mIcon').className = "bi bi-plus-circle text-danger";
+                                    document.getElementById('addFormContent').style.display = 'block';
+                                    document.getElementById('deleteFormContent').style.display = 'none';
+                                    document.getElementById('mBtn').innerText = "PORFÖYE KAYDET";
+                                    form.action = "?handler=AddService";
+                                    modal.style.display = 'flex';
+                                }
 
-                    function openDeleteModal(id, name) {
-                        document.getElementById('mTitle').innerText = name;
-                        document.getElementById('mIcon').className = "bi bi-exclamation-triangle text-danger";
-                        document.getElementById('delServiceId').value = id;
-                        document.getElementById('addFormContent').style.display = 'none';
-                        document.getElementById('deleteFormContent').style.display = 'block';
-                        document.getElementById('mBtn').innerText = "SİLMEYİ ONAYLA";
-                        form.action = "?handler=DeleteService";
-                        modal.style.display = 'flex';
-                    }
+                                function openDeleteModal(id, name) {
+                                    document.getElementById('mTitle').innerText = name;
+                                    document.getElementById('mIcon').className = "bi bi-exclamation-triangle text-danger";
+                                    document.getElementById('delServiceId').value = id;
+                                    document.getElementById('addFormContent').style.display = 'none';
+                                    document.getElementById('deleteFormContent').style.display = 'block';
+                                    document.getElementById('mBtn').innerText = "SİLMEYİ ONAYLA";
+                                    form.action = "?handler=DeleteService";
+                                    modal.style.display = 'flex';
+                                }
 
-                    function closeModal() { modal.style.display = 'none'; }
+                                function closeModal() { modal.style.display = 'none'; }
 
-                    async function performAutoSave(serviceId, price, duration, element) {
-                        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-                        let p = new URLSearchParams();
-                        p.append('serviceId', serviceId);
-                        if (price) p.append('price', price);
-                        if (duration) p.append('duration', duration);
+                                async function performAutoSave(serviceId, price, duration, element) {
+                                    const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                                    let p = new URLSearchParams();
+                                    p.append('serviceId', serviceId);
+                                    if (price) p.append('price', price);
+                                    if (duration) p.append('duration', duration);
 
-                        try {
-                            const response = await fetch(`?handler=AutoUpdate&${p.toString()}`, {
-                                method: 'POST',
-                                headers: { 'RequestVerificationToken': token, 'X-Requested-With': 'XMLHttpRequest' }
-                            });
-                            if ((await response.json()).success) {
-                                element.classList.add('save-flash');
-                                setTimeout(() => element.classList.remove('save-flash'), 800);
-                            }
-                        } catch (e) { console.error(e); }
-                    }
+                                    try {
+                                        const response = await fetch(`?handler=AutoUpdate&${p.toString()}`, {
+                                            method: 'POST',
+                                            headers: { 'RequestVerificationToken': token, 'X-Requested-With': 'XMLHttpRequest' }
+                                        });
+                                        if ((await response.json()).success) {
+                                            element.classList.add('save-flash');
+                                            setTimeout(() => element.classList.remove('save-flash'), 800);
+                                        }
+                                    } catch (e) { console.error(e); }
+                                }
 
-                    window.onclick = (e) => { if (e.target == modal) closeModal(); }
+                                window.onclick = (e) => { if (e.target == modal) closeModal(); }
             </script>
         }

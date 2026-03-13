@@ -11,16 +11,19 @@
         border: 1px solid #222;
         border-radius: 6px;
     }
+
     .admin-card-header {
         background-color: #111;
         border-bottom: 1px solid #222;
         padding: 20px 25px;
         border-radius: 6px 6px 0 0;
     }
+
     .dark-table {
         color: #ccc;
         margin-bottom: 0;
     }
+
     .dark-table thead th {
         background-color: #0a0a0a;
         color: #888;
@@ -29,21 +32,24 @@
         font-size: 0.7rem;
         padding: 15px 20px;
     }
+
     .btn-sharp-red {
-        background: var(--theme-red, #e34c38); 
-        color: #fff; 
+        background: var(--theme-red, #e34c38);
+        color: #fff;
         border: none;
-        font-weight: 800; 
+        font-weight: 800;
         letter-spacing: 1px;
-        border-radius: 4px; 
-        transition: 0.3s; 
+        border-radius: 4px;
+        transition: 0.3s;
         text-transform: uppercase;
     }
-    .btn-sharp-red:hover { 
-        box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4); 
-        filter: brightness(1.1); 
+
+    .btn-sharp-red:hover {
+        box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4);
+        filter: brightness(1.1);
         color: white;
     }
+
     .btn-outline-red {
         border: 1px solid #333;
         color: #888;
@@ -54,21 +60,24 @@
         transition: 0.3s;
         text-decoration: none;
     }
+
     .btn-outline-red:hover {
         border-color: #e34c38;
         color: #fff;
         background: rgba(227, 76, 56, 0.1);
     }
+
     .dark-input {
         background-color: #000;
         border: 1px solid #333;
         color: #fff;
     }
+
     .dark-input:focus {
         background-color: #000;
         border-color: #e34c38;
         color: #fff;
-        box-shadow: 0 0 10px rgba(227,76,56,0.2);
+        box-shadow: 0 0 10px rgba(227, 76, 56, 0.2);
     }
 </style>
 
@@ -82,7 +91,8 @@
             <div class="card-body p-4 w-100">
                 <form method="post" asp-page-handler="Create">
                     <div class="mb-3">
-                        <label asp-for="NewExpense.Category" class="form-label text-muted small fw-bold">Kategori</label>
+                        <label asp-for="NewExpense.Category"
+                               class="form-label text-secondary small fw-bold">Kategori</label>
                         <select asp-for="NewExpense.Category" class="form-select dark-input" required>
                             <option value="">Seçiniz...</option>
                             <option value="Kira">Kira</option>
@@ -94,87 +104,94 @@
                         <span asp-validation-for="NewExpense.Category" class="text-danger small"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="NewExpense.Description" class="form-label text-muted small fw-bold">Açıklama</label>
-                        <input asp-for="NewExpense.Description" class="form-control dark-input" placeholder="Elektrik Faturası vb." required />
+                        <label asp-for="NewExpense.Description"
+                               class="form-label text-secondary small fw-bold">Açıklama</label>
+                        <input asp-for="NewExpense.Description" class="form-control dark-input"
+                               placeholder="Elektrik Faturası vb." required />
                         <span asp-validation-for="NewExpense.Description" class="text-danger small"></span>
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">
-                            <label asp-for="NewExpense.Amount" class="form-label text-muted small fw-bold">Tutar (₺)</label>
-                            <input asp-for="NewExpense.Amount" type="number" step="0.01" class="form-control dark-input" placeholder="0.00" required />
-                            <span asp-validation-for="NewExpense.Amount" class="text-danger small"></span>
+                            <label asp-for="NewExpense.Amount" class="form-label text-secondary small fw-bold">Tutar
+                                (₺)</label>
+                                <input asp-for="NewExpense.Amount" type="number" step="0.01" class="form-control dark-input"
+                                       placeholder="0.00" required />
+                                <span asp-validation-for="NewExpense.Amount" class="text-danger small"></span>
+                            </div>
+                            <div class="col-6">
+                                <label asp-for="NewExpense.Date"
+                                       class="form-label text-secondary small fw-bold">Tarih</label>
+                                <input asp-for="NewExpense.Date" type="date" class="form-control dark-input" required />
+                                <span asp-validation-for="NewExpense.Date" class="text-danger small"></span>
+                            </div>
                         </div>
-                        <div class="col-6">
-                            <label asp-for="NewExpense.Date" class="form-label text-muted small fw-bold">Tarih</label>
-                            <input asp-for="NewExpense.Date" type="date" class="form-control dark-input" required />
-                            <span asp-validation-for="NewExpense.Date" class="text-danger small"></span>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-sharp-red w-100 py-2 mt-2">
-                        <i class="bi bi-save me-2"></i> KAYDET
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Gider Listesi -->
-    <div class="col-lg-8">
-        <div class="admin-card h-100">
-            <div class="admin-card-header d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">GİDER LİSTESİ</h5>
-                    <small class="text-muted">Sorgulanan tüm gider kalemleri.</small>
+                        <button type="submit" class="btn btn-sharp-red w-100 py-2 mt-2">
+                            <i class="bi bi-save me-2"></i> KAYDET
+                        </button>
+                    </form>
                 </div>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table dark-table align-middle">
-                        <thead>
-                            <tr>
-                                <th class="ps-4">Tarih</th>
-                                <th>Kategori</th>
-                                <th>Açıklama</th>
-                                <th>Tutar</th>
-                                <th class="pe-4 text-end">İşlem</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.Expenses.Any())
-                            {
-                                @foreach (var item in Model.Expenses)
+        </div>
+
+        <!-- Gider Listesi -->
+        <div class="col-lg-8">
+            <div class="admin-card h-100">
+                <div class="admin-card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold text-white mb-0" style="letter-spacing: 1px;">GİDER LİSTESİ</h5>
+                        <small class="text-secondary">Sorgulanan tüm gider kalemleri.</small>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table dark-table align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Tarih</th>
+                                    <th>Kategori</th>
+                                    <th>Açıklama</th>
+                                    <th>Tutar</th>
+                                    <th class="pe-4 text-end">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Expenses.Any())
+                                {
+                                    @foreach (var item in Model.Expenses)
+                                    {
+                                        <tr>
+                                            <td class="ps-4 text-white">@item.Date.ToString("dd.MM.yyyy")</td>
+                                            <td>
+                                                <span class="badge bg-dark border border-secondary text-light">@item.Category</span>
+                                            </td>
+                                            <td class="text-muted">@item.Description</td>
+                                            <td style="color: #e34c38; font-weight: 700;">-@item.Amount.ToString("C0")</td>
+                                            <td class="pe-4 text-end">
+                                                <form method="post" asp-page-handler="Delete" style="display:inline;">
+                                                    <input type="hidden" name="expenseId" value="@item.Id" />
+                                                    <button type="submit" class="btn btn-outline-red btn-sm"
+                                                            onclick="return confirm('Bu gider kaydını silmek istediğinize emin misiniz?');">
+                                                        <i class="bi bi-trash"></i> Sil
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
                                 {
                                     <tr>
-                                        <td class="ps-4 text-white">@item.Date.ToString("dd.MM.yyyy")</td>
-                                        <td>
-                                            <span class="badge bg-dark border border-secondary text-light">@item.Category</span>
-                                        </td>
-                                        <td class="text-muted">@item.Description</td>
-                                        <td style="color: #e34c38; font-weight: 700;">-@item.Amount.ToString("C0")</td>
-                                        <td class="pe-4 text-end">
-                                            <form method="post" asp-page-handler="Delete" style="display:inline;">
-                                                <input type="hidden" name="expenseId" value="@item.Id" />
-                                                <button type="submit" class="btn btn-outline-red btn-sm" onclick="return confirm('Bu gider kaydını silmek istediğinize emin misiniz?');">
-                                                    <i class="bi bi-trash"></i> Sil
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="5" class="text-center py-5">
-                                        <i class="bi bi-receipt d-block mb-3 opacity-25" style="font-size: 3rem;"></i>
-                                        <span style="color: #666; font-weight: 700;">Henüz kaydedilmiş bir gider bulunmuyor.</span>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                        <td colspan="5" class="text-center py-5">
+                                            <i class="bi bi-receipt d-block mb-3 opacity-25" style="font-size: 3rem;"></i>
+                                            <span style="color: #666; font-weight: 700;">Henüz kaydedilmiş bir gider
+                                                bulunmuyor.</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>

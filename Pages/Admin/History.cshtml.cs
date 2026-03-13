@@ -24,23 +24,34 @@ public class HistoryModel : PageModel
     {
         var now = DateTime.Now;
 
-        // Arşiv sorgusu: Zamanı geçenler VEYA durumu netleşenler
+        // ARŞİV MANTIĞI: Durumu ne olursa olsun, sadece ZAMANI GEÇMİŞ randevuları getir
         PastAppointments = await _context.Appointments
             .Include(a => a.Customer)
             .Include(a => a.Barber)
-            .Where(a => a.EndTime < now ||
-                        a.Status == SoftetroBarber.Enums.AppointmentStatus.Completed ||
-                        a.Status == SoftetroBarber.Enums.AppointmentStatus.Cancelled ||
-                        a.Status == SoftetroBarber.Enums.AppointmentStatus.NoShow)
+            .Where(a => a.StartTime < now) // KRİTİK DEĞİŞİKLİK: Sadece geçmiş tarihler
             .OrderByDescending(a => a.StartTime)
             .ToListAsync();
     }
+    // History.cshtml.cs içine eklenecek metod:
+    public async Task<IActionResult> OnPostUpdateStatusAsync(Guid appointmentId, SoftetroBarber.Enums.AppointmentStatus newStatus)
+    {
+        var appointment = await _context.Appointments.FindAsync(appointmentId);
+
+        if (appointment != null)
+        {
+            appointment.Status = newStatus;
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Randevu durumu başarıyla güncellendi.";
+        }
+
+        return RedirectToPage();
+    }
     public async Task<IActionResult> OnPostDeleteOldAppointmentsAsync()
     {
-        // Şu andan 3 gün öncesini hesapla
-        var thresholdDate = DateTime.Now.AddDays(-3);
+        // Şu andan 7 gün (1 hafta) öncesini hesapla
+        var thresholdDate = DateTime.Now.AddDays(-7);
 
-        // 3 günden eski olan randevuları getir
+        // 7 günden eski olan randevuları getir
         var oldAppointments = _context.Appointments
             .Where(a => a.StartTime < thresholdDate);
 
@@ -50,11 +61,13 @@ public class HistoryModel : PageModel
         {
             _context.Appointments.RemoveRange(oldAppointments);
             await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = $"3 günden eski olan {deletedCount} adet randevu başarıyla silindi.";
+
+            // Başarı mesajını da 7 gün olarak güncelledik
+            TempData["SuccessMessage"] = $"7 günden eski olan {deletedCount} adet randevu başarıyla arşivden temizlendi.";
         }
         else
         {
-            TempData["InfoMessage"] = "Silinecek eski randevu bulunamadı.";
+            TempData["InfoMessage"] = "Son 7 günden daha eski bir randevu kaydı bulunamadı.";
         }
 
         return RedirectToPage();

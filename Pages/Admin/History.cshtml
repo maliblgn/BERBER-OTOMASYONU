@@ -1,166 +1,121 @@
 @page
+@using SoftetroBarber.Enums
 @model SoftetroBarber.Pages.Admin.HistoryModel
 @{
     ViewData["Title"] = "Randevu Arşivi";
 }
 
 <style>
-    /* SOFTETRO PREMIUM - FULL SCREEN FOCUS MODE */
-    .sidebar,
-    #sidebar-wrapper,
-    .navbar-vertical,
-    aside {
-        display: none !important;
-    }
+    /* AJANDA İLE BİREBİR AYNI TASARIM SİSTEMİ */
+    .admin-card { background-color: #1a1a1a; border: 1px solid #222; border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-top: 20px; }
+    .admin-card-header { background-color: #111; border-bottom: 1px solid #222; padding: 15px 25px; }
+    
+    .dropdown-menu-dark-custom { background-color: #111 !important; border: 1px solid #333 !important; border-radius: 8px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; padding: 5px 0 !important; min-width: 170px !important; }
+    .dropdown-item-custom { color: #ccc !important; font-weight: 600 !important; font-size: 0.8rem !important; padding: 8px 15px !important; transition: 0.2s !important; border: none !important; background: transparent !important; width: 100%; text-align: left; display: flex; align-items: center; }
+    .dropdown-item-custom:hover { background-color: #222 !important; color: #fff !important; }
+    
+    .icon-blue { color: #3498db; } .icon-green { color: #2ecc71; } .icon-red { color: #e74c3c; } .icon-yellow { color: #f1c40f; }
+    
+    .btn-action-outline-sm { background: #333; height: 34px; display: inline-flex; align-items: center; padding: 0 15px; font-size: 0.7rem; font-weight: 800; border: 1px solid #333; color: #fff; text-decoration: none; border-radius: 4px; transition: 0.3s; gap: 8px; }
+    .btn-action-outline-sm:hover { border-color: #FFFFFF; background: #444; }
+    .btn-danger-softetro { background: #e34c38; color: #fff; border: none; }
+    .btn-danger-softetro:hover { background: #c0392b; transform: scale(1.02); }
 
-    main,
-    .main-content,
-    .container-fluid {
-        margin-left: 0 !important;
-        padding: 15px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-
-    .admin-card {
-        background-color: #1a1a1a;
-        border: 1px solid #222;
-        border-radius: 8px;
-        margin-top: 20px;
-    }
-
-    /* GERİ DÖN VE TEMİZLE BUTONLARI */
-    .btn-back-premium {
-        background: #ffffff;
-        color: #000;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 6px;
-        font-weight: 800;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        text-decoration: none;
-        transition: 0.3s;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .btn-back-premium:hover {
-        background: #e34c38;
-        color: #fff;
-        transform: translateX(-5px);
-    }
-
-    /* DURUM ROZETLERİ (SABİT GENİŞLİK) */
-    .status-badge-archive {
-        display: inline-block;
-        width: 120px;
-        text-align: center;
-        font-weight: 900;
-        padding: 6px 0;
-        font-size: 0.7rem;
-        border-radius: 50px;
-        text-transform: uppercase;
-    }
-
-    .badge-completed {
-        background: #ffffff !important;
-        color: #000 !important;
-    }
-
-    .badge-cancelled {
-        background: rgba(231, 76, 60, 0.1) !important;
-        color: #e74c3c !important;
-        border: 1px solid #e74c3c;
-    }
-
-    .badge-noshow {
-        background: rgba(241, 196, 15, 0.1) !important;
-        color: #f1c40f !important;
-        border: 1px solid #f1c40f;
-    }
-
-    .dark-table tbody {
-        opacity: 0.9;
-    }
+    .date-divider { background: #0c0c0c; color: #666; padding: 12px 25px; font-weight: 900; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #222; }
+    .dark-table { color: #ccc; margin-bottom: 0; }
+    .dark-table thead th { background-color: #0a0a0a; color: #888; font-weight: 800; text-transform: uppercase; font-size: 0.6rem; padding: 12px 20px; }
+    
+    .price-text { color: #2ecc71; font-weight: 900; font-size: 1rem; }
+    .status-badge { display: inline-block; width: 110px; text-align: center; font-weight: 900; padding: 5px 0; font-size: 0.65rem; border-radius: 50px; text-transform: uppercase; }
+    .badge-softetro-white { background: #ffffff !important; color: #000000 !important; }
 </style>
 
 <div class="container-fluid">
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success border-0 mb-3"
-             style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; font-weight: 700;">
+        <div class="alert alert-success border-0 mb-3" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71; font-weight: 700;">
             <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMessage"]
         </div>
     }
 
     <div class="admin-card">
-        <div
-            class="admin-card-header d-flex justify-content-between align-items-center p-4 border-bottom border-secondary">
+        <div class="admin-card-header d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
-                <a asp-page="/Admin/Appointments" class="btn-back-premium">
+                <a asp-page="/Admin/Appointments" class="btn-action-outline-sm">
                     <i class="bi bi-arrow-left"></i> GERİ DÖN
                 </a>
-                <h5 class="text-white fw-bold m-0">
-                    <i class="bi bi-archive me-2 text-danger"></i>RANDEVU ARŞİVİ
-                </h5>
+                <h6 class="fw-bold text-white mb-0" style="letter-spacing: 1px; font-size: 0.9rem;">RANDEVU ARŞİVİ</h6>
             </div>
 
-            <form method="post" asp-page-handler="DeleteOldAppointments"
-                  onsubmit="return confirm('3 günden eski veriler kalıcı olarak silinecektir. Onaylıyor musunuz?');">
-                <button type="submit" class="btn-back-premium"
-                        style="background: transparent; border: 1px solid #444; color: #888;">
-                    <i class="bi bi-trash3"></i> ESKİLERİ TEMİZLE
+            <form id="deleteOldForm" method="post" asp-page-handler="DeleteOldAppointments">
+                <button type="button" onclick="confirmDelete()" class="btn-action-outline-sm" style="color: #e74c3c; border-color: #e74c3c33;">
+                    <i class="bi bi-trash3"></i> GEÇMİŞİ TEMİZLE
                 </button>
             </form>
         </div>
 
         <div class="table-responsive">
-            <table class="table dark-table align-middle m-0">
-                <thead style="background: #080808;">
-                    <tr class="text-secondary small">
-                        <th class="ps-4 py-3">İŞLEM TARİHİ</th>
-                        <th>MÜŞTERİ</th>
+            <table class="table dark-table align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-4">TARİH & SAAT</th>
+                        <th>MÜŞTERİ BİLGİSİ</th>
                         <th>HİZMETİ VEREN</th>
                         <th>KAZANÇ</th>
-                        <th class="pe-4 text-end">DURUM SİCİLİ</th>
+                        <th>DURUM SİCİLİ</th>
+                        <th class="text-end pe-4">İŞLEM</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @{ DateTime? lastDate = null; }
                     @if (Model.PastAppointments.Any())
                     {
                         @foreach (var item in Model.PastAppointments)
                         {
+                            if (lastDate == null || item.StartTime.Date != lastDate.Value.Date)
+                            {
+                                <tr class="date-divider">
+                                    <td colspan="6">
+                                        <i class="bi bi-calendar-event me-2"></i> 
+                                        @item.StartTime.ToString("dd MMMM yyyy, dddd").ToUpper()
+                                    </td>
+                                </tr>
+                                lastDate = item.StartTime.Date;
+                            }
                             <tr>
                                 <td class="ps-4">
-                                    <div class="text-white fw-bold">@item.StartTime.ToString("dd MMM yyyy")</div>
-                                    <div class="small text-muted">@item.StartTime.ToString("HH:mm")</div>
+                                    <div class="text-white fw-bold">@item.StartTime.ToString("HH:mm")</div>
+                                    <div class="small text-muted">@item.EndTime.ToString("HH:mm") BİTİŞ</div>
                                 </td>
-                                <td class="text-white fw-bold">@item.Customer.FullName</td>
-                                <td><i class="bi bi-person-badge me-1"></i> @item.Barber.Name</td>
-                                <td class="text-success fw-bold">@item.TotalPrice.ToString("C0")</td>
-                                <td class="pe-4 text-end">
-                                    @* DURUMA GÖRE DİNAMİK ROZET *@
+                                <td>
+                                    <div class="text-white fw-bold">@item.Customer.FullName</div>
+                                    <div class="small text-secondary">@item.Customer.PhoneNumber</div>
+                                </td>
+                                <td><span class="text-light"><i class="bi bi-person-badge me-1"></i> @item.Barber.Name</span></td>
+                                <td><span class="price-text">@item.TotalPrice.ToString("C0")</span></td>
+                                <td>
                                     @switch (item.Status)
                                     {
-                                        case SoftetroBarber.Enums.AppointmentStatus.Confirmed:
-        @* Saati geçmiş ama durumu güncellenmemiş randevular için *@
-        <span class="status-badge-archive badge bg-secondary text-white">SÜRESİ GEÇTİ</span>
-        break;
-                                        case SoftetroBarber.Enums.AppointmentStatus.Completed:
-                                            <span class="status-badge-archive badge-completed">TAMAMLANDI</span>
-                                            break;
-                                        case SoftetroBarber.Enums.AppointmentStatus.Cancelled:
-                                            <span class="status-badge-archive badge-cancelled">İPTAL EDİLDİ</span>
-                                            break;
-                                        case SoftetroBarber.Enums.AppointmentStatus.NoShow:
-                                            <span class="status-badge-archive badge-noshow">GELMEDİ</span>
-                                            break;
-                                        default:
-                                            <span class="status-badge-archive badge bg-secondary text-white">@item.Status</span>
-                                            break;
+                                        case AppointmentStatus.Confirmed: <span class="status-badge badge-softetro-white">SÜRESİ GEÇTİ</span> break;
+                                        case AppointmentStatus.Completed: <span class="status-badge badge bg-success text-white">TAMAMLANDI</span> break;
+                                        case AppointmentStatus.Cancelled: <span class="status-badge badge bg-danger text-white">İPTAL EDİLDİ</span> break;
+                                        case AppointmentStatus.NoShow: <span class="status-badge badge bg-warning text-dark">GELMEDİ</span> break;
                                     }
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="dropdown">
+                                        <button class="btn-action-outline-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">GÜNCELLE</button>
+                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark-custom shadow-lg">
+                                            <li>
+                                                <form method="post" asp-page-handler="UpdateStatus">
+                                                    <input type="hidden" name="appointmentId" value="@item.Id" />
+                                                    <button type="submit" name="newStatus" value="@AppointmentStatus.Completed" class="dropdown-item-custom"><i class="bi bi-check-all me-2 icon-green"></i> Tamamla</button>
+                                                    <button type="submit" name="newStatus" value="@AppointmentStatus.Cancelled" class="dropdown-item-custom"><i class="bi bi-x-circle me-2 icon-red"></i> İptal Et</button>
+                                                    <button type="submit" name="newStatus" value="@AppointmentStatus.NoShow" class="dropdown-item-custom"><i class="bi bi-person-x me-2 icon-yellow"></i> Gelmedi</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -168,12 +123,30 @@
                     else
                     {
                         <tr>
-                            <td colspan="5" class="text-center py-5 text-muted fw-bold">Arşivde henüz kayıtlı randevu
-                                bulunmuyor.</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                            <td colspan="6" class="text-center py-5 text-muted fw-bold">Arşivde henüz kayıtlı randevu bulunmuyor.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
+
+@* SWEETALERT2 VE KONTROL *@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmDelete() {
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: "7 günden eski tüm veriler kalıcı olarak silinecektir!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e34c38',
+            cancelButtonColor: '#333',
+            confirmButtonText: 'Evet, Temizle!',
+            cancelButtonText: 'İptal',
+            background: '#1a1a1a',
+            color: '#fff'
+        }).then((result) => { if (result.isConfirmed) document.getElementById('deleteOldForm').submit(); })
+    }
+</script>
