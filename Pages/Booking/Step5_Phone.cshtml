@@ -1,295 +1,283 @@
-@page
+@page "{handler?}"
 @model SoftetroBarber.Pages.Booking.Step5_PhoneModel
 @{
-    ViewData["Title"] = "Adım 5: Randevu Onayı";
+    ViewData["Title"] = "Randevu Onayı";
 }
 
 <style>
     :root {
-        --theme-red: #e34c38;
-        --theme-red-glow: rgba(227, 76, 56, 0.4);
+        --softetro-red: #e34c38;
+        --card-bg: #111;
+        --border: #222;
     }
 
-    /* Yatay Adım Göstergesi */
-    .step-indicator {
+    .split-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 25px;
+        align-items: stretch;
+    }
+
+    /* SOL PANEL: Yeni Dikey Tasarım */
+    .side-summary {
+        flex: 1;
+        min-width: 320px;
+        background: #080808;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 35px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .summary-title {
+        color: #555;
+        font-weight: 900;
+        font-size: 0.7rem;
+        letter-spacing: 3px;
+        margin-bottom: 30px;
+        text-transform: uppercase;
+        border-left: 3px solid var(--softetro-red);
+        padding-left: 15px;
+    }
+
+    .info-group {
+        margin-bottom: 25px;
+    }
+
+    .info-label {
+        display: block;
+        color: #666;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    .info-val {
+        display: block;
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: 900;
+    }
+
+    .info-val i {
+        color: var(--softetro-red);
+        margin-right: 10px;
+        font-size: 1.1rem;
+    }
+
+    .service-list {
+        background: #0c0c0c;
+        border: 1px solid #1a1a1a;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: auto;
+    }
+
+    .service-item {
         display: flex;
         justify-content: space-between;
-        margin: 2rem auto 4rem auto;
-        position: relative;
-        max-width: 600px;
+        border-bottom: 1px solid #151515;
+        padding: 8px 0;
     }
 
-    .step-indicator::before {
-        content: '';
-        position: absolute;
-        top: 15px;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        background: #222;
-        z-index: 1;
+    .service-item:last-child {
+        border-bottom: none;
     }
 
-    .step-item {
-        position: relative;
-        z-index: 2;
-        text-align: center;
-        background: #000;
-        padding: 0 10px;
+    .total-area {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px dashed #333;
     }
 
-    .step-circle {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: #111;
-        color: #555;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .total-price {
+        color: #fff;
+        font-size: 2.2rem;
         font-weight: 900;
-        margin: 0 auto 8px auto;
-        border: 2px solid #222;
+        line-height: 1;
     }
 
-    .step-item.active .step-circle {
-        background: var(--theme-red);
-        color: #fff;
-        border-color: var(--theme-red);
-        box-shadow: 0 0 15px var(--theme-red-glow);
+    /* SAĞ PANEL: Form */
+    .side-form {
+        flex: 1.5;
+        min-width: 380px;
+        background: #141414;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
     }
 
-    .step-item.completed .step-circle {
-        background: rgba(227, 76, 56, 0.1);
-        color: var(--theme-red);
-        border-color: var(--theme-red);
-    }
-
-    /* Karanlık Ana Kartlar */
-    .dark-panel {
-        background-color: #1a1a1a;
-        border: 1px solid #222;
+    .white-box-input {
+        background: #fff;
         border-radius: 8px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-    }
-
-    /* BEYAZ INPUT GRUBU (8px Radius) */
-    .white-input-group {
         display: flex;
         align-items: center;
-        background: #fff;
-        border: 2px solid #fff;
-        padding: 0 15px;
-        height: 60px;
-        border-radius: 8px;
-        /* İstediğin gibi azaltıldı */
-        transition: all 0.3s ease;
+        padding: 14px 20px;
+        margin-bottom: 20px;
+        border: 3px solid transparent;
+        transition: 0.3s;
     }
 
-    .white-input-group:focus-within {
-        border-color: var(--theme-red);
-        box-shadow: 0 0 15px rgba(227, 76, 56, 0.3);
+    .white-box-input:focus-within {
+        border-color: var(--softetro-red);
     }
 
-    /* Input İç Stili */
-    .white-input {
-        background: transparent;
+    .inner-input {
         border: none;
-        color: #333;
-        width: 100%;
         outline: none;
-        font-weight: bold;
+        width: 100%;
+        font-weight: 800;
+        color: #000;
         font-size: 1.1rem;
+        background: transparent;
     }
 
-    .prefix {
-        color: #333;
-        font-weight: bold;
-        font-size: 1.1rem;
+    .readonly-field {
+        background: #f0f0f0 !important;
+        opacity: 0.7;
+        pointer-events: none;
     }
 
-    .divider {
-        width: 1px;
-        height: 25px;
-        background: #ddd;
-        margin: 0 15px;
+    .found-tag {
+        color: #2ecc71;
+        font-size: 0.7rem;
+        font-weight: 900;
+        display: none;
+        text-align: right;
+        margin-bottom: 5px;
     }
 
-    /* BUTONLAR (Zıplayan Efekt) */
-    .btn-sharp-red {
-        background: var(--theme-red);
+    .btn-finish {
+        background: var(--softetro-red);
         color: #fff;
         border: none;
-        height: 60px;
-        font-weight: 800;
-        letter-spacing: 1px;
+        width: 100%;
+        padding: 20px;
         border-radius: 8px;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        font-weight: 900;
         text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.3s;
     }
 
-    .btn-sharp-red:hover {
-        box-shadow: 0 10px 25px var(--theme-red-glow);
-        transform: translateY(-5px);
-        color: #fff;
-    }
-
-    .btn-dark-outline {
-        background: transparent;
-        border: 1px solid #333;
-        color: #888;
-        height: 60px;
-        font-weight: 800;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-    }
-
-    .btn-dark-outline:hover {
-        border-color: #555;
-        transform: translateY(-5px);
-        color: #fff;
-    }
-
-    /* Chrome Autofill Fix */
-    input:-webkit-autofill {
-        -webkit-box-shadow: 0 0 0 30px #fff inset !important;
-        -webkit-text-fill-color: #333 !important;
+    .btn-finish:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(227, 76, 56, 0.4);
     }
 </style>
 
-<div class="row justify-content-center">
-    <div class="col-12 text-center">
-        <div class="step-indicator">
-            <div class="step-item completed">
-                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
-                <div class="step-title">Hizmet</div>
+<div class="split-wrapper">
+    <div class="side-summary">
+        <div class="summary-title">RANDEVU BİLGİLERİ</div>
+
+        <div class="info-group">
+            <span class="info-label">SEÇİLEN BERBER</span>
+            <span class="info-val"><i class="bi bi-person-badge"></i> @Model.BarberName.ToUpper()</span>
+        </div>
+
+        <div class="info-group">
+            <span class="info-label">RANDEVU TARİHİ</span>
+            <span class="info-val"><i class="bi bi-calendar3"></i> @Model.SessionData.SelectedDate.ToString("dd MMMM              yyyy")</span>
+        </div>
+
+        <div class="info-group">
+            <span class="info-label">SAAT</span>
+            <span class="info-val text-danger"><i class="bi bi-clock-fill"></i>
+                @Model.SessionData.SelectedTime.ToString(@"hh\:mm")</span>
             </div>
-            <div class="step-item completed">
-                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
-                <div class="step-title">Tarih</div>
+
+            <div class="service-list">
+                <span class="info-label" style="margin-bottom: 10px;">HİZMETLER</span>
+                @foreach (var s in Model.SelectedServices)
+                {
+                    <div class="service-item">
+                        <span class="text-secondary small">@s.Name</span>
+                        <span class="text-white fw-bold small">@s.Price.ToString("C0")</span>
+                    </div>
+                }
             </div>
-            <div class="step-item completed">
-                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
-                <div class="step-title">Berber</div>
-            </div>
-            <div class="step-item active">
-                <div class="step-circle">4</div>
-                <div class="step-title">Onay</div>
+
+            <div class="total-area">
+                <span class="info-label">TOPLAM ÖDEME</span>
+                <div class="d-flex justify-content-between align-items-end">
+                    <span class="total-price">@Model.TotalPrice.ToString("C0")</span>
+                    <span class="text-muted fw-bold small">@Model.TotalDuration DK</span>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-<div class="row justify-content-center pb-5">
-    <div class="col-md-10 col-lg-8">
+        <div class="side-form">
+            <form method="post">
+                <h5 class="text-white fw-900 mb-4">MÜŞTERİ BİLGİSİ</h5>
 
-        <div class="dark-panel mb-4">
-            <div class="p-4 p-md-5" style="border-bottom: 1px solid #222;">
-                <h5 class="fw-bold text-white mb-4"><i class="bi bi-file-earmark-check me-2"
-                                                           style="color: var(--theme-red, #e34c38);"></i> Randevu Özeti</h5>
-
-                    <div class="row mb-3 pb-3" style="border-bottom: 1px solid #222;">
-                        <div class="col-sm-4" style="color: #777;"><i class="bi bi-person-fill me-2"></i> Berber</div>
-                        <div class="col-sm-8 fw-bold text-white">@Model.BarberName</div>
+                @if (!ModelState.IsValid)
+                {
+                    <div class="alert alert-danger py-2 small bg-transparent border-danger text-danger mb-4">
+                        <div asp-validation-summary="All"></div>
                     </div>
-                    <div class="row mb-3 pb-3" style="border-bottom: 1px solid #222;">
-                        <div class="col-sm-4" style="color: #777;"><i class="bi bi-calendar-check me-2"></i> Tarih</div>
-                        <div class="col-sm-8 fw-bold text-white">@Model.SessionData.SelectedDate.ToString("dd MMMM yyyy,                      dddd")</div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-sm-4" style="color: #777;"><i class="bi bi-clock me-2"></i> Saat</div>
-                        <div class="col-sm-8 fw-bold text-white">@Model.SessionData.SelectedTime.ToString(@"hh\:mm")</div>
-                    </div>
+                }
 
-                    <h6 class="mb-3 mt-4 text-white fw-bold"><i class="bi bi-list-check me-2"
-                                                                    style="color: var(--theme-red, #e34c38);"></i> Seçilen Hizmetler</h6>
-                        <div class="p-3" style="background: #000; border: 1px solid #222; border-radius: 4px;">
-                            @foreach (var service in Model.SelectedServices)
-                            {
-                                <div class="d-flex justify-content-between align-items-center py-2"
-                                     style="border-bottom: 1px solid #111;">
-                                    <div>
-                                        <span class="fw-bold text-white d-block">@service.Name</span>
-                                        <small style="color: #666;">@service.DurationInMinutes dk</small>
-                                    </div>
-                                    <span
-                                    style="color: var(--theme-red, #e34c38); font-weight: 800;">@service.Price.ToString("C0")</span>
-                                </div>
-                            }
-                        </div>
-                    </div>
-
-                    <div class="p-4 d-flex justify-content-between align-items-center" style="background: rgba(0,0,0,0.3);">
-                        <span class="fs-6"
-                              style="color: #888; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;">Toplam</span>
-                        <h3 class="fw-bold mb-0 text-white">
-                            @Model.TotalPrice.ToString("C0")
-                            <small
-                                style="color: #666; font-size: 0.5em; display: block; text-align: right;">(@Model.TotalDuration
-                                dk)</small>
-                            </h3>
-                        </div>
-                    </div>
-
-                    @if (!ModelState.IsValid)
-                    {
-                        <div class="alert alert-danger mb-4"
-                             style="background: rgba(227, 76, 56, 0.1); border: 1px solid #e34c38; color: #e34c38;">
-                            <div asp-validation-summary="All" class="mb-0"></div>
-                        </div>
-                    }
-
-                    <div class="dark-panel p-4 p-md-5">
-                        <h5 class="fw-bold text-white mb-2">Kişisel Bilgileriniz</h5>
-                        <p class="mb-4" style="color: #888; font-size: 0.85rem;">
-                            <i class="bi bi-whatsapp me-1" style="color: #25D366; font-size: 1rem;"></i>
-                            Telefon numaranıza WhatsApp üzerinden bir <strong class="text-white">doğrulama kodu (OTP)</strong>
-                            gönderilecektir.
-                        </p>
-
-                        <form method="post">
-                            <div class="mb-4">
-                                <label asp-for="CustomerName" class="form-label text-white fw-bold mb-2"
-                                       style="font-size: 0.9rem; letter-spacing: 0.5px;">AD SOYAD</label>
-                                <div class="mb-4">
-                                    <label asp-for="CustomerName" class="form-label text-white fw-bold small mb-2 ms-1">ADINIZ
-                                        SOYADINIZ</label>
-                                        <div class="white-input-group">
-                                            <input asp-for="CustomerName" type="text" class="white-input"
-                                                   placeholder="Örn: Ahmet Yılmaz" required autocomplete="off" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mb-5">
-                                    <label class="form-label text-white fw-bold small mb-2 ms-1">TELEFON NUMARASI</label>
-                                    <div class="white-input-group">
-                                        <span class="prefix">+90</span>
-                                        <div class="divider"></div>
-                                        <input asp-for="CustomerPhone" type="tel" id="phoneInput" class="white-input"
-                                               placeholder="5XX XXX XX XX" required maxlength="10"
-                                               oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
-                                    </div>
-                                </div>
-
-                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-4 mt-2"
-                                     style="border-top: 1px solid #222; gap: 15px;">
-                                    <a asp-page="Step2_Date" class="btn-dark-outline w-100 w-md-auto">
-                                        <i class="bi bi-arrow-left me-2"></i> GERİ
-                                    </a>
-                                    <button type="submit" class="btn-sharp-red w-100 w-md-auto">
-                                        ONAYLA VE KOD GÖNDER <i class="bi bi-shield-lock ms-2"></i>
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-
-                    </div>
+                <label class="text-secondary fw-bold small mb-2">TELEFON NUMARASI</label>
+                <div class="white-box-input">
+                    <span class="fw-bold me-2 text-dark">+90</span>
+                    <input asp-for="CustomerPhone" type="tel" id="phoneInput" class="inner-input"
+                           placeholder="5XX XXX XX XX" maxlength="10" required />
                 </div>
+
+                <div id="foundTag" class="found-tag"><i class="bi bi-person-check-fill"></i> SİZİ HATIRLADIK!</div>
+                <label class="text-secondary fw-bold small mb-2">ADINIZ VE SOYADINIZ</label>
+                <div class="white-box-input" id="nameWrapper">
+                    <input asp-for="CustomerName" type="text" id="nameInput" class="inner-input"
+                           placeholder="Ad-Soyad girin..." required />
+                </div>
+
+                <button type="submit" class="btn-finish">
+                    ONAY KODU GÖNDER <i class="bi bi-whatsapp ms-2"></i>
+                </button>
+
+                <a asp-page="Step2_Date" class="btn d-block text-center mt-3 text-secondary small fw-bold">
+                    <i class="bi bi-arrow-left me-1"></i> Tarih Seçimine Dön
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const pInput = document.getElementById('phoneInput');
+        const nInput = document.getElementById('nameInput');
+        const nWrapper = document.getElementById('nameWrapper');
+        const fTag = document.getElementById('foundTag');
+
+        pInput.addEventListener('input', async function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            if (this.value.length === 10) {
+                const res = await fetch(`?handler=CheckCustomer&phone=${this.value}`);
+                const data = await res.json();
+
+                if (data.found) {
+                    nInput.value = data.name;
+                    nInput.readOnly = true;
+                    nWrapper.classList.add('readonly-field');
+                    fTag.style.display = 'block';
+                    nWrapper.style.borderColor = '#2ecc71';
+                } else {
+                    clearName();
+                }
+            } else if (this.value.length < 10) {
+                clearName();
+            }
+        });
+
+        function clearName() {
+            nInput.value = "";
+            nInput.readOnly = false;
+            nWrapper.classList.remove('readonly-field');
+            fTag.style.display = 'none';
+            nWrapper.style.borderColor = 'transparent';
+        }
+    </script>

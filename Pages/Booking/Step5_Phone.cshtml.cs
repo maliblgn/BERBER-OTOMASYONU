@@ -6,6 +6,10 @@ using SoftetroBarber.Extensions;
 using SoftetroBarber.Models;
 using SoftetroBarber.Services;
 using SoftetroBarber.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SoftetroBarber.Pages.Booking;
 
@@ -35,25 +39,27 @@ public class Step5_PhoneModel : PageModel
     public async Task<IActionResult> OnGetAsync()
     {
         var sessionModel = HttpContext.Session.Get<BookingSessionModel>("BookingSession");
-        
-        if (sessionModel == null || !sessionModel.SelectedServiceIds.Any() || sessionModel.SelectedDate == default || sessionModel.SelectedTime == default || sessionModel.BarberId == Guid.Empty)
+
+        if (sessionModel == null || sessionModel.BarberId == Guid.Empty)
         {
             return RedirectToPage("Step1_Services");
         }
 
-        SessionData = sessionModel;
-
-        SelectedServices = await _context.Services
-            .Where(s => SessionData.SelectedServiceIds.Contains(s.Id))
-            .ToListAsync();
-
-        var barber = await _context.Barbers.FindAsync(SessionData.BarberId);
-        BarberName = barber?.Name ?? "Bilinmiyor";
-
-        TotalPrice = SelectedServices.Sum(s => s.Price);
-        TotalDuration = SelectedServices.Sum(s => s.DurationInMinutes);
-
+        await LoadSummaryDataAsync(sessionModel);
         return Page();
+    }
+
+    public async Task<JsonResult> OnGetCheckCustomerAsync(string phone)
+    {
+        var customer = await _context.Customers
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.PhoneNumber == phone);
+
+        if (customer != null)
+        {
+            return new JsonResult(new { found = true, name = customer.FullName });
+        }
+        return new JsonResult(new { found = false });
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -63,40 +69,35 @@ public class Step5_PhoneModel : PageModel
 
         if (string.IsNullOrWhiteSpace(CustomerName) || string.IsNullOrWhiteSpace(CustomerPhone))
         {
-            ModelState.AddModelError("", "Ad Soyad ve Telefon Numarası zorunludur.");
+            ModelState.AddModelError("", "Lütfen ad soyad ve telefon numaranızı girin.");
             await LoadSummaryDataAsync(sessionModel);
             return Page();
         }
 
-        // 1. Blacklist Control
         bool isBlacklisted = await _context.Customers.AnyAsync(c => c.PhoneNumber == CustomerPhone && c.IsBlacklisted);
         if (isBlacklisted)
         {
-            ModelState.AddModelError("", "Bu telefon numarası sistem yöneticisi tarafından engellenmiştir. Randevu alamazsınız.");
+            ModelState.AddModelError("", "Bu numara ile randevu alımı engellenmiştir.");
             await LoadSummaryDataAsync(sessionModel);
             return Page();
         }
 
-        // 2. Rate Limit & Send OTP
         try
         {
             await _whatsAppService.GenerateAndSendOtpAsync(CustomerPhone);
+
+            sessionModel.CustomerName = CustomerName;
+            sessionModel.CustomerPhone = CustomerPhone;
+            HttpContext.Session.Set("BookingSession", sessionModel);
+
+            return RedirectToPage("Step6_Verify");
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
         {
-            ModelState.AddModelError("", ex.Message);
+            ModelState.AddModelError("", "Kod gönderilemedi: " + ex.Message);
             await LoadSummaryDataAsync(sessionModel);
             return Page();
         }
-
-        // 3. Save details to session and redirect
-        sessionModel.CustomerName = CustomerName;
-        sessionModel.CustomerPhone = CustomerPhone;
-        HttpContext.Session.Set("BookingSession", sessionModel);
-
-        TempData["OtpMessage"] = "Kod başarıyla gönderildi, lütfen telefonunuzu kontrol edin";
-
-        return RedirectToPage("Step6_Verify");
     }
 
     private async Task LoadSummaryDataAsync(BookingSessionModel sessionModel)
@@ -106,7 +107,9 @@ public class Step5_PhoneModel : PageModel
             .Where(s => SessionData.SelectedServiceIds.Contains(s.Id))
             .ToListAsync();
 
-        var barber = await _context.Barbers.FindAsync(SessionData.BarberId);
+        var barber = await _context.Barbers.AsNoTracking()
+            .FirstOrDefaultAsync(b => b.Id == SessionData.BarberId);
+
         BarberName = barber?.Name ?? "Bilinmiyor";
         TotalPrice = SelectedServices.Sum(s => s.Price);
         TotalDuration = SelectedServices.Sum(s => s.DurationInMinutes);
