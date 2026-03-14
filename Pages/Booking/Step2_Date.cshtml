@@ -1,21 +1,29 @@
 @page
 @model SoftetroBarber.Pages.Booking.Step2_DateModel
-@* ^^^ Buradaki ismi "DateModel" olarak düzelttik ^^^ *@
+
+@{
+    ViewData["Title"] = "Adım 3: Tarih ve Saat Seçimi";
+}
 
 <style>
-    /* SOFTETRO STEP INDICATOR */
+    :root {
+        --theme-red: #e34c38;
+        --theme-red-glow: rgba(227, 76, 56, 0.4);
+    }
+
+    /* ADIM GÖSTERGESİ - Diğer sayfalarla senkronize */
     .step-indicator {
         display: flex;
         justify-content: space-between;
-        margin: 2rem auto 3.5rem auto;
+        margin: 2rem auto 4rem auto;
         position: relative;
-        max-width: 550px;
+        max-width: 600px;
     }
 
     .step-indicator::before {
         content: '';
         position: absolute;
-        top: 16px;
+        top: 15px;
         left: 0;
         width: 100%;
         height: 2px;
@@ -28,12 +36,12 @@
         z-index: 2;
         text-align: center;
         background: #000;
-        padding: 0 12px;
+        padding: 0 10px;
     }
 
     .step-circle {
-        width: 34px;
-        height: 34px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         background: #111;
         color: #555;
@@ -43,54 +51,65 @@
         font-weight: 900;
         margin: 0 auto 8px auto;
         border: 2px solid #222;
-        transition: 0.4s;
+    }
+
+    .step-title {
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
 
     .step-item.active .step-circle {
-        background: #e34c38;
+        background: var(--theme-red);
         color: #fff;
-        border-color: #e34c38;
-        box-shadow: 0 0 15px rgba(227, 76, 56, 0.5);
+        border-color: var(--theme-red);
+        box-shadow: 0 0 15px var(--theme-red-glow);
     }
 
     .step-item.completed .step-circle {
-        background: rgba(227, 76, 56, 0.15);
-        color: #e34c38;
-        border-color: #e34c38;
+        background: rgba(227, 76, 56, 0.1);
+        color: var(--theme-red);
+        border-color: var(--theme-red);
     }
 
-    /* DARK PANEL VE INPUT */
+    /* ANA PANEL - Ferahlatılmış */
     .dark-panel {
-        background-color: #161616;
-        border: 1px solid #252525;
+        background-color: #1a1a1a;
+        border: 1px solid #222;
         border-radius: 12px;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        padding: 45px 35px;
     }
 
+    /* TARİH SEÇİCİ */
     .dark-date-input {
         background: #000;
-        border: 2px solid #e34c38;
+        border: 2px solid var(--theme-red);
         color: #fff;
-        padding: 14px 25px;
+        padding: 12px 20px;
         border-radius: 50px;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         font-weight: 800;
         text-align: center;
         outline: none;
         color-scheme: dark;
         transition: 0.3s;
         cursor: pointer;
+        max-width: 280px;
+        width: 100%;
     }
 
     /* SAAT GRİDİ */
     .time-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 15px;
     }
 
     .time-slot-btn {
-        height: 50px;
+        height: 55px;
         border-radius: 8px;
         font-weight: 800;
         font-size: 1rem;
@@ -98,170 +117,184 @@
         align-items: center;
         justify-content: center;
         transition: 0.3s;
-        border: 1px solid #333;
-        background: #080808;
+        border: 1px solid #222;
+        background: #000;
         color: #fff;
         width: 100%;
         cursor: pointer;
     }
 
     .time-slot-btn.available:hover {
-        border-color: #e34c38;
-        background: rgba(227, 76, 56, 0.1);
-        color: #e34c38;
+        border-color: var(--theme-red);
+        background: rgba(227, 76, 56, 0.05);
+        color: var(--theme-red);
         transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
     }
 
     .time-slot-btn.booked {
         opacity: 0.15;
         cursor: not-allowed;
         text-decoration: line-through;
-        border-color: #111;
+        background: #050505;
     }
 
-    .btn-soft-outline {
-        background: transparent;
-        border: 1px solid #333;
-        color: #777;
-        padding: 12px 35px;
-        font-weight: 800;
-        border-radius: 8px;
-        text-decoration: none;
-        transition: 0.3s;
-        display: inline-flex;
-        align-items: center;
-    }
-
-    .btn-soft-outline:hover {
-        color: #fff;
-        border-color: #fff;
-    }
-
+    /* Butonlar */
     .btn-dark-outline {
         background: transparent;
         border: 1px solid #333;
-        color: #888;
+        color: #888 !important;
         padding: 0 30px;
-        height: 50px;
+        height: 52px;
         font-weight: 800;
-        border-radius: 4px;
+        border-radius: 6px;
         transition: 0.3s;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         text-decoration: none;
+        text-transform: uppercase;
     }
 
     .btn-dark-outline:hover {
-        border-color: var(--theme-red, #e34c38);
-        color: #fff;
+        border-color: var(--theme-red);
+        color: #fff !important;
+    }
+
+    /* MOBİL AYARLAR */
+    @@media (max-width: 576px) {
+        .dark-panel {
+            padding: 35px 20px !important;
+        }
+
+        .step-title {
+            display: none;
+        }
+
+        .time-grid {
+            grid-template-columns: repeat(3, 1fr); /* Mobilde yan yana 3 saat */
+            gap: 10px;
+        }
+
+        .time-slot-btn {
+            height: 50px;
+            font-size: 0.9rem;
+        }
+
+        .dark-date-input {
+            font-size: 1rem;
+            padding: 10px 15px;
+        }
+
+        .footer-actions {
+            margin-top: 35px !important;
+            padding-top: 25px !important;
+            border-top: 1px solid #222;
+        }
     }
 </style>
 
-<div class="row justify-content-center">
-    <div class="col-12 text-center">
-        <div class="step-indicator">
-            <div class="step-item completed">
-                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
-                <div class="step-title">Hizmet</div>
-            </div>
-
-            <div class="step-item completed">
-                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
-                <div class="step-title">Berber</div>
-            </div>
-
-            <div class="step-item active">
-                <div class="step-circle">3</div>
-                <div class="step-title">Tarih</div>
-            </div>
-
-            <div class="step-item">
-                <div class="step-circle">4</div>
-                <div class="step-title">Onay</div>
+<div class="container">
+    @* Adım Göstergesi *@
+    <div class="row justify-content-center">
+        <div class="col-12 text-center">
+            <div class="step-indicator">
+                <div class="step-item completed">
+                    <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                    <div class="step-title">Hizmet</div>
+                </div>
+                <div class="step-item completed">
+                    <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                    <div class="step-title">Berber</div>
+                </div>
+                <div class="step-item active">
+                    <div class="step-circle">3</div>
+                    <div class="step-title">Tarih</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">4</div>
+                    <div class="step-title">Onay</div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="row justify-content-center pb-5">
-    <div class="col-md-10 col-lg-8">
-        <div class="dark-panel p-4 p-md-5">
+    <div class="row justify-content-center pb-5">
+        <div class="col-md-10 col-lg-8">
+            <div class="dark-panel">
+                @* Tarih Seçimi *@
+                <div class="text-center mb-5">
+                    <h4 class="text-white fw-bold mb-4" style="letter-spacing: 1px; text-transform: uppercase;">TARİH SEÇİN</h4>
+                    <form id="dateForm" method="get">
+                        <input type="date" name="SelectedDate" class="dark-date-input"
+                               value="@Model.SelectedDate.ToString("yyyy-MM-dd")" 
+                               min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                               max="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")" 
+                               onchange="this.form.submit()" />
+                    </form>
+                </div>
 
-            <div class="text-center mb-5">
-                <h4 class="text-white fw-900 mb-4 text-uppercase" style="letter-spacing: 1px;">Randevu Tarihi</h4>
-                <form id="dateForm" method="get">
-                    @* Name: SelectedDate olması kritik (Model ile eşleşme) *@
-                    <input type="date" name="SelectedDate" class="dark-date-input"
-                           value="@Model.SelectedDate.ToString("yyyy-MM-dd")" min="@DateTime.Today.ToString("yyyy-MM-dd")"
-                           max="@DateTime.Today.AddDays(14).ToString("yyyy-MM-dd")" onchange="this.form.submit()" />
-                </form>
-            </div>
+                <hr style="border-color: #222; border-style: dashed;" class="my-5">
 
-            <hr style="border-color: #222; border-style: dashed;" class="my-5">
+                @* Gün Başlığı *@
+                <div class="text-center mb-4">
+                    <h6 style="color: var(--theme-red); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem;">
+                        <i class="bi bi-calendar-check me-2"></i> @Model.SelectedDate.ToString("dd MMMM yyyy, dddd").ToUpper()
+                    </h6>
+                </div>
 
-            <div class="text-center mb-4">
-                <h6 class="text-danger fw-900 text-uppercase small" style="letter-spacing: 3px;">
-                    <i class="bi bi-calendar-event me-2"></i> @Model.SelectedDate.ToString("dd MMMM yyyy,                    dddd").ToUpper()
-                </h6>
-            </div>
-
-            @if (Model.TimeSlots != null && Model.TimeSlots.Any())
-            {
-                <div class="time-grid">
-                    @foreach (var slot in Model.TimeSlots)
-                    {
-                        if (slot.IsBooked)
+                @* Saat Slotları *@
+                @if (Model.TimeSlots != null && Model.TimeSlots.Any())
+                {
+                    <div class="time-grid">
+                        @foreach (var slot in Model.TimeSlots)
                         {
-                            <button type="button" class="time-slot-btn booked" disabled>@slot.Time.ToString(@"hh\:mm")</button>
+                            if (slot.IsBooked)
+                            {
+                                <button type="button" class="time-slot-btn booked" disabled>@slot.Time.ToString(@"hh\:mm")</button>
+                            }
+                            else
+                            {
+                                <form method="post" class="m-0">
+                                    <input type="hidden" name="selectedTime" value="@slot.Time" />
+                                    <input type="hidden" name="SelectedDate" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+                                    <button type="submit" class="time-slot-btn available">@slot.Time.ToString(@"hh\:mm")</button>
+                                </form>
+                            }
+                        }
+                    </div>
+                }
+                else
+                {
+                    @* Boş Durum Tasarımı (Hatalar/Kapalı) *@
+                    <div class="text-center py-5">
+                        @if (Model.IsShopClosed)
+                        {
+                            <i class="bi bi-door-closed d-block mb-3" style="font-size: 3rem; color: var(--theme-red); opacity: 0.6;"></i>
+                            <h5 class="text-white fw-bold uppercase">BUGÜN KAPALIYIZ</h5>
+                            <p class="text-secondary small">İşletmemiz seçtiğiniz tarihte hizmet vermemektedir.</p>
+                        }
+                        else if (Model.IsBarberClosed)
+                        {
+                            <i class="bi bi-person-x d-block mb-3" style="font-size: 3rem; color: #ffc107; opacity: 0.6;"></i>
+                            <h5 class="text-white fw-bold uppercase">BERBER MÜSAİT DEĞİL</h5>
+                            <p class="text-secondary small">@Model.SelectedBarberName bugün izinlidir.</p>
                         }
                         else
                         {
-                            <form method="post" class="m-0">
-                                <input type="hidden" name="selectedTime" value="@slot.Time" />
-                                <input type="hidden" name="SelectedDate" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
-                                <button type="submit" class="time-slot-btn available">@slot.Time.ToString(@"hh\:mm")</button>
-                            </form>
+                            <i class="bi bi-calendar-x d-block mb-3 text-muted" style="font-size: 3rem; opacity: 0.4;"></i>
+                            <h5 class="text-white fw-bold uppercase">TÜM SAATLER DOLU</h5>
+                            <p class="text-secondary small">Maalesef bugün için boş randevu kalmadı.</p>
                         }
-                    }
-                </div>
-            }
-            @* Mevcut else bloğunun yerine bunu yapıştır *@
-            else
-            {
-                <div class="text-center py-5 animated fadeIn">
-                    @if (Model.IsShopClosed)
-                    {
-                        <i class="bi bi-door-closed d-block mb-3 text-danger" style="font-size: 3.5rem; opacity: 0.8;"></i>
-                        <h5 class="text-white fw-900 text-uppercase">İşletmemiz Kapalı</h5>
-                        <p class="text-secondary small">Seçtiğiniz tarihte dükkanımız hizmet vermemektedir.</p>
-                    }
-                    else if (Model.IsBarberClosed)
-                    {
-                        <i class="bi bi-person-x d-block mb-3 text-warning" style="font-size: 3.5rem; opacity: 0.8;"></i>
-                        <h5 class="text-white fw-900 text-uppercase">Berberimiz Müsait Değil</h5>
-                        <p class="text-secondary small"><strong>@Model.SelectedBarberName</strong> bugün hizmet vermemektedir.
-                        </p>
-                    }
-                    else
-                    {
-                        @* Dükkan ve berber açık ama slot üretilemediyse (Örn: Hepsi dolu veya saat geçti) *@
-                        <i class="bi bi-calendar-x d-block mb-3 text-muted" style="font-size: 3.5rem; opacity: 0.5;"></i>
-                        <h5 class="text-white fw-900 text-uppercase">Tüm Saatler Dolu</h5>
-                        <p class="text-secondary small">Bugün için boş randevu saati kalmamıştır. Lütfen başka bir gün seçiniz.
-                        </p>
-                    }
-
-                    <div class="mt-4">
-                        <p class="text-secondary ultra-small mb-3">LÜTFEN BAŞKA BİR TARİH SEÇEREK TEKRAR DENEYİN</p>
+                        <p class="mt-4 text-muted ultra-small" style="letter-spacing: 1px;">LÜTFEN BAŞKA BİR GÜNÜ DENEYİN</p>
                     </div>
+                }
+
+                @* Geri Butonu *@
+                <div class="d-flex justify-content-start footer-actions mt-5">
+                    <a asp-page="/Booking/Step4_Barber" class="btn-dark-outline">
+                        <i class="bi bi-arrow-left me-2"></i> GERİ
+                    </a>
                 </div>
-            }
-            <div class="d-flex justify-content-between pt-4 mt-5" style="border-top: 1px solid #222;">
-                <a asp-page="/Booking/Step4_Barber" class="btn-dark-outline">
-                    <i class="bi bi-arrow-left me-2"></i> Geri
-                </a>
             </div>
         </div>
     </div>

@@ -1,26 +1,85 @@
 ﻿@page
 @model ErrorModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Hata Oluştu";
+    Layout = "_Layout";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<style>
+    .error-wrapper {
+        min-height: 70vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+    }
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    .error-icon {
+        font-size: 5rem;
+        color: #e34c38;
+        margin-bottom: 20px;
+        filter: drop-shadow(0 0 15px rgba(227, 76, 56, 0.3));
+    }
+
+    .error-title {
+        font-weight: 900;
+        font-size: 2.5rem;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .error-desc {
+        color: #777;
+        font-size: 1.1rem;
+        max-width: 500px;
+        margin-bottom: 30px;
+    }
+
+    .btn-back-home {
+        background-color: #e34c38;
+        color: #fff !important;
+        padding: 15px 35px;
+        border-radius: 50px;
+        font-weight: 800;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .btn-back-home:hover {
+        box-shadow: 0 10px 25px rgba(227, 76, 56, 0.4);
+        transform: translateY(-2px);
+    }
+
+    @@media (max-width: 576px) {
+        .error-title {
+            font-size: 1.8rem;
+        }
+
+        .error-desc {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<div class="error-wrapper">
+    <div class="error-icon">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+    </div>
+
+    <h1 class="error-title">BİR SORUN VAR!</h1>
+    <p class="error-desc">
+        İşleminiz gerçekleştirilirken beklenmedik bir hata oluştu. Teknik ekibimiz (Prod) konudan haberdar edildi.
     </p>
-}
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to the <strong>Development</strong> environment displays detailed information about the error that occurred.
-</p>
-<p>
-    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
-    It can result in displaying sensitive information from exceptions to end users.
-    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
-    and restarting the app.
-</p>
+    @if (Model.ShowRequestId)
+    {
+        <p class="text-muted mb-4" style="font-size: 0.8rem;">
+            Hata Kodu: <code style="color: #e34c38;">@Model.RequestId</code>
+        </p>
+    }
+
+    <a href="/Index" class="btn-back-home">ANA SAYFAYA DÖN</a>
+</div>

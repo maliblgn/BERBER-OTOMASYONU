@@ -19,7 +19,7 @@
         align-items: stretch;
     }
 
-    /* SOL PANEL: Yeni Dikey Tasarım */
+    /* SOL PANEL: Özet */
     .side-summary {
         flex: 1;
         min-width: 320px;
@@ -162,32 +162,71 @@
         text-transform: uppercase;
         letter-spacing: 1px;
         transition: 0.3s;
+        cursor: pointer;
     }
 
     .btn-finish:hover {
         transform: translateY(-4px);
         box-shadow: 0 12px 30px rgba(227, 76, 56, 0.4);
     }
+
+    /* --- MOBİL DÜZENLEMELER --- */
+    @@media (max-width: 768px) {
+        .split-wrapper {
+            flex-direction: column; /* Alt alta dizilsinler */
+        }
+        .side-summary, .side-form {
+            min-width: 100% !important; /* Ekranı tam kaplasınlar */
+            padding: 25px 20px !important;
+        }
+        .total-price {
+            font-size: 1.8rem;
+        }
+        .info-val {
+            font-size: 1rem;
+        }
+        .summary-title {
+            margin-bottom: 20px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .side-form {
+            padding: 30px 15px !important;
+        }
+        .white-box-input {
+            padding: 10px 15px;
+        }
+        .inner-input {
+            font-size: 1rem;
+        }
+        .btn-finish {
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+    }
 </style>
 
-<div class="split-wrapper">
-    <div class="side-summary">
-        <div class="summary-title">RANDEVU BİLGİLERİ</div>
+<div class="container">
+    <div class="split-wrapper">
+        @* ÖZET ALANI *@
+        <div class="side-summary">
+            <div class="summary-title">RANDEVU BİLGİLERİ</div>
 
-        <div class="info-group">
-            <span class="info-label">SEÇİLEN BERBER</span>
-            <span class="info-val"><i class="bi bi-person-badge"></i> @Model.BarberName.ToUpper()</span>
-        </div>
+            <div class="info-group">
+                <span class="info-label">SEÇİLEN BERBER</span>
+                <span class="info-val"><i class="bi bi-person-badge"></i> @Model.BarberName.ToUpper()</span>
+            </div>
 
-        <div class="info-group">
-            <span class="info-label">RANDEVU TARİHİ</span>
-            <span class="info-val"><i class="bi bi-calendar3"></i> @Model.SessionData.SelectedDate.ToString("dd MMMM              yyyy")</span>
-        </div>
+            <div class="info-group">
+                <span class="info-label">RANDEVU TARİHİ</span>
+                <span class="info-val"><i class="bi bi-calendar3"></i> @Model.SessionData.SelectedDate.ToString("dd MMMM yyyy")</span>
+            </div>
 
-        <div class="info-group">
-            <span class="info-label">SAAT</span>
-            <span class="info-val text-danger"><i class="bi bi-clock-fill"></i>
-                @Model.SessionData.SelectedTime.ToString(@"hh\:mm")</span>
+            <div class="info-group">
+                <span class="info-label">SAAT</span>
+                <span class="info-val text-danger"><i class="bi bi-clock-fill"></i>
+                    @Model.SessionData.SelectedTime.ToString(@"hh\:mm")</span>
             </div>
 
             <div class="service-list">
@@ -210,13 +249,14 @@
             </div>
         </div>
 
+        @* FORM ALANI *@
         <div class="side-form">
             <form method="post">
                 <h5 class="text-white fw-900 mb-4">MÜŞTERİ BİLGİSİ</h5>
 
                 @if (!ModelState.IsValid)
                 {
-                    <div class="alert alert-danger py-2 small bg-transparent border-danger text-danger mb-4">
+                    <div class="alert alert-danger py-2 small bg-transparent border-danger text-danger mb-4" style="border-radius: 8px;">
                         <div asp-validation-summary="All"></div>
                     </div>
                 }
@@ -239,45 +279,46 @@
                     ONAY KODU GÖNDER <i class="bi bi-whatsapp ms-2"></i>
                 </button>
 
-                <a asp-page="Step2_Date" class="btn d-block text-center mt-3 text-secondary small fw-bold">
+                <a asp-page="Step2_Date" class="btn d-block text-center mt-4 text-secondary small fw-bold" style="text-decoration: none;">
                     <i class="bi bi-arrow-left me-1"></i> Tarih Seçimine Dön
                 </a>
             </form>
         </div>
     </div>
+</div>
 
-    <script>
-        const pInput = document.getElementById('phoneInput');
-        const nInput = document.getElementById('nameInput');
-        const nWrapper = document.getElementById('nameWrapper');
-        const fTag = document.getElementById('foundTag');
+<script>
+    const pInput = document.getElementById('phoneInput');
+    const nInput = document.getElementById('nameInput');
+    const nWrapper = document.getElementById('nameWrapper');
+    const fTag = document.getElementById('foundTag');
 
-        pInput.addEventListener('input', async function () {
-            this.value = this.value.replace(/[^0-9]/g, '');
+    pInput.addEventListener('input', async function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
 
-            if (this.value.length === 10) {
-                const res = await fetch(`?handler=CheckCustomer&phone=${this.value}`);
-                const data = await res.json();
+        if (this.value.length === 10) {
+            const res = await fetch(`?handler=CheckCustomer&phone=${this.value}`);
+            const data = await res.json();
 
-                if (data.found) {
-                    nInput.value = data.name;
-                    nInput.readOnly = true;
-                    nWrapper.classList.add('readonly-field');
-                    fTag.style.display = 'block';
-                    nWrapper.style.borderColor = '#2ecc71';
-                } else {
-                    clearName();
-                }
-            } else if (this.value.length < 10) {
+            if (data.found) {
+                nInput.value = data.name;
+                nInput.readOnly = true;
+                nWrapper.classList.add('readonly-field');
+                fTag.style.display = 'block';
+                nWrapper.style.borderColor = '#2ecc71';
+            } else {
                 clearName();
             }
-        });
-
-        function clearName() {
-            nInput.value = "";
-            nInput.readOnly = false;
-            nWrapper.classList.remove('readonly-field');
-            fTag.style.display = 'none';
-            nWrapper.style.borderColor = 'transparent';
+        } else if (this.value.length < 10) {
+            clearName();
         }
-    </script>
+    });
+
+    function clearName() {
+        nInput.value = "";
+        nInput.readOnly = false;
+        nWrapper.classList.remove('readonly-field');
+        fTag.style.display = 'none';
+        nWrapper.style.borderColor = 'transparent';
+    }
+</script>

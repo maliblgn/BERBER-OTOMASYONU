@@ -1,11 +1,16 @@
 @page
 @model SoftetroBarber.Pages.Booking.Step4_BarberModel
 @{
-    ViewData["Title"] = "Adım 4: Berber Seçimi";
+    ViewData["Title"] = "Adım 2: Berber Seçimi";
 }
 
 <style>
-    /* Yatay Adım Göstergesi (Step Indicator) */
+    :root {
+        --theme-red: #e34c38;
+        --theme-red-glow: rgba(227, 76, 56, 0.4);
+    }
+
+    /* Adım Göstergesi (Step Indicator) */
     .step-indicator {
         display: flex;
         justify-content: space-between;
@@ -56,43 +61,36 @@
         letter-spacing: 1px;
     }
 
-    /* Aktif Adım */
     .step-item.active .step-circle {
-        background: var(--theme-red, #e34c38);
+        background: var(--theme-red);
         color: #fff;
-        border-color: var(--theme-red, #e34c38);
-        box-shadow: 0 0 15px rgba(227, 76, 56, 0.4);
+        border-color: var(--theme-red);
+        box-shadow: 0 0 15px var(--theme-red-glow);
     }
 
-    .step-item.active .step-title {
-        color: #fff;
-    }
+    .step-item.active .step-title { color: #fff; }
 
-    /* Tamamlanmış Adım */
     .step-item.completed .step-circle {
         background: rgba(227, 76, 56, 0.1);
-        color: var(--theme-red, #e34c38);
-        border-color: var(--theme-red, #e34c38);
+        color: var(--theme-red);
+        border-color: var(--theme-red);
     }
 
-    .step-item.completed .step-title {
-        color: var(--theme-red, #e34c38);
-    }
-
-    /* Karanlık Ana Kart */
+    /* Ana Panel Tasarımı */
     .dark-panel {
         background-color: #1a1a1a;
         border: 1px solid #222;
-        border-radius: 6px;
+        border-radius: 12px;
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        padding: 45px 35px;
     }
 
     /* --- BERBER KARTLARI --- */
     .barber-card {
         background: #000;
         border: 1px solid #222;
-        border-radius: 6px;
-        padding: 25px 20px;
+        border-radius: 8px;
+        padding: 30px 20px; /* Sıkışmayı önleyen iç boşluk */
         transition: all 0.3s ease;
         height: 100%;
         display: flex;
@@ -107,128 +105,145 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
-    /* Berber Avatarı */
     .barber-avatar {
-        width: 80px;
-        height: 80px;
+        width: 85px;
+        height: 85px;
         border-radius: 50%;
-        background: rgba(227, 76, 56, 0.08);
-        color: var(--theme-red, #e34c38);
+        background: rgba(227, 76, 56, 0.05);
+        color: var(--theme-red);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 2.5rem;
-        margin-bottom: 15px;
-        border: 1px solid rgba(227, 76, 56, 0.2);
+        margin-bottom: 20px;
+        border: 1px solid rgba(227, 76, 56, 0.15);
         transition: 0.3s;
     }
 
     .barber-card:hover .barber-avatar {
-        background: var(--theme-red, #e34c38);
+        background: var(--theme-red);
         color: #fff;
-        box-shadow: 0 0 15px rgba(227, 76, 56, 0.4);
+        box-shadow: 0 0 20px var(--theme-red-glow);
     }
 
-    /* Geri ve Seç Butonları */
+    /* Butonlar */
+    .btn-sharp-red {
+        background: var(--theme-red);
+        color: #fff !important;
+        border: none;
+        width: 100%;
+        height: 50px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        border-radius: 6px;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+        text-decoration: none;
+    }
+
     .btn-dark-outline {
         background: transparent;
         border: 1px solid #333;
-        color: #888;
-        padding: 0 30px;
+        color: #888 !important;
+        padding: 0 35px;
         height: 50px;
         font-weight: 800;
-        border-radius: 4px;
+        border-radius: 6px;
         transition: 0.3s;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         text-decoration: none;
+        text-transform: uppercase;
     }
 
-    .btn-dark-outline:hover {
-        border-color: var(--theme-red, #e34c38);
-        color: #fff;
-    }
+    /* --- MOBİL UYUMLULUK --- */
+    @@media (max-width: 576px) {
+        .dark-panel {
+            padding: 35px 20px !important;
+        }
 
-    .btn-sharp-red {
-        background: var(--theme-red, #e34c38);
-        color: #fff;
-        border: none;
-        width: 100%;
-        height: 45px;
-        font-weight: 800;
-        letter-spacing: 1px;
-        border-radius: 4px;
-        transition: 0.3s;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
+        .step-title {
+            display: none; /* Mobilde yazılar sığmazsa gizle */
+        }
 
-    .btn-sharp-red:hover {
-        box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4);
-        filter: brightness(1.1);
+        .barber-card {
+            padding: 25px 15px !important;
+            margin-bottom: 10px;
+        }
+
+        .barber-avatar {
+            width: 70px;
+            height: 70px;
+            font-size: 2rem;
+        }
+
+        .footer-actions {
+            margin-top: 35px !important;
+            padding-top: 25px !important;
+            border-top: 1px solid #222;
+        }
     }
 </style>
 
-<div class="row justify-content-center">
-    <div class="col-12 text-center">
-        <div class="step-indicator">
-            <div class="step-item completed">
-                <div class="step-circle"><i class="bi bi-check-lg"></i></div>
-                <div class="step-title">Hizmet</div>
-            </div>
-
-            <div class="step-item active">
-                <div class="step-circle">2</div>
-                <div class="step-title">Berber</div>
-            </div>
-
-            <div class="step-item">
-                <div class="step-circle">3</div>
-                <div class="step-title">Tarih</div>
-            </div>
-            <div class="step-item">
-                <div class="step-circle">4</div>
-                <div class="step-title">Onay</div>
+<div class="container">
+    @* Adım Göstergesi *@
+    <div class="row justify-content-center">
+        <div class="col-12 text-center">
+            <div class="step-indicator">
+                <div class="step-item completed">
+                    <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+                    <div class="step-title">Hizmet</div>
+                </div>
+                <div class="step-item active">
+                    <div class="step-circle">2</div>
+                    <div class="step-title">Berber</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">3</div>
+                    <div class="step-title">Tarih</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">4</div>
+                    <div class="step-title">Onay</div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="row justify-content-center pb-5">
-    <div class="col-md-10 col-lg-8">
-
-        <div class="dark-panel p-4 p-md-5">
-            <div class="text-center mb-5">
-                <h4 class="text-white fw-bold mb-2">Hizmet verebilecek ustalarımız</h4>
-                <p style="color: #777; font-size: 0.9rem;">Sadece seçtiğiniz vakit aralığında boşluğu olan berberler
-                    listelenmektedir.</p>
+    @* Berber Seçim Alanı *@
+    <div class="row justify-content-center pb-5">
+        <div class="col-md-10 col-lg-9">
+            <div class="dark-panel">
+                <div class="text-center mb-5">
+                    <h4 class="text-white fw-bold mb-2" style="letter-spacing: 1px;">USTA SEÇİMİ</h4>
+                    <p style="color: #666; font-size: 0.9rem;">Size hizmet verecek profesyoneli seçin.</p>
                 </div>
 
                 @if (!ModelState.IsValid)
                 {
-                    <div class="alert alert-danger mb-4"
-                         style="background: rgba(227, 76, 56, 0.1); border: 1px solid #e34c38; color: #e34c38;">
+                    <div class="alert alert-danger bg-dark text-danger border-danger mb-4" style="font-size: 0.85rem; border-radius: 10px;">
                         <div asp-validation-summary="All" class="mb-0"></div>
                     </div>
                 }
 
-                <div class="row g-4 justify-content-center mb-5">
+                <div class="row g-4 justify-content-center">
                     @foreach (var barber in Model.AvailableBarbers)
                     {
-                        <div class="col-md-6 col-lg-4">
+                        <div class="col-sm-6 col-lg-4">
                             <div class="barber-card">
                                 <div class="barber-avatar">
                                     <i class="bi bi-person-fill"></i>
                                 </div>
                                 <h5 class="fw-bold text-white mb-2">@barber.Name</h5>
-                                <p style="color: #666; font-size: 0.85rem;" class="mb-4 flex-grow-1">
+                                <p style="color: #666; font-size: 0.8rem; line-height: 1.6;" class="mb-4 flex-grow-1">
                                     @(string.IsNullOrEmpty(barber.Bio) ? "Profesyonel Saç Tasarımcısı" : barber.Bio)
                                 </p>
 
-                                <form method="post" class="w-100 mt-auto">
+                                <form method="post" class="w-100">
                                     <input type="hidden" name="barberId" value="@barber.Id" />
                                     <button type="submit" class="btn-sharp-red">
                                         SEÇ <i class="bi bi-check2-circle ms-2"></i>
@@ -239,7 +254,8 @@
                     }
                 </div>
 
-                <div class="d-flex justify-content-between pt-4" style="border-top: 1px solid #222;">
+                @* Geri Dönüş *@
+                <div class="d-flex justify-content-start footer-actions mt-5">
                     <a asp-page="Step1_Services" class="btn-dark-outline">
                         <i class="bi bi-arrow-left me-2"></i> GERİ
                     </a>
@@ -247,3 +263,4 @@
             </div>
         </div>
     </div>
+</div>

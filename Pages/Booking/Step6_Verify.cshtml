@@ -5,12 +5,18 @@
 }
 
 <style>
-    /* Karanlık Ana Kart */
+    :root {
+        --theme-red: #e34c38;
+        --theme-red-glow: rgba(227, 76, 56, 0.4);
+    }
+
+    /* Karanlık Ana Kart - Diğer sayfalarla tam uyumlu padding */
     .dark-panel {
         background-color: #1a1a1a; 
         border: 1px solid #222;
-        border-radius: 6px; 
+        border-radius: 12px; 
         box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        padding: 50px 40px;
     }
 
     /* WhatsApp Parlayan İkon */
@@ -18,7 +24,7 @@
         color: #25D366;
         font-size: 4rem;
         filter: drop-shadow(0 0 20px rgba(37, 211, 102, 0.3));
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         display: inline-block;
     }
 
@@ -27,120 +33,175 @@
         background: #000; 
         border: 2px solid #222; 
         color: #fff;
-        border-radius: 6px; 
-        height: 70px;
-        font-size: 2rem; 
+        border-radius: 8px; 
+        height: 75px;
+        font-size: 2.2rem; 
         font-weight: 900; 
         letter-spacing: 15px; 
         text-align: center; 
         outline: none;
         transition: 0.3s;
         width: 100%;
-        max-width: 300px;
+        max-width: 320px;
+        text-indent: 15px; /* Karakterlerin tam ortalanması için */
     }
+
     .otp-input:focus {
-        border-color: var(--theme-red, #e34c38);
+        border-color: var(--theme-red);
         box-shadow: 0 0 15px rgba(227, 76, 56, 0.2);
     }
+
     .otp-input::placeholder {
-        color: #333;
-        font-size: 1.5rem;
-        letter-spacing: 10px;
-        transform: translateY(-3px);
+        color: #222;
+        letter-spacing: 12px;
     }
 
     /* Butonlar */
     .btn-sharp-red {
-        background: var(--theme-red, #e34c38); 
-        color: #fff; 
+        background: var(--theme-red); 
+        color: #fff !important; 
         border: none;
         width: 100%; 
         height: 55px; 
         font-weight: 800; 
         letter-spacing: 1px;
-        border-radius: 4px; 
+        border-radius: 6px; 
         transition: 0.3s; 
         cursor: pointer; 
         display: flex; 
         align-items: center; 
         justify-content: center;
         text-transform: uppercase;
+        text-decoration: none;
     }
+
     .btn-sharp-red:hover { 
-        box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4); 
-        filter: brightness(1.1); 
+        box-shadow: 0 10px 25px rgba(227, 76, 56, 0.4); 
+        transform: translateY(-2px);
     }
 
     .link-muted {
         color: #666;
         font-weight: 700;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         text-decoration: none;
         transition: 0.3s;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
     }
+
     .link-muted:hover {
         color: #fff;
     }
 
     /* Chrome Beyaz Input Sorunu Çözümü */
-    input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active{
+    input:-webkit-autofill {
         -webkit-box-shadow: 0 0 0 30px #000 inset !important;
         -webkit-text-fill-color: white !important;
-        transition: background-color 5000s ease-in-out 0s;
+    }
+
+    /* --- MOBİL KÜÇÜLTME AYARLARI --- */
+    @@media (max-width: 576px) {
+        .dark-panel {
+            padding: 35px 20px !important;
+            margin-bottom: 30px;
+        }
+
+        .whatsapp-glow {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .otp-input {
+            height: 60px;
+            font-size: 1.6rem;
+            letter-spacing: 8px;
+            text-indent: 8px;
+            max-width: 260px;
+        }
+
+        .otp-input::placeholder {
+            font-size: 1.2rem;
+            letter-spacing: 8px;
+        }
+
+        h4 { font-size: 1.25rem; }
+        p { font-size: 0.85rem !important; }
+
+        .btn-sharp-red {
+            height: 50px;
+            font-size: 0.85rem;
+        }
     }
 </style>
 
-<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
-    <div class="col-md-8 col-lg-5">
-        
-        <div class="dark-panel p-4 p-md-5 text-center">
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+        <div class="col-md-8 col-lg-5">
             
-            <div class="whatsapp-glow">
-                <i class="bi bi-whatsapp"></i>
-            </div>
-
-            <h4 class="fw-bold text-white mb-3">Kodu Giriniz</h4>
-            <p class="mb-4" style="color: #888; font-size: 0.95rem; line-height: 1.6;">
-                <strong class="text-white">+90 @Model.PhoneNumberMasked</strong> numarasına WhatsApp üzerinden gönderdiğimiz 6 haneli doğrulama kodunu aşağıya giriniz.
-            </p>
-
-            @if (TempData["OtpMessage"] != null)
-            {
-                <div class="alert alert-success mx-auto mb-4 text-center" style="background: rgba(37, 211, 102, 0.1); border: 1px solid #25D366; color: #25D366; font-size: 0.95rem; font-weight: 500;">
-                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["OtpMessage"]
-                </div>
-            }
-
-            @if (!ModelState.IsValid)
-            {
-                <div class="alert alert-danger mx-auto mb-4 text-start" style="background: rgba(227, 76, 56, 0.1); border: 1px solid #e34c38; color: #e34c38; font-size: 0.9rem;">
-                    <div asp-validation-summary="All" class="mb-0"></div>
-                </div>
-            }
-
-            <form method="post">
-                <div class="d-flex justify-content-center mb-3">
-                    <input asp-for="OtpCode" type="text" class="otp-input" 
-                           placeholder="••••••" maxlength="6" 
-                           required autofocus autocomplete="off" />
+            <div class="dark-panel text-center">
+                
+                <div class="whatsapp-glow">
+                    <i class="bi bi-whatsapp"></i>
                 </div>
 
-                <p class="small mb-4" style="color: #555; font-weight: 600;">
-                    Kod 3 dakika boyunca geçerlidir. <br>
-                    <strong style="color: var(--theme-red, #e34c38); font-size: 0.9rem; display: block; margin-top: 5px;">Test Kodu: 123456</strong>
+                <h4 class="fw-bold text-white mb-3" style="letter-spacing: 1px;">KODU GİRİNİZ</h4>
+                <p class="mb-4" style="color: #888; font-size: 0.95rem; line-height: 1.6;">
+                    <strong class="text-white">+90 @Model.PhoneNumberMasked</strong> numarasına WhatsApp üzerinden gönderdiğimiz 6 haneli doğrulama kodunu aşağıya giriniz.
                 </p>
 
-                <button type="submit" class="btn-sharp-red mb-4">
-                    <i class="bi bi-check2-circle me-2" style="font-size: 1.2rem;"></i> DOĞRULA VE ONAYLA
-                </button>
-                
-                <a asp-page="Step5_Phone" class="link-muted">
-                    <i class="bi bi-arrow-left me-1"></i> Vazgeç ve Numaramı Düzelt
-                </a>
-            </form>
-        </div>
+                @if (TempData["OtpMessage"] != null)
+                {
+                    <div class="alert alert-success bg-dark text-success border-success mb-4" style="font-size: 0.85rem; border-radius: 8px;">
+                        <i class="bi bi-check-circle-fill me-2"></i> @TempData["OtpMessage"]
+                    </div>
+                }
 
+                @if (!ModelState.IsValid)
+                {
+                    <div class="alert alert-danger bg-dark text-danger border-danger mb-4 text-start" style="font-size: 0.85rem; border-radius: 8px;">
+                        <div asp-validation-summary="All" class="mb-0"></div>
+                    </div>
+                }
+
+                <form method="post">
+                    <div class="d-flex justify-content-center mb-4">
+                        <input asp-for="OtpCode" type="tel" class="otp-input" 
+                               placeholder="••••••" maxlength="6" 
+                               required autofocus autocomplete="off" 
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '');" />
+                    </div>
+
+                    <div class="mb-4">
+                        <p class="text-muted small mb-1">Kod 3 dakika boyunca geçerlidir.</p>
+                        @if (Model.OtpCode == null) { @* Sadece ilk girişte test kodunu göster *@
+                            <span style="color: var(--theme-red); font-size: 0.8rem; font-weight: 800; letter-spacing: 1px;">TEST KODU: 123456</span>
+                        }
+                    </div>
+
+                    <button type="submit" class="btn-sharp-red mb-4">
+                        <i class="bi bi-shield-check me-2" style="font-size: 1.1rem;"></i> DOĞRULA VE ONAYLA
+                    </button>
+                    
+                    <div class="pt-2">
+                        <a asp-page="Step5_Phone" class="link-muted">
+                            <i class="bi bi-arrow-left me-1"></i> Vazgeç ve Numaramı Düzelt
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // OTP inputuna sadece sayı girilmesini ve mobilde sayısal klavye açılmasını garanti ediyoruz
+        document.querySelector('.otp-input').addEventListener('keypress', function (e) {
+            if (e.which < 48 || e.which > 57) {
+                e.preventDefault();
+            }
+        });
+    </script>
+}

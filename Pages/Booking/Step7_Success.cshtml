@@ -5,56 +5,60 @@
 }
 
 <style>
+    :root {
+        --theme-red: #e34c38;
+        --softetro-green: #2ecc71;
+    }
+
     /* Karanlık Ana Kart */
     .dark-panel {
         background-color: #1a1a1a;
         border: 1px solid #222;
-        border-radius: 6px;
+        border-radius: 12px;
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        padding: 50px 40px;
     }
 
-    /* Başarı İkonu Parlaması (Neon Yeşil) */
+    /* Başarı İkonu Parlaması */
     .success-glow {
-        width: 110px;
-        height: 110px;
+        width: 100px;
+        height: 100px;
         background: rgba(46, 204, 113, 0.08);
-        color: #2ecc71;
-        font-size: 4.5rem;
+        color: var(--softetro-green);
+        font-size: 4rem;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 25px;
+        margin-bottom: 30px;
         border: 1px solid rgba(46, 204, 113, 0.2);
         box-shadow: 0 0 30px rgba(46, 204, 113, 0.15);
-        animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
     /* Bilgi Kutusu */
     .info-box {
-        background: #000;
+        background: #0c0c0c;
         border: 1px solid #222;
-        border-left: 3px solid var(--theme-red, #e34c38);
-        color: #888;
-        padding: 20px 25px;
-        border-radius: 4px;
+        border-left: 4px solid var(--theme-red);
+        color: #777;
+        padding: 22px 25px;
+        border-radius: 8px;
         text-align: left;
         font-size: 0.95rem;
         line-height: 1.6;
     }
 
-    /* Ana Sayfaya Dön Butonu */
     .btn-sharp-red {
-        background: var(--theme-red, #e34c38);
-        color: #fff;
+        background: var(--theme-red);
+        color: #fff !important;
         border: none;
         width: 100%;
         height: 55px;
         font-weight: 800;
         letter-spacing: 1px;
-        border-radius: 4px;
+        border-radius: 6px;
         transition: 0.3s;
-        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -63,13 +67,10 @@
     }
 
     .btn-sharp-red:hover {
-        box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4);
-        filter: brightness(1.1);
-        color: #fff;
+        box-shadow: 0 10px 25px rgba(227, 76, 56, 0.4);
+        transform: translateY(-2px);
     }
 
-    /* Ufak bir açılış animasyonu */
-    /* Ufak bir açılış animasyonu (çift @@ ile düzeltildi) */
     @@keyframes popIn {
         0% {
             transform: scale(0.5);
@@ -82,39 +83,66 @@
         }
     }
 
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+    /* --- MOBİL DÜZENLEMELER VE TEPE BOŞLUĞU --- */
+    @@media (max-width: 576px) {
+        .main-content-wrapper {
+            padding-top: 30px !important;
+            /* Mobilde tepeden açılan boşluk */
+        }
+
+        .dark-panel {
+            padding: 40px 20px !important;
+            margin: 0 15px;
+            /* Kartın ekran kenarlarına sıfırlanmasını engeller */
+        }
+
+        .success-glow {
+            width: 80px;
+            height: 80px;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 1.35rem !important;
+        }
     }
 </style>
 
-<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="col-md-8 col-lg-6">
+@* main-content-wrapper ekledik ki üstten pay kalsın *@
+<div class="container main-content-wrapper pt-4 pt-md-5">
+    <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+        <div class="col-md-8 col-lg-6">
 
-        <div class="dark-panel p-4 p-md-5 text-center">
+            <div class="dark-panel text-center">
 
-            <div class="success-glow">
-                <i class="bi bi-check-lg"></i>
+                <div class="success-glow">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+
+                <h2 class="fw-bold text-white mb-3" style="letter-spacing: 1px; text-transform: uppercase;">Randevunuz
+                    Alındı!</h2>
+
+                    <p class="mb-5" style="color: #888; font-size: 1rem; line-height: 1.6;">
+                        Bizi tercih ettiğiniz için teşekkür ederiz. Randevu saatinizden <strong class="text-white">10 dakika
+                        önce</strong> salonda olmanızı rica ederiz.
+                    </p>
+
+                    <div class="info-box mb-5">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-info-circle-fill me-3" style="color: var(--theme-red); font-size: 1.2rem;"></i>
+                            <div>
+                                Randevunuzun durumunu ana sayfadaki <strong class="text-white">Randevu Sorgula</strong>
+                                sekmesinden kontrol edebilirsiniz.
+                            </div>
+                        </div>
+                    </div>
+
+                    <a asp-page="/Index" class="btn-sharp-red">
+                        <i class="bi bi-house-door-fill me-2" style="font-size: 1.1rem;"></i> ANA SAYFAYA DÖN
+                    </a>
+
+                </div>
+
             </div>
-
-            <h2 class="fw-bold text-white mb-3" style="letter-spacing: 1px;">Randevunuz Onaylandı!</h2>
-            <p class="mb-5" style="color: #888; font-size: 1.05rem;">
-                Bizi tercih ettiğiniz için teşekkür ederiz. Randevu saatinizden <strong class="text-white">10 dakika
-                önce</strong> salonda olmanızı rica ederiz.
-            </p>
-
-            <div class="info-box mb-5">
-                <i class="bi bi-info-circle-fill me-2" style="color: var(--theme-red, #e34c38); font-size: 1.1rem;"></i>
-                Randevunuzun durumunu ve detaylarını ana sayfadaki <strong class="text-white">Randevularım</strong>
-                sekmesinden telefon numaranızla dilediğiniz zaman görüntüleyebilir veya iptal edebilirsiniz.
-            </div>
-
-            <a asp-page="/Index" class="btn-sharp-red">
-                <i class="bi bi-house-door me-2" style="font-size: 1.2rem;"></i> ANA SAYFAYA DÖN
-            </a>
-
         </div>
-
     </div>
-</div>

@@ -10,21 +10,24 @@
         --theme-red-glow: rgba(227, 76, 56, 0.4);
     }
 
-    /* Orijinal Siyah Panel Tasarımın */
+    /* Ana Panel - İçerik burada nefes alıyor */
     .dark-panel {
         background-color: #1a1a1a;
         border: 1px solid #222;
         border-radius: 12px;
-        /* Köşeleri biraz daha yumuşattık */
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        padding: 45px 35px;
     }
 
+    /* Hizmet Kartları */
     .booking-card {
         background: #000;
         border: 1px solid #222;
-        border-radius: 4px;
+        border-radius: 8px;
         transition: all 0.3s ease;
         cursor: pointer;
+        padding: 22px 20px !important;
+        margin-bottom: 8px;
     }
 
     .booking-card:hover {
@@ -37,71 +40,47 @@
         background: rgba(227, 76, 56, 0.05);
     }
 
-    /* STEP 2 İLE AYNI BUTON STİLLERİ */
-    .btn-action {
-        height: 55px;
-        padding: 0 35px;
-        font-weight: 800;
-        letter-spacing: 1px;
-        border-radius: 50px;
-        /* Oval tasarım */
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        text-transform: uppercase;
-        cursor: pointer;
-    }
-
+    /* Buton Stilleri */
     .btn-sharp-red {
         background: var(--theme-red, #e34c38);
-        color: #fff;
+        color: #fff !important;
         border: none;
         padding: 0 40px;
         height: 55px;
         font-weight: 800;
         letter-spacing: 1px;
-        border-radius: 4px;
+        border-radius: 6px;
         transition: 0.3s;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        text-decoration: none;
+        text-transform: uppercase;
     }
 
-    .btn-sharp-red:hover {
-        box-shadow: 0 5px 20px rgba(227, 76, 56, 0.4);
-        filter: brightness(1.1);
-    }
-
-    /* Geri ve İleri Butonları */
     .btn-dark-outline {
         background: transparent;
         border: 1px solid #333;
-        color: #888;
-        padding: 0 30px;
+        color: #888 !important;
+        padding: 0 35px;
         height: 55px;
         font-weight: 800;
-        border-radius: 4px;
+        border-radius: 6px;
         transition: 0.3s;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         text-decoration: none;
+        text-transform: uppercase;
     }
 
-    .btn-dark-outline:hover {
-        border-color: var(--theme-red, #e34c38);
-        color: #fff;
-    }
-    }
-
-    .btn-action:active {
-        transform: translateY(-1px);
+    .btn-sharp-red:hover {
+        box-shadow: 0 10px 25px rgba(227, 76, 56, 0.4);
+        transform: translateY(-2px);
     }
 
-    /* Step Indicator ve Diğerleri */
+    /* Adım Çubuğu */
     .step-indicator {
         display: flex;
         justify-content: space-between;
@@ -143,6 +122,14 @@
         border: 2px solid #222;
     }
 
+    .step-title {
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
     .step-item.active .step-circle {
         background: var(--theme-red);
         color: #fff;
@@ -154,59 +141,101 @@
         background: var(--theme-red);
         color: #fff;
         font-weight: 800;
-        padding: 6px 12px;
-        border-radius: 4px;
+        padding: 6px 14px;
+        border-radius: 6px;
+    }
+
+    /* --- MOBİL DÜZENLEMELER --- */
+    @@media (max-width: 576px) {
+        .dark-panel {
+            padding: 35px 20px !important;
+        }
+
+        .booking-card {
+            padding: 18px 15px !important;
+        }
+
+        /* BURASI DÜZELTİLDİ: Mobilde yazıları gizliyoruz */
+        .step-title {
+            display: none !important;
+        }
+
+        .step-indicator {
+            margin-bottom: 2.5rem !important;
+        }
+
+        .price-badge {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+        }
+
+        .footer-actions {
+            margin-top: 35px !important;
+            padding-top: 25px !important;
+            border-top: 1px solid #222;
+            gap: 10px;
+        }
+
+        .btn-sharp-red, .btn-dark-outline {
+            height: 50px;
+            padding: 0 20px;
+            font-size: 0.75rem;
+        }
     }
 </style>
 
-<div class="row justify-content-center">
-    <div class="col-12 text-center">
-        <div class="step-indicator">
-            <div class="step-item active">
-                <div class="step-circle">1</div>
-                <div class="step-title">Hizmet</div>
-            </div>
-
-            <div class="step-item">
-                <div class="step-circle">2</div>
-                <div class="step-title">Berber</div>
-            </div>
-            <div class="step-item">
-                <div class="step-circle">3</div>
-                <div class="step-title">Tarih</div>
-            </div>
-            <div class="step-item">
-                <div class="step-circle">4</div>
-                <div class="step-title">Onay</div>
+<div class="container">
+    @* Adım Göstergesi *@
+    <div class="row justify-content-center">
+        <div class="col-12 text-center">
+            <div class="step-indicator">
+                <div class="step-item active">
+                    <div class="step-circle">1</div>
+                    <div class="step-title">Hizmet</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">2</div>
+                    <div class="step-title">Berber</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">3</div>
+                    <div class="step-title">Tarih</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">4</div>
+                    <div class="step-title">Onay</div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="row justify-content-center pb-5">
-    <div class="col-md-8 col-lg-7">
-        <div class="dark-panel p-4 p-md-5">
-            <div class="text-center mb-4">
-                <h4 class="text-white mb-2 fw-bold">Hizmet Seçimi</h4>
-                <p class="text-secondary">Almak istediğiniz hizmetleri işaretleyin.</p>
-            </div>
+    @* Ana Seçim Alanı *@
+    <div class="row justify-content-center pb-5">
+        <div class="col-md-8 col-lg-7">
+            <div class="dark-panel">
+                <div class="text-center mb-5">
+                    <h4 class="text-white mb-2 fw-bold" style="letter-spacing: 1.5px;">HİZMET SEÇİMİ</h4>
+                    <p class="text-secondary small">Size uygun olan hizmetleri işaretleyerek devam edin.</p>
+                </div>
 
-            <form method="post">
-                <div class="row g-3 mb-4">
-                    @foreach (var service in Model.Services)
-                    {
-                        var isChecked = Model.SelectedServiceIds.Contains(service.Id);
-                        <div class="col-12">
-                            <label class="card booking-card h-100 p-3 @(isChecked ? "selected" : "")">
-                                <div class="d-flex align-items-center">
-                                    <div class="form-check fs-5 me-3 mb-0">
-                                        <input class="form-check-input" type="checkbox" name="SelectedServiceIds"
-                                               value="@service.Id" @(isChecked ? "checked" : "") onchange="toggleCard(this)">
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-1 fw-bold text-white">@service.Name</h6>
-                                        <div class="text-secondary small"><i class="bi bi-clock me-1"></i>
-                                            @service.DurationInMinutes dk</div>
+                <form method="post">
+                    <div class="row g-3">
+                        @foreach (var service in Model.Services)
+                        {
+                            var isChecked = Model.SelectedServiceIds.Contains(service.Id);
+                            <div class="col-12 mb-2">
+                                <label class="card booking-card h-100 @(isChecked ? "selected" : "")">
+                                    <div class="d-flex align-items-center">
+                                        <div class="form-check fs-5 me-3 mb-0">
+                                            <input class="form-check-input" type="checkbox" name="SelectedServiceIds"
+                                                   value="@service.Id" @(isChecked ? "checked" : "") onchange="toggleCard(this)"
+                                                   style="cursor: pointer;">
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1 fw-bold text-white" style="letter-spacing: 0.5px;">@service.Name</h6>
+                                            <div class="text-secondary small">
+                                                <i class="bi bi-clock me-1"></i> @service.DurationInMinutes dk
+                                            </div>
                                         </div>
                                         <div class="text-end">
                                             <span class="price-badge">@service.Price.ToString("C0")</span>
@@ -217,11 +246,12 @@
                         }
                     </div>
 
-                    <div class="d-flex justify-content-between mt-4 pt-4" style="border-top: 1px solid #222;">
-                        <a href="/" class="btn-action btn-dark-outline">
-                            <i class="bi bi-arrow-left me-2"></i> İPTAL
+                    @* Alt Butonlar *@
+                    <div class="d-flex justify-content-between footer-actions mt-5">
+                        <a href="/" class="btn-dark-outline">
+                            <i class="bi bi-arrow-left me-2"></i> GERİ
                         </a>
-                        <button type="submit" class="btn-action btn-sharp-red">
+                        <button type="submit" class="btn-sharp-red">
                             İLERİ <i class="bi bi-arrow-right ms-2"></i>
                         </button>
                     </div>
@@ -229,12 +259,17 @@
             </div>
         </div>
     </div>
+</div>
 
-    @section Scripts {
-        <script>
-                                                                                                function toggleCard(checkbox) {
-                                                                                                    const card = checkbox.closest('.booking-card');
-                                                                                                    checkbox.checked ? card.classList.add('selected') : card.classList.remove('selected');
-                                                                                                }
-        </script>
-    }
+@section Scripts {
+    <script>
+        function toggleCard(checkbox) {
+            const card = checkbox.closest('.booking-card');
+            if (checkbox.checked) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+        }
+    </script>
+}
